@@ -1,2 +1,2 @@
 # Capstone
-repositorio del proyecto de titulo
+Repositorio del proyecto de titulo
