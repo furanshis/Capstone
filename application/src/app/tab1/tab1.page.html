@@ -1,17 +1,32 @@
-<ion-header [translucent]="true">
+<ion-header>
   <ion-toolbar>
-    <ion-title>
-      Tab 1
-    </ion-title>
+    <ion-title>Bienvenido</ion-title>
   </ion-toolbar>
 </ion-header>
 
-<ion-content [fullscreen]="true">
-  <ion-header collapse="condense">
-    <ion-toolbar>
-      <ion-title size="large">Tab 1</ion-title>
-    </ion-toolbar>
-  </ion-header>
+<ion-content class="ion-padding">
+  <!-- Saludo con el nombre del usuario -->
+  <h2>Hola, {{ userName }}!</h2>
 
-  <app-explore-container name="Tab 1 page"></app-explore-container>
+  <!-- Mostrar las horas trabajadas -->
+  <ion-card>
+    <ion-card-header>
+      <ion-card-title>Horas trabajadas</ion-card-title>
+    </ion-card-header>
+    <ion-card-content>
+      Has trabajado un total de <strong>{{ totalHorasTrabajadas }}</strong> horas esta semana.
+    </ion-card-content>
+  </ion-card>
+
+  <!-- Botón para marcar entrada o salida con lector de huella -->
+  <ion-button expand="full" color="primary" (click)="registrarAsistencia()">
+    Marcar Entrada/Salida
+  </ion-button>
+
+  <!-- Botón para estadísticas de horas -->
+  <ion-button expand="full" color="secondary" (click)="irEstadisticas()">
+    Ver Estadísticas de Horas
+  </ion-button>
+
+
 </ion-content>
