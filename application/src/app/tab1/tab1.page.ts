@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 import { AngularFireAuth } from '@angular/fire/compat/auth';
 import { AngularFirestore } from '@angular/fire/compat/firestore';
 import { AlertController } from '@ionic/angular';
-import { FingerprintAIO } from '@ionic-native/fingerprint-aio/ngx'; // Lector de huellas dactilares
+//import { FingerprintAIO } from '@ionic-native/fingerprint-aio/ngx'; // Lector de huellas dactilares
 import { Router } from '@angular/router';
 
 @Component({
@@ -17,7 +17,7 @@ export class Tab1Page {
   constructor(
     private afAuth: AngularFireAuth,
     private firestore: AngularFirestore,
-    private faio: FingerprintAIO, // Lector de huellas
+    //private faio: FingerprintAIO, // Lector de huellas
     private alertController: AlertController,
     private router: Router
   ) {}
@@ -40,18 +40,8 @@ export class Tab1Page {
 
    // Registrar entrada/salida usando huella dactilar
    registrarAsistencia() {
-    this.faio.show({
-    disableBackup: true, // Deshabilita métodos de respaldo como PIN
-    //localizedFallbackTitle: 'Usar PIN', // Solo en Android
-    //localizedReason: 'Autentica para marcar tu asistencia' // Razón de autenticación
-  })
-    .then((result: any) => {
-      // Lógica para registrar asistencia en la base de datos
-      this.showAlert('Éxito', 'Asistencia registrada correctamente.');
-    })
-    .catch((error: any) => {
-      this.showAlert('Error', 'No se pudo registrar la asistencia.');
-    });
+ 
+  
   }
 
   // Ir a la página de estadísticas (en el futuro)
