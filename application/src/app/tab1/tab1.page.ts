@@ -22,6 +22,10 @@ export class Tab1Page {
     private router: Router
   ) {}
 
+  ngOnInit() {
+    this.loadUserData();
+  }
+
   // Cargar datos del usuario y las horas trabajadas
   async loadUserData() {
     const user = await this.afAuth.currentUser;
@@ -37,12 +41,10 @@ export class Tab1Page {
    // Registrar entrada/salida usando huella dactilar
    registrarAsistencia() {
     this.faio.show({
-      clientId: 'Fingerprint-Demo',
-      clientSecret: 'password', // Solo necesario para Android
-      disableBackup: true, // Deshabilita métodos de respaldo como PIN
-      localizedFallbackTitle: 'Usar PIN', // Solo en Android
-      localizedReason: 'Autentica para marcar tu asistencia' // Razón de autenticación
-    })
+    disableBackup: true, // Deshabilita métodos de respaldo como PIN
+    //localizedFallbackTitle: 'Usar PIN', // Solo en Android
+    //localizedReason: 'Autentica para marcar tu asistencia' // Razón de autenticación
+  })
     .then((result: any) => {
       // Lógica para registrar asistencia en la base de datos
       this.showAlert('Éxito', 'Asistencia registrada correctamente.');
