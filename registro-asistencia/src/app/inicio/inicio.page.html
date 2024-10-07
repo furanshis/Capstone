@@ -1,13 +1,69 @@
-<ion-header [translucent]="true">
-  <ion-toolbar>
-    <ion-title>inicio</ion-title>
-  </ion-toolbar>
-</ion-header>
 
-<ion-content [fullscreen]="true">
-  <ion-header collapse="condense">
-    <ion-toolbar>
-      <ion-title size="large">inicio</ion-title>
-    </ion-toolbar>
-  </ion-header>
+
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-buttons>
+        <ion-icon name="apps"></ion-icon>
+      </ion-buttons>
+    </ion-buttons> 
+
+        <p slot="end">Fecha: {{ fecha }} <br>  Hora: {{ hora }}</p>
+
+  </ion-toolbar>
+    <ion-item lines="none">
+      <ion-avatar slot="start">
+        <img src="assets/time-location-control-icon-simple-work-clock-vector.jpg" alt="">
+      </ion-avatar>
+      <ion-label>
+        <p>Bienvenido</p>
+        <h3>Juan Aros</h3>  <!-- dato enduro-->
+      </ion-label>
+    </ion-item>
+
+
+
+
+
+<!-- CARRUSEL CON CARD-->
+<ion-content >
+
+  <ion-card >
+    <swiper-container
+    (slidechange)="swiperSlideChanged($event)"
+    [loop]="true"
+    [pagination]="true">
+    <swiper-slide *ngFor="let image of images">
+      <img [src]="image">
+    </swiper-slide>
+  </swiper-container>
+  </ion-card>
+  <br>
+
+
+  <!-- Contenedor de las tarjetas de entrada y salida -->
+<div class="card-container">
+
+  <ion-card id="entrada" style="background: #40ff00c6;">
+    <ion-card-header>
+      <ion-card-title>ENTRADA</ion-card-title>
+      <ion-card-subtitle>Entrada tarjetero digital</ion-card-subtitle>
+    </ion-card-header>
+    <ion-button fill="clear">Huella digital</ion-button>
+    <ion-button fill="clear">PIN</ion-button>
+  </ion-card>
+<br>
+  <ion-card id="salida" style="background:#ae0c0c;">
+    <ion-card-header>
+      <ion-card-title>SALIDA</ion-card-title>
+      <ion-card-subtitle>Salida tarjetero digital</ion-card-subtitle>
+    </ion-card-header>
+    <ion-button fill="clear">Huella digital</ion-button>
+    <ion-button fill="clear">PIN</ion-button>
+  </ion-card>
+
+</div>
+
+
+
 </ion-content>
+
