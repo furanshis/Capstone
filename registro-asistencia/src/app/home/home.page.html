@@ -14,19 +14,19 @@
 
   <!-- Formulario de inicio de sesión -->
 
-  <div class="wrapper" (ngSubmit)="loginWithEmail()"> 
+  <div class="wrapper"> 
     <ion-card class="form-wrapper">
       <ion-card-content>
         <ion-item>
-          <ion-icon name="mail"></ion-icon>
+          <ion-icon name="mail" (click)="loginWithEmail"></ion-icon>
           <ion-input type="email" [(ngModel)]="email" name="email" placeholder="Correo empresarial" ></ion-input> 
         </ion-item>
         <ion-item>
           <ion-icon name="lock-closed"></ion-icon>
-          <ion-input type="password" placeholder="Contraseña"></ion-input>
+          <ion-input type="password" [(ngModel)]="password" name="password" placeholder="Contraseña"></ion-input>
         </ion-item>
 
-        <ion-button expand="block"> Iniciar sesion</ion-button>
+        <ion-button expand="block" (click)="loginWithEmail()"> Iniciar sesion</ion-button>
         <ion-button class="btn-go" expand="block" (click)="loginWithGoogle()"> Via Google   
           <ion-icon name="logo-google"></ion-icon>
         </ion-button>
