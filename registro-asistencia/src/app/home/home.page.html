@@ -12,25 +12,26 @@
     <p>Inicia sesion para comenzar a organizar tus tiempos</p>
   </div>
 
+  <!-- Formulario de inicio de sesión -->
 
-  <div class="wrapper"> 
+  <div class="wrapper" (ngSubmit)="loginWithEmail()"> 
     <ion-card class="form-wrapper">
       <ion-card-content>
         <ion-item>
           <ion-icon name="mail"></ion-icon>
-          <ion-input type="text" placeholder="Correo empresarial"></ion-input> 
+          <ion-input type="email" [(ngModel)]="email" name="email" placeholder="Correo empresarial" ></ion-input> 
         </ion-item>
         <ion-item>
           <ion-icon name="lock-closed"></ion-icon>
-          <ion-input type="text" placeholder="Contraseña"></ion-input>
+          <ion-input type="password" placeholder="Contraseña"></ion-input>
         </ion-item>
 
         <ion-button expand="block"> Iniciar sesion</ion-button>
-        <ion-button class="btn-go" expand="block" onclick={call_login_google}> Via Google   
+        <ion-button class="btn-go" expand="block" (click)="loginWithGoogle()"> Via Google   
           <ion-icon name="logo-google"></ion-icon>
-          
-          
         </ion-button>
+
+
       </ion-card-content>
     </ion-card>
 
