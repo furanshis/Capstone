@@ -1,0 +1,5 @@
+{
+  "dependencies": {
+    "@angular/fire": "^18.0.1"
+  }
+}
