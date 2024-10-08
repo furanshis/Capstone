@@ -16,8 +16,10 @@ export class InicioPage {
   ]
 
 
+  
   fecha: string;
   hora: string;
+  nombre: string = '';
 
   constructor() {
     const now = new Date();
