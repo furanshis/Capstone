@@ -86,6 +86,11 @@ export class HomePage implements OnInit {
     await alert.present();
   }
 
+  async getUserInfo(uid: string){
+    let path = `Empleados/${uid}`;
+
+  }
+
   forgotPassword() {
     // Implementar la lógica para recuperar contraseña
   }
