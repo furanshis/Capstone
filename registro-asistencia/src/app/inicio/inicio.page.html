@@ -48,7 +48,15 @@
       <ion-card-title>ENTRADA</ion-card-title>
       <ion-card-subtitle>Entrada tarjetero digital</ion-card-subtitle>
     </ion-card-header>
-    <ion-button fill="clear">Huella digital</ion-button>
+    <ion-button fill="clear" (click)="setOpen(true)">Huella digital</ion-button>
+    <ion-alert
+      [isOpen]="isAlertOpen"
+      header="Marcar entrada"
+      subHeader="Huella digital"
+      message="Ponga su huella digital."
+      [buttons]="alertButtons"
+      (didDismiss)="setOpen(false)"
+    ></ion-alert>
     <ion-button fill="clear">PIN</ion-button>
   </ion-card>
 <br>

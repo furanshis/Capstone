@@ -3,6 +3,7 @@ import { AngularFireAuth } from '@angular/fire/compat/auth';
 import firebase from 'firebase/compat/app';
 import { Router } from '@angular/router';
 import { AlertController } from '@ionic/angular';
+import {getFirestore, doc, getDoc} from 'firebase/firestore'; 
 
 @Component({
   selector: 'app-home',
@@ -105,6 +106,7 @@ export class HomePage implements OnInit {
         console.error('Logout error: ', error);
       });
   }
+
 
   ngOnInit() {
   }

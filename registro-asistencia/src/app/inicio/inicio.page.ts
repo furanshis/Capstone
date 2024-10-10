@@ -7,6 +7,9 @@ import { Component, OnInit } from '@angular/core';
 })
 export class InicioPage {
 
+  isAlertOpen = false;
+  alertButtons = ['Action'];
+
 
   images=[
     '/assets/imginicio/navegacion-gps-establece-iconos_24877-51664.jpg',
@@ -40,6 +43,11 @@ export class InicioPage {
 
   swiperSlideChanged(e: any){
     console.log('changed: ',e);
+  }
+
+  setOpen(isOpen: boolean) {
+    this.isAlertOpen = isOpen;
+    console.log(isOpen);
   }
 
 };
