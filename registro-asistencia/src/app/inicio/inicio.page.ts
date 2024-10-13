@@ -31,7 +31,7 @@ export class InicioPage {
   }
 
   getFormattedTime(date: Date): string {
-    const options: Intl.DateTimeFormatOptions = { hour: '2-digit', minute: '2-digit', second: '2-digit' };
+    const options: Intl.DateTimeFormatOptions = { hour: '2-digit', minute: '2-digit' };
     return date.toLocaleTimeString('es-ES', options); // Cambia 'es-ES' según tu preferencia de localización
   }
 

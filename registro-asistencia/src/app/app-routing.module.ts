@@ -18,7 +18,15 @@ const routes: Routes = [
   {
     path: 'inicio',
     loadChildren: () => import('./inicio/inicio.module').then( m => m.InicioPageModule)
+  },  {
+    path: 'lockscreen',
+    loadChildren: () => import('./lockscreen/lockscreen.module').then( m => m.LockscreenPageModule)
   },
+  {
+    path: 'change-pin',
+    loadChildren: () => import('./change-pin/change-pin.module').then( m => m.ChangePinPageModule)
+  },
+
 ];
 
 @NgModule({

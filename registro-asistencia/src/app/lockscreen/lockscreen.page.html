@@ -1,0 +1,52 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>Enter PIN code</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+  <div class="pin-indicator">
+    <ion-icon *ngFor="let dot of pinDots" [name]="dot ? 'ellipse' : 'ellipse-outline'" class="pin-dot"></ion-icon>
+  </div>
+
+  <div class="pin-grid">
+    <ion-grid>
+      <ion-row>
+        <ion-col *ngFor="let number of ['1', '2', '3']" size="4">
+          <ion-button class="pin-button" (click)="addNumber(number)">
+            {{ number }}
+          </ion-button>
+        </ion-col>
+      </ion-row>
+      <ion-row>
+        <ion-col *ngFor="let number of ['4', '5', '6']" size="4">
+          <ion-button class="pin-button" (click)="addNumber(number)">
+            {{ number }}
+          </ion-button>
+        </ion-col>
+      </ion-row>
+      <ion-row>
+        <ion-col *ngFor="let number of ['7', '8', '9']" size="4">
+          <ion-button class="pin-button" (click)="addNumber(number)">
+            {{ number }}
+          </ion-button>
+        </ion-col>
+      </ion-row>
+      <ion-row>
+        <ion-col size="4">
+          <ion-button class="pin-button" color="light">
+            <ion-icon name="finger-print"></ion-icon>
+          </ion-button>
+        </ion-col>
+        <ion-col size="4">
+          <ion-button class="pin-button" (click)="addNumber('0')">0</ion-button>
+        </ion-col>
+        <ion-col size="4">
+          <ion-button class="pin-button" color="danger" (click)="clearPin()">
+            <ion-icon name="close-circle-outline"></ion-icon>
+          </ion-button>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
+  </div>
+</ion-content>

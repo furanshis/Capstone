@@ -1,22 +1,43 @@
+<ion-menu contentId="main-content">
+  <ion-header>
+    <ion-toolbar color="primary">
+      <ion-title>Menú Lateral</ion-title>
+      
+    </ion-toolbar>
+  </ion-header>
 
+  <ion-content>
+    <ion-list>
+      <!-- POR AHORA AVANCE -->
 
-  <ion-toolbar>
-    <ion-buttons slot="start">
-      <ion-buttons>
-        <ion-icon name="apps"></ion-icon>
+      <ion-item routerLink="/pagina1">Perfil</ion-item>
+      <ion-item routerLink="/change-pin">Cambiar PIN</ion-item>
+      <ion-item routerLink="/pagina3">Sugerencias / Donaciones</ion-item>
+    </ion-list>
+
+  </ion-content>
+</ion-menu>
+
+<!-- Contenido principal -->
+<ion-content id="main-content">
+  <ion-header>
+    <ion-toolbar>
+      <p  style="color: black;" slot="end"> Fecha: {{ fecha }} <br>  Hora: {{ hora }}</p>
+
+      <ion-buttons slot="start">
+        <ion-menu-button> </ion-menu-button>  <!-- Botón para abrir el menú -->
       </ion-buttons>
-    </ion-buttons> 
+    </ion-toolbar>
+  </ion-header>
 
-        <p slot="end">Fecha: {{ fecha }} <br>  Hora: {{ hora }}</p>
-
-  </ion-toolbar>
     <ion-item lines="none">
       <ion-avatar slot="start">
         <img src="assets/time-location-control-icon-simple-work-clock-vector.jpg" alt="">
       </ion-avatar>
       <ion-label>
-        <p>Bienvenido</p>
-        <h3>Juan Aros</h3>  <!-- dato enduro-->
+        <p>Bienvenido</p> 
+        <h3>Juan Aros</h3>
+          <!-- dato enduro-->
       </ion-label>
     </ion-item>
 
@@ -48,8 +69,7 @@
       <ion-card-title>ENTRADA</ion-card-title>
       <ion-card-subtitle>Entrada tarjetero digital</ion-card-subtitle>
     </ion-card-header>
-    <ion-button fill="clear">Huella digital</ion-button>
-    <ion-button fill="clear">PIN</ion-button>
+    <ion-button routerLink="/lockscreen" fill="clear">PIN</ion-button>
   </ion-card>
 <br>
   <ion-card id="salida" style="background:#ae0c0c;">
@@ -57,12 +77,9 @@
       <ion-card-title>SALIDA</ion-card-title>
       <ion-card-subtitle>Salida tarjetero digital</ion-card-subtitle>
     </ion-card-header>
-    <ion-button fill="clear">Huella digital</ion-button>
-    <ion-button fill="clear">PIN</ion-button>
+    <ion-button routerLink="/lockscreen" fill="clear">PIN</ion-button>
   </ion-card>
-
 </div>
-
 
 
 </ion-content>
