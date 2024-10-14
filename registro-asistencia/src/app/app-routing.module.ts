@@ -26,6 +26,10 @@ const routes: Routes = [
     path: 'change-pin',
     loadChildren: () => import('./change-pin/change-pin.module').then( m => m.ChangePinPageModule)
   },
+  {
+    path: 'admin',
+    loadChildren: () => import('./admin/admin.module').then( m => m.AdminPageModule)
+  },
 
 ];
 

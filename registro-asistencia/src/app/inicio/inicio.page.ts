@@ -1,11 +1,14 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
+import { AngularFireAuth } from '@angular/fire/compat/auth';
+import { AngularFirestore } from '@angular/fire/compat/firestore';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-inicio',
   templateUrl: './inicio.page.html',
   styleUrls: ['./inicio.page.scss'],
 })
-export class InicioPage {
+export class InicioPage implements OnInit {
 
 
   images=[
@@ -15,15 +18,23 @@ export class InicioPage {
     '/assets/imginicio/servicio-eficiente-logistica-entrega-exhibido-almacen-cajas-despertador_209190-272449.jpg'
   ]
 
+  empleado = ""
+
 
   fecha: string;
   hora: string;
 
-  constructor() {
+  constructor(
+    private afAuth: AngularFireAuth,
+    private firestore: AngularFirestore,
+    private router: Router
+  ) {
     const now = new Date();
     this.fecha = this.getFormattedDate(now);
     this.hora = this.getFormattedTime(now);
   }
+
+
 
   getFormattedDate(date: Date): string {
     const options: Intl.DateTimeFormatOptions = { year: 'numeric', month: '2-digit', day: '2-digit' };
@@ -40,4 +51,16 @@ export class InicioPage {
     console.log('changed: ',e);
   }
 
+  async logout() {
+    await this.afAuth.signOut();
+    localStorage.removeItem('firstName'); // Limpiar el localStorage
+    this.router.navigate(['']); // Redirigir al login
+  }
+
+  ngOnInit(){  
+    this.empleado = localStorage.getItem('Empleados')!;
+    
+  }
+
+ 
 };

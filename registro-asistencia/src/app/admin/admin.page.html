@@ -1,0 +1,43 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>Agregar Empleados</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-card>
+    <ion-card-header>
+      <ion-card-title>Nuevo Empleado</ion-card-title>
+    </ion-card-header>
+    <ion-card-content>
+      <form (ngSubmit)="addEmployee()">
+        <ion-item>
+          <ion-label position="floating">Correo</ion-label>
+          <ion-input [(ngModel)]="email" name="email" type="email" required></ion-input>
+        </ion-item>
+        <ion-item>
+          <ion-label position="floating">Contraseña</ion-label>
+          <ion-input [(ngModel)]="password" name="password" type="password" required></ion-input>
+        </ion-item>
+        <ion-item>
+          <ion-label position="floating">Primer Nombre</ion-label>
+          <ion-input [(ngModel)]="firstName" name="firstName" required></ion-input>
+        </ion-item>
+        <ion-item>
+          <ion-label position="floating">Segundo Nombre</ion-label>
+          <ion-input [(ngModel)]="secondName" name="secondName"></ion-input>
+        </ion-item>
+        <ion-item>
+          <ion-label position="floating">Apellido Paterno</ion-label>
+          <ion-input [(ngModel)]="lastName" name="lastName" required></ion-input>
+        </ion-item>
+        <ion-item>
+          <ion-label position="floating">Apellido Materno</ion-label>
+          <ion-input [(ngModel)]="secondLastName" name="secondLastName"></ion-input>
+        </ion-item>
+        <ion-button expand="full" type="submit">Agregar Empleado</ion-button>
+      </form>
+    </ion-card-content>
+  </ion-card>
+</ion-content>
+
