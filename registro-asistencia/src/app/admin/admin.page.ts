@@ -38,7 +38,7 @@ export class AdminPage {
           segundo_nombre: this.secondName,
           apellido_paterno: this.lastName,
           apellido_materno: this.secondLastName,
-          role: 'employee',  // Rol por defecto como empleado
+          //role: 'employee',  // Rol por defecto como empleado
         });
 
         // Mostrar notificación de éxito

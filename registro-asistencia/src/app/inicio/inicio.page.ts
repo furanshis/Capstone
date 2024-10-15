@@ -51,15 +51,17 @@ export class InicioPage implements OnInit {
     console.log('changed: ',e);
   }
 
-  async logout() {
-    await this.afAuth.signOut();
-    localStorage.removeItem('firstName'); // Limpiar el localStorage
-    this.router.navigate(['']); // Redirigir al login
-  }
 
   ngOnInit(){  
     this.empleado = localStorage.getItem('Empleados')!;
     
+  }
+
+  // Método para cerrar sesión
+  async logout() {
+    await this.afAuth.signOut();
+    localStorage.removeItem('Empleados'); // Limpiar el localStorage
+    this.router.navigate(['/home']); // Redirigir al login
   }
 
  
