@@ -2,6 +2,10 @@ import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
+import { EmpleadosModule } from './empleados/empleados.module';
+import { AsistenciaModule } from './asistencia/asistencia.module';
+import { Empleados } from './empleados/empleados.entity';
+import { Asistencia } from './asistencia/asistencia.entity';
 
 @Module({
   imports: [
@@ -12,9 +16,12 @@ import { AppService } from './app.service';
       username: 'postgres',
       password: 'admin123',
       database: 'capstone',
-      autoLoadEntities: true,
       synchronize: true,
-    })
+    }),
+    Empleados,
+    Asistencia,
+    EmpleadosModule,
+    AsistenciaModule
   ],
   controllers: [AppController],
   providers: [AppService],
