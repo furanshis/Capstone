@@ -6,6 +6,7 @@ import { EmpleadosModule } from './empleados/empleados.module';
 import { AsistenciaModule } from './asistencia/asistencia.module';
 import { Empleados } from './empleados/empleados.entity';
 import { Asistencia } from './asistencia/asistencia.entity';
+import { SupervisorModule } from './supervisor/supervisor.module';
 
 @Module({
   imports: [
@@ -21,7 +22,8 @@ import { Asistencia } from './asistencia/asistencia.entity';
     Empleados,
     Asistencia,
     EmpleadosModule,
-    AsistenciaModule
+    AsistenciaModule,
+    SupervisorModule
   ],
   controllers: [AppController],
   providers: [AppService],
