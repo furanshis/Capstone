@@ -8,9 +8,6 @@ export class Empleados {
     id_empleado: number;
 
     @Column()
-    uid: string;
-
-    @Column()
     primer_nombre: string;
 
     @Column()
