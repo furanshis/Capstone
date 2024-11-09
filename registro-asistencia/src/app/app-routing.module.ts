@@ -34,7 +34,11 @@ const routes: Routes = [
   {
     path: 'manage-employees',
     loadChildren: () => import('./manage-employees/manage-employees.module').then( m => m.ManageEmployeesPageModule)
+  },  {
+    path: 'adminpanel',
+    loadChildren: () => import('./adminpanel/adminpanel.module').then( m => m.AdminpanelPageModule)
   },
+
 
 
 
