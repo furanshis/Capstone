@@ -10,6 +10,9 @@ import { AlertController, NavController } from '@ionic/angular';
 export class ChangePinPage {
   newPin: string = '';
   confirmPin: string = '';
+  goBack(){
+    window.history.back();
+  }
 
   constructor(
     private pinService: PinService,

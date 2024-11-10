@@ -13,6 +13,7 @@ interface Employee {
   phone: string;
   correo: string;
   selected: boolean;
+
 }
 
 @Component({
@@ -22,6 +23,9 @@ interface Employee {
 })
 export class ManageEmployeesPage {
   selectAll: boolean = false;
+  goBack(){
+    window.history.back();
+  }
 
   employees: Employee[] = [
     { id: 1, name: 'Thomas Hardy', email: 'thomashardy@mail.com', address: 'Chiaroscuro Rd, Portland, USA', phone: '(171) 555-2222',correo:'jua@gd.com' , selected: false },
