@@ -9,9 +9,12 @@ export class Empleados {
     @PrimaryGeneratedColumn()
     id_empleado: number;
 
+<<<<<<< HEAD
     @Column({unique: true})
     uid: string;
 
+=======
+>>>>>>> ee24c6e4330ec15d12643a7ea69136a624d46a97
     @Column()
     primer_nombre: string;
 

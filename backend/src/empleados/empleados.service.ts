@@ -1,9 +1,7 @@
 import { Injectable } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
-import { Empleados } from './empleados.entity';
 
 @Injectable()
+<<<<<<< HEAD
 export class EmpleadosService {
 
     constructor(
@@ -34,3 +32,6 @@ export class EmpleadosService {
 
 
 
+=======
+export class EmpleadosService {}
+>>>>>>> ee24c6e4330ec15d12643a7ea69136a624d46a97

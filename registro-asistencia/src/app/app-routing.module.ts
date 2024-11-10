@@ -18,7 +18,8 @@ const routes: Routes = [
   {
     path: 'inicio',
     loadChildren: () => import('./inicio/inicio.module').then( m => m.InicioPageModule)
-  },  {
+  },
+  {
     path: 'lockscreen',
     loadChildren: () => import('./lockscreen/lockscreen.module').then( m => m.LockscreenPageModule)
   },
@@ -30,6 +31,18 @@ const routes: Routes = [
     path: 'admin',
     loadChildren: () => import('./admin/admin.module').then( m => m.AdminPageModule)
   },
+  {
+    path: 'manage-employees',
+    loadChildren: () => import('./manage-employees/manage-employees.module').then( m => m.ManageEmployeesPageModule)
+  },  {
+    path: 'adminpanel',
+    loadChildren: () => import('./adminpanel/adminpanel.module').then( m => m.AdminpanelPageModule)
+  },
+
+
+
+
+
 
 ];
 
