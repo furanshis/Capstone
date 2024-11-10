@@ -6,6 +6,11 @@ import { EmpleadosModule } from './empleados/empleados.module';
 import { AsistenciaModule } from './asistencia/asistencia.module';
 import { Empleados } from './empleados/empleados.entity';
 import { Asistencia } from './asistencia/asistencia.entity';
+import { SupervisorModule } from './supervisor/supervisor.module';
+import { DepartamentoModule } from './departamento/departamento.module';
+import { Supervisor } from './supervisor/supervisor.entity';
+import { Departamento } from './departamento/departamento.entity';
+
 
 @Module({
   imports: [
@@ -16,11 +21,15 @@ import { Asistencia } from './asistencia/asistencia.entity';
       username: 'postgres',
       password: 'admin123',
       database: 'capstone',
-      synchronize: true,
+      entities: [Empleados, Asistencia, Supervisor, Departamento],
+      
+      migrationsRun: true,
+      
     }),
-    Empleados,
-    Asistencia,
     EmpleadosModule,
+    AsistenciaModule,
+    SupervisorModule,
+    DepartamentoModule,
     AsistenciaModule
   ],
   controllers: [AppController],

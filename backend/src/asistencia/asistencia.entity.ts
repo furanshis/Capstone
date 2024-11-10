@@ -1,4 +1,4 @@
-import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinTable } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn } from 'typeorm';
 import { Empleados } from '../empleados/empleados.entity';
 
 export class Asistencia {
@@ -26,7 +26,7 @@ export class Asistencia {
     @Column({type: 'boolean', nullable: true})
     validacion_biometrica: boolean;
 
-    @ManyToOne(() => Empleados, empleados => empleados.id_empleado)
-    @JoinTable({name: 'empleado_id'})
-    empleado_id: Empleados[]
+    @ManyToOne(() => Empleados, (empleados) => empleados.id_empleado)
+    @JoinColumn({name: 'empleado_id'})
+    empleado: Empleados
 }

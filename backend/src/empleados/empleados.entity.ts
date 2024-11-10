@@ -1,11 +1,16 @@
-import { Entity, PrimaryGeneratedColumn, Column, OneToMany } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, OneToMany, ManyToOne, JoinTable, JoinColumn } from 'typeorm';
 import { Asistencia } from 'src/asistencia/asistencia.entity';
+import { Departamento } from 'src/departamento/departamento.entity';
+import { Supervisor } from 'src/supervisor/supervisor.entity';
 
 @Entity()
 export class Empleados {
 
     @PrimaryGeneratedColumn()
     id_empleado: number;
+
+    @Column({unique: true})
+    uid: string;
 
     @Column()
     primer_nombre: string;
@@ -25,7 +30,14 @@ export class Empleados {
     @Column({type: 'time with time zone', nullable: true})
     horario_salida_real: string;
 
-    @OneToMany(() => Asistencia, (asistencia) => asistencia.empleado_id)
-    asistencias: Asistencia[];
+    
+
+    @ManyToOne(() => Departamento, (departamento) => departamento.id_departamento)
+    @JoinColumn({name: 'departamento_id'})
+    departamento: Departamento;
+
+    @ManyToOne(() => Supervisor, (supervisor) => supervisor.id_supervisor)
+    @JoinColumn({name: 'supervisor_id'})
+    supervisor: Supervisor;
 
 }
