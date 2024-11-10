@@ -19,7 +19,10 @@ export class EmpleadosService {
 
   // Obtener un empleado por UID
   async getEmpleadoByUid(uid: string): Promise<Empleados | undefined> {
-    return this.empleadosRepository.findOne({ where: { uid } });
+    console.log(uid)
+    const empleado = await this.empleadosRepository.findOneBy({ uid });
+    console.log(empleado)
+    return empleado;
   }
 
   // Obtener todos los empleados
