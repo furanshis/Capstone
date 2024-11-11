@@ -1,77 +1,55 @@
-/* Cabecero */
-ion-header {
-    ion-toolbar, ion-item {
-      --background: #7972e6; /* Cambia el fondo del toolbar a un tono más oscuro */
-      --color: #ffffff; /* Cambia el color del texto a blanco para mayor contraste */
-    }
-  }
-  
-  /* Barra de opciones del menú */
-  ion-toolbar.bordered {
-    --box-shadow: 5px 5px 10px #f1f5f8, -5px -5px 10px #f1f5f8;
-  }
-  
-  /* Estilo para ion-item */
-  ion-item {
-    h3 {
-      font-weight: 700;
-      font-size: 14px;
-    }
-    p {
-      font-weight: 500;
-      font-size: 20px;
-    }
-  
-    ion-avatar {
-      --border-radius: 40%;
-    }
-  }
-  
-  /* Fondo de la página */
-  ion-content {
-    --background: #7972e6; /* Cambia el fondo principal */
-  }
-  
-  /* Estilo de fecha y hora */
-  p {
-    font-size: 1.2em;
-    color: #ffffff; /* Texto blanco para contraste */
-    margin: 10px 0;
-  }
-  
-  /* Swiper */
-  swiper-container {
-    width: 100%;
-    height: 100%;
-  }
-  
-  swiper-slide {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    padding: 4px 10px 20px 10px; /* Marco */
-    border-radius: 0 0 28px 28px;
-  }
-  
-  /* Card */
-  ion-card {
-    box-shadow: none;
-    border-radius: 0 0 28px 28px;
-    background: #ffffff;
-    width: 100%; /* Ocupa todo el ancho */
-    margin: 0; /* Elimina márgenes */
-    padding: 0;
-  }
-  
-  /* Contenedor de las tarjetas de entrada y salida */
-  .card-container {
-    display: flex;
-    justify-content: space-between; /* Espacio entre tarjetas */
-    align-items: center; /* Alinea las tarjetas verticalmente */
-  }
-  
-  #entrada, #salida {
-    width: 48%; /* Ajusta el tamaño de las tarjetas para que se alineen en la misma fila */
-  }
-  
+/* Estilo base para los botones */
+.button-container {
+  display: flex;
+  justify-content: center;
+  gap: 16px; /* Espaciado entre los botones */
+  max-width: 480px;
+  flex-direction: column;
+  padding: 12px;
+}
+
+/* Estilo para el botón Entrada con color Danger */
+.button-danger {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-width: 84px;
+  max-width: 480px;
+  cursor: pointer;
+  overflow: hidden;
+  border-radius: 12px;
+  height: 48px; /* Ajusta la altura según sea necesario */
+  padding: 0 20px;
+  background-color: #f53d3d; /* Color de fondo rojo (Danger) */
+  color: white; /* Color de texto */
+  font-weight: bold;
+  text-transform: uppercase;
+  transition: background-color 0.3s ease;
+}
+
+.button-danger:hover {
+  background-color: #e02b2b; /* Fondo ligeramente más oscuro al pasar el mouse */
+}
+
+/* Estilo para el botón Otra Acción con color Success */
+.button-success {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-width: 84px;
+  max-width: 480px;
+  cursor: pointer;
+  overflow: hidden;
+  border-radius: 12px;
+  height: 48px;
+  padding: 0 20px;
+  background-color: #10dc60; /* Color de fondo verde (Success) */
+  color: white; /* Color de texto */
+  font-weight: bold;
+  text-transform: uppercase;
+  transition: background-color 0.3s ease;
+}
+
+.button-success:hover {
+  background-color: #0da350; /* Fondo ligeramente más oscuro al pasar el mouse */
+}

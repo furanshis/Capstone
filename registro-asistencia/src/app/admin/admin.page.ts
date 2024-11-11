@@ -16,6 +16,9 @@ export class AdminPage {
   secondName: string = '';
   lastName: string = '';
   secondLastName: string = '';
+  goBack(){
+    window.history.back();
+  }
 
 
   constructor(
