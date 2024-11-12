@@ -2,6 +2,8 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { AngularFireAuth } from '@angular/fire/compat/auth';
 import { AngularFirestore } from '@angular/fire/compat/firestore';
 import { Router } from '@angular/router';
+import { IonicModule } from '@ionic/angular';
+import { AsistenciaserviceService } from '../services/asistenciaservice.service';
 
 @Component({
   selector: 'app-inicio',
@@ -9,6 +11,14 @@ import { Router } from '@angular/router';
   styleUrls: ['./inicio.page.scss'],
 })
 export class InicioPage implements OnInit {
+  isLoading = false;
+  successMessage = '';
+  errorMessage = '';
+  currentTime = new Date();
+  private timeInterval: any;
+
+  // TODO: Replace with actual Firebase UID
+  private currentUserid = 1;
 
 
   images=[
@@ -25,14 +35,48 @@ export class InicioPage implements OnInit {
   hora: string;
 
   constructor(
+    private asistenciaService: AsistenciaserviceService,
     private afAuth: AngularFireAuth,
     private firestore: AngularFirestore,
     private router: Router
   ) {
+    this.timeInterval = setInterval(() => {
+      this.currentTime = new Date();
+    }, 1000);
     const now = new Date();
     this.fecha = this.getFormattedDate(now);
     this.hora = this.getFormattedTime(now);
   }
+
+
+  ngOnDestroy() {
+    if (this.timeInterval) {
+      clearInterval(this.timeInterval);
+    }
+  }
+
+
+  registerAttendance() {
+    this.isLoading = true;
+    this.successMessage = '';
+    this.errorMessage = '';
+
+    this.asistenciaService.createAttendance(this.currentUserid).subscribe({
+      next: (response) => {
+        this.isLoading = false;
+        this.successMessage = `Asistencia registrada exitosamente a las ${response.hora_entrada}`;
+      },
+      error: (error) => {
+        this.isLoading = false;
+        this.errorMessage = 'Error al registrar la asistencia. Por favor intente nuevamente.';
+        console.error('Error registering attendance:', error);
+      }
+    });
+  }
+
+
+
+
 
 
 

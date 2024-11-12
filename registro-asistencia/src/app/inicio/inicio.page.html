@@ -88,15 +88,38 @@
 
   <div class="button-container">
     <!-- Botón Entrada con color Danger -->
-    <ion-button color="success" class="button-success" routerLink="/lockscreen">
-      <span class="truncate">Entrada</span>
-    </ion-button>
-    
-    <!-- Botón Otra Acción con color Success -->
-    <ion-button color="danger" class="button-danger" routerLink="/lockscreen">
-      <span class="truncate">Salida</span>
-    </ion-button>
+    <ion-button
+                size="large"
+                expand="block"
+                [disabled]="isLoading"
+                (click)="registerAttendance()"
+              >
+              <ion-icon slot="start" name="finger-print-outline"></ion-icon>
+              {{ isLoading ? 'Registrando...' : 'Registrar Asistencia' }}
+            </ion-button>
+      
   </div>
+
+  <!-- Success Message -->
+  <ion-item *ngIf="successMessage" lines="none" color="success">
+    <ion-icon name="checkmark-circle" slot="start"></ion-icon>
+    <ion-label>{{ successMessage }}</ion-label>
+  </ion-item>
+
+  <!-- Error Message -->
+  <ion-item *ngIf="errorMessage" lines="none" color="danger">
+    <ion-icon name="alert-circle" slot="start"></ion-icon>
+    <ion-label>{{ errorMessage }}</ion-label>
+  </ion-item>
+          
+    
+    <div class="button-container">
+      <!-- Botón Otra Acción con color Success -->
+      <ion-button color="danger" class="button-danger" routerLink="/lockscreen">
+        <span class="truncate">Salida</span>
+      </ion-button>
+    </div>
+  
   
 
   <!-- Tarjetas con información (2 juntas y 1 al final) -->

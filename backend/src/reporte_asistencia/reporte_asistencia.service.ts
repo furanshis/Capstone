@@ -16,8 +16,10 @@ export class ReporteAsistenciaService {
         return this.reporteAsistenciaRepository.save(reporte);
       }
     
-      async findAll(): Promise<ReporteAsistencia[]> {
-        return this.reporteAsistenciaRepository.find({ relations: ['supervisor', 'asistencia'] });
+      async getReporteConAsistenciaYEmpleado(): Promise<ReporteAsistencia[]> {
+        return this.reporteAsistenciaRepository.find({
+          relations: ['asistencia', 'asistencia.empleado', 'supervisor'],
+        });
       }
     
       async findById(id_reporte: number): Promise<ReporteAsistencia> {

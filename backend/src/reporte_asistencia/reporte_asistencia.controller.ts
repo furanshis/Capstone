@@ -14,7 +14,7 @@ export class ReporteAsistenciaController {
 
     @Get()
     async findAll(): Promise<ReporteAsistencia[]> {
-        return this.reporteAsistenciaService.findAll();
+        return this.reporteAsistenciaService.getReporteConAsistenciaYEmpleado();
     }
 
     @Get(':id')

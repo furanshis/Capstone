@@ -1,119 +1,99 @@
-<ion-header>
+<ion-header [translucent]="true">
   <ion-toolbar>
-    <ion-title> Ngx Datatable </ion-title>
+    <ion-title>reportes</ion-title>
   </ion-toolbar>
 </ion-header>
 
-<ion-content color="light">
+<ion-content>
   <ion-grid>
     <ion-row>
-      <ion-col size="12">
+      <ion-col>
+        <ion-card *ngFor="let reporte of reportes">
+          <ion-card-header>
+            <ion-card-title>Reporte #{{ reporte.id_reporte }}</ion-card-title>
+            <ion-card-subtitle>{{ reporte.fecha_reporte | date:'fullDate' }}</ion-card-subtitle>
+          </ion-card-header>
 
-        <div align="right" class="searchTable">
-          <ion-input
-            type="text"
-            class="ion-text-center"
-            placeholder="Type to filter the name column..."
-            (ionInput)="updateFilter($event)"
-          ></ion-input>
-        </div>
-        
-        <ion-card>
-          <ngx-datatable
-            #table
-            class="material"
-            [columnMode]="ColumnMode.force"
-            [headerHeight]="50"
-            [footerHeight]="50"
-            [rowHeight]="'auto'"
-            [loadingIndicator]="loadingIndicator"
-            [scrollbarH]="true"
-            [limit]="10"
-            [rows]="rows"
-          >
-            <ngx-datatable-column prop="id">
-              <ng-template
-                let-column="column"
-                ngx-datatable-header-template
-                let-sort="sortFn"
-              >
-                <span class="tableHeader">ID</span>
-              </ng-template>
-            </ngx-datatable-column>
+          <ion-card-content>
+            <!-- Supervisor Info -->
+            <ion-item lines="none">
+              <ion-icon name="person-circle-outline" slot="start" color="primary"></ion-icon>
+              <ion-label>
+                <h2>Supervisor</h2>
+                <p>{{ reporte.supervisor.primer_nombre }} {{ reporte.supervisor.segundo_nombre }} 
+                   {{ reporte.supervisor.apellido_paterno }} {{ reporte.supervisor.apellido_materno }}</p>
+              </ion-label>
+            </ion-item>
 
-            <ngx-datatable-column prop="name">
-              <ng-template
-                let-column="column"
-                ngx-datatable-header-template
-                let-sort="sortFn"
-              >
-                <span class="tableHeader">NOMBRE</span>
-              </ng-template>
-            </ngx-datatable-column>
+            <!-- Employee Info -->
+            <ion-item lines="none">
+              <ion-icon name="person-outline" slot="start" color="secondary"></ion-icon>
+              <ion-label>
+                <h2>Empleado</h2>
+                <p>{{ reporte.asistencia.empleado.primer_nombre }} {{ reporte.asistencia.empleado.segundo_nombre }}
+                   {{ reporte.asistencia.empleado.apellido_paterno }} {{ reporte.asistencia.empleado.apellido_materno }}</p>
+                <p>ID: {{ reporte.asistencia.empleado.id_empleado }}</p>
+              </ion-label>
+            </ion-item>
 
-            <ngx-datatable-column prop="gender">
-              <ng-template
-                let-column="column"
-                ngx-datatable-header-template
-                let-sort="sortFn"
-              >
-                <span class="tableHeader">SEGUNDO NOMBRE</span>
-              </ng-template>
-            </ngx-datatable-column>
+            <!-- Attendance Stats -->
+            <ion-item lines="none">
+              <ion-label>
+                <ion-grid>
+                  <ion-row>
+                    <ion-col size="6">
+                      <ion-chip color="primary">
+                        <ion-icon name="time-outline"></ion-icon>
+                        <ion-label>{{ reporte.total_horas_trabajadas }}h trabajadas</ion-label>
+                      </ion-chip>
+                    </ion-col>
+                    <ion-col size="6">
+                      <ion-chip color="tertiary">
+                        <ion-icon name="hourglass-outline"></ion-icon>
+                        <ion-label>{{ reporte.asistencia.horas_extras }}h extras</ion-label>
+                      </ion-chip>
+                    </ion-col>
+                  </ion-row>
+                  <ion-row>
+                    <ion-col size="6">
+                      <ion-chip [color]="reporte.numero_tardanzas > 0 ? 'warning' : 'success'">
+                        <ion-icon name="alert-circle-outline"></ion-icon>
+                        <ion-label>{{ reporte.numero_tardanzas }} tardanzas</ion-label>
+                      </ion-chip>
+                    </ion-col>
+                    <ion-col size="6">
+                      <ion-chip [color]="reporte.numero_ausencias > 0 ? 'danger' : 'success'">
+                        <ion-icon name="close-circle-outline"></ion-icon>
+                        <ion-label>{{ reporte.numero_ausencias }} ausencias</ion-label>
+                      </ion-chip>
+                    </ion-col>
+                  </ion-row>
+                </ion-grid>
+              </ion-label>
+            </ion-item>
 
-            <ngx-datatable-column prop="company">
-              <ng-template
-                let-column="column"
-                ngx-datatable-header-template
-                let-sort="sortFn"
-              >
-                <span class="tableHeader">FECHA</span>
-              </ng-template>
-            </ngx-datatable-column>
+            <!-- Time Details -->
+            <ion-item lines="none">
+              <ion-icon name="calendar-outline" slot="start" color="medium"></ion-icon>
+              <ion-label>
+                <h2>Horario</h2>
+                <p>Entrada: {{ reporte.asistencia.hora_entrada }}</p>
+                <p>Salida: {{ reporte.asistencia.hora_salida }}</p>
+              </ion-label>
+            </ion-item>
 
-            <ngx-datatable-column prop="gender">
-              <ng-template
-                let-column="column"
-                ngx-datatable-header-template
-                let-sort="sortFn"
-              >
-                <span class="tableHeader">ENTRADA</span>
-              </ng-template>
-            </ngx-datatable-column>
-
-            <ngx-datatable-column prop="gender">
-              <ng-template
-                let-column="column"
-                ngx-datatable-header-template
-                let-sort="sortFn"
-              >
-                <span class="tableHeader">SALIDA</span>
-              </ng-template>
-            </ngx-datatable-column>
-
-            <ngx-datatable-column prop="gender">
-              <ng-template
-                let-column="column"
-                ngx-datatable-header-template
-                let-sort="sortFn"
-              >
-                <span class="tableHeader">HORAS TRABAJADAS</span>
-              </ng-template>
-            </ngx-datatable-column>
-
-            <ngx-datatable-column prop="gender">
-              <ng-template
-                let-column="column"
-                ngx-datatable-header-template
-                let-sort="sortFn"
-              >
-                <span class="tableHeader">GEOLOCALIZACION</span>
-              </ng-template>
-            </ngx-datatable-column>
-
-
-
-          </ngx-datatable>
+            <!-- Location and Validation -->
+            <ion-item lines="none">
+              <ion-icon name="location-outline" slot="start" color="danger"></ion-icon>
+              <ion-label>
+                <h2>Ubicación</h2>
+                <p>Lat: {{ reporte.asistencia.geolocacion.x }}, Long: {{ reporte.asistencia.geolocacion.y }}</p>
+              </ion-label>
+              <ion-badge slot="end" [color]="reporte.asistencia.validacion_biometrica ? 'success' : 'warning'">
+                {{ reporte.asistencia.validacion_biometrica ? 'Validado' : 'No validado' }}
+              </ion-badge>
+            </ion-item>
+          </ion-card-content>
         </ion-card>
       </ion-col>
     </ion-row>
