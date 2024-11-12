@@ -7,16 +7,16 @@ export class Supervisor {
   @PrimaryGeneratedColumn()
   id_supervisor: number;
 
-  @Column()
+  @Column({ type: 'varchar', nullable: true })
   primer_nombre: string;
 
-  @Column()
+  @Column({ type: 'varchar', nullable: true })
   segundo_nombre: string;
 
-  @Column()
+  @Column({ type: 'varchar', nullable: true })
   apellido_paterno: string;
 
-  @Column()
+  @Column({ type: 'varchar', nullable: true })
   apellido_materno: string;
 
   @OneToMany(() => Empleados, (empleados) => empleados.supervisor)

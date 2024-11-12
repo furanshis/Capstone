@@ -9,19 +9,19 @@ export class Empleados {
     @PrimaryGeneratedColumn()
     id_empleado: number;
 
-    @Column({unique: true})
-    uid: string;
+    @Column({type: 'varchar', nullable: true})
+    uid_empleado: string;
 
-    @Column()
+    @Column({ type: 'varchar', nullable: true })
     primer_nombre: string;
 
-    @Column()
+    @Column({ type: 'varchar', nullable: true })
     segundo_nombre: string;
 
-    @Column()
+    @Column({ type: 'varchar', nullable: true })
     apellido_paterno: string;
 
-    @Column()
+    @Column({ type: 'varchar', nullable: true })
     apellido_materno: string;
 
     @Column({type: 'time with time zone', nullable: true})

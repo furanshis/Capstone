@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Param } from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, ParseIntPipe } from '@nestjs/common';
 import { EmpleadosService } from './empleados.service';
 import { Empleados } from './empleados.entity';
 
@@ -12,8 +12,14 @@ export class EmpleadosController {
     }
     // Endpoint para obtener un empleado por UID
     @Get(':uid')
-    async getEmpleadoByUid(@Param('uid') uid: string): Promise<Empleados> {
+        async getEmpleadoByUid(@Param('uid') uid: string): Promise<Empleados> {
         return this.empleadosService.getEmpleadoByUid(uid);
+        }
+    
+    // Ruta para obtener un empleado por ID
+    @Get(':id')
+    async getEmpleadoById(@Param('id', ParseIntPipe) id: number): Promise<Empleados> {
+        return this.empleadosService.getEmpleadoById(id);
     }
     // Endpoint para obtener todos los empleados
     @Get()

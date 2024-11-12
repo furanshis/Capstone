@@ -13,16 +13,39 @@ export class EmpleadosService {
 
     // Crear un nuevo empleado
   async createEmpleado(data: Partial<Empleados>): Promise<Empleados> {
-    const empleado = this.empleadosRepository.create(data);
-    return this.empleadosRepository.save(empleado);
+    try {
+      const empleado = this.empleadosRepository.create(data);
+      return this.empleadosRepository.save(empleado);
+    } catch (error) {
+      return error;
+    }
+    
   }
 
   // Obtener un empleado por UID
-  async getEmpleadoByUid(uid: string): Promise<Empleados | undefined> {
-    console.log(uid)
-    const empleado = await this.empleadosRepository.findOneBy({ uid });
-    console.log(empleado)
-    return empleado;
+  async getEmpleadoByUid(uid: string): Promise<Empleados> {
+    try {
+      const empleado = await this.empleadosRepository.findOne({where: { uid_empleado: uid }});
+      console.log(uid)
+
+      console.log(empleado)
+      return empleado;
+    } catch (error) {
+      return error;
+    }
+  }
+
+
+  // Método para obtener un empleado por ID
+  async getEmpleadoById(id: number): Promise<Empleados> {
+    try {
+      console.log(id)
+      const empleado = await this.empleadosRepository.findOne({ where: { id_empleado: id } });
+      console.log(empleado)
+      return empleado
+    }catch (error) {
+      return error;
+    }
   }
 
   // Obtener todos los empleados

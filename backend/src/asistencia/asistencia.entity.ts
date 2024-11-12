@@ -1,11 +1,12 @@
 import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn } from 'typeorm';
 import { Empleados } from '../empleados/empleados.entity';
 
+@Entity()
 export class Asistencia {
     @PrimaryGeneratedColumn()
     id_asistencia: number;
 
-    @Column({type: 'date'})
+    @Column({type: 'date', nullable: true})
     fecha_asistencia: Date;
 
     @Column({type: 'time', nullable: true})
@@ -23,7 +24,7 @@ export class Asistencia {
     @Column({type: 'point', nullable: true})
     geolocacion: string;
 
-    @Column({type: 'boolean', nullable: true})
+    @Column({ type: 'boolean', default: false })
     validacion_biometrica: boolean;
 
     @ManyToOne(() => Empleados, (empleados) => empleados.id_empleado)

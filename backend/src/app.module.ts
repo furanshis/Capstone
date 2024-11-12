@@ -10,6 +10,8 @@ import { SupervisorModule } from './supervisor/supervisor.module';
 import { DepartamentoModule } from './departamento/departamento.module';
 import { Supervisor } from './supervisor/supervisor.entity';
 import { Departamento } from './departamento/departamento.entity';
+import { ReporteAsistenciaModule } from './reporte_asistencia/reporte_asistencia.module';
+import { ReporteAsistencia } from './reporte_asistencia/reporte_asistencia.entity';
 
 
 @Module({
@@ -21,16 +23,18 @@ import { Departamento } from './departamento/departamento.entity';
       username: 'postgres',
       password: 'admin123',
       database: 'capstone',
-      entities: [Empleados, Asistencia, Supervisor, Departamento],
+      entities: [Empleados, Asistencia, Supervisor, Departamento, ReporteAsistencia],
       
-      migrationsRun: true,
+      synchronize: true,
       
     }),
+    
     EmpleadosModule,
     AsistenciaModule,
     SupervisorModule,
     DepartamentoModule,
-    AsistenciaModule
+    AsistenciaModule,
+    ReporteAsistenciaModule
   ],
   controllers: [AppController],
   providers: [AppService],
