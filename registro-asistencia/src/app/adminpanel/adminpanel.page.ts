@@ -1,4 +1,7 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
+import { AngularFireAuth } from '@angular/fire/compat/auth';
+import { AngularFirestore } from '@angular/fire/compat/firestore';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-adminpanel',
@@ -6,10 +9,15 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./adminpanel.page.scss'],
 })
 export class AdminpanelPage implements OnInit {
+  
 
-  constructor() { }
+  constructor() { 
+    
+    
+  }
 
   ngOnInit() {
   }
 
 }
+

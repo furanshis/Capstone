@@ -1,87 +1,122 @@
 <ion-menu contentId="main-content">
   <ion-header>
-    <ion-toolbar color="primary">
+    <ion-toolbar color="tertiary">
       <ion-title>Menú Lateral</ion-title>
-      
     </ion-toolbar>
   </ion-header>
 
+  
+
   <ion-content>
     <ion-list>
-      <!-- POR AHORA AVANCE -->
-
-      <ion-item routerLink="/pagina1">Perfil</ion-item>
+      <!-- Menú de opciones -->
+      <ion-item routerLink="/perfilusuario">Perfil</ion-item>
       <ion-item routerLink="/change-pin">Cambiar PIN</ion-item>
       <ion-item routerLink="/pagina3">Sugerencias / Donaciones</ion-item>
       <ion-button (click)="logout()">Cerrar Sesión</ion-button>
     </ion-list>
-
   </ion-content>
 </ion-menu>
 
+
 <!-- Contenido principal -->
-<ion-content id="main-content">
+<ion-content id="main-content" class="bg-background text-primary-foreground" style="font-family: Manrope, 'Noto Sans', sans-serif;">
   <ion-header>
     <ion-toolbar>
-      <p  style="color: black;" slot="end"> Fecha: {{ fecha }} <br>  Hora: {{ hora }}</p>
-
+      
+      <p style="color: black;" slot="end">Fecha: {{ fecha }} <br> Hora: {{ hora }}</p>
       <ion-buttons slot="start">
-        <ion-menu-button> </ion-menu-button>  <!-- Botón para abrir el menú -->
+        <ion-menu-button></ion-menu-button> <!-- Botón para abrir el menú -->
       </ion-buttons>
+      
     </ion-toolbar>
   </ion-header>
 
-    <ion-item lines="none">
-      <ion-avatar slot="start">
-        <img src="assets/time-location-control-icon-simple-work-clock-vector.jpg" alt="">
-      </ion-avatar>
-      <ion-label>
-        <p>Bienvenido</p> 
-        <h3></h3>
-          <!-- dato enduro-->
-      </ion-label>
-    </ion-item>
+  <!-- Título centrado -->
+  <ion-item lines="none">
+    <ion-avatar slot="start">
+      <img src="assets/time-location-control-icon-simple-work-clock-vector.jpg" alt="">
+    </ion-avatar>
+    <ion-label>
+    </ion-label>
+  </ion-item>
+  <h2 class="text-primary text-[26px] font-bold leading-tight tracking-[-0.015em] px-4 pb-3 pt-5 text-center">
+    Bienvenido, Mateo
+    
+  </h2>
 
-
-
-
-
-<!-- CARRUSEL CON CARD-->
-<ion-content >
-
-  <ion-card >
+  <!-- Carrusel de imágenes -->
+  <ion-card>
     <swiper-container
-    (slidechange)="swiperSlideChanged($event)"
-    [loop]="true"
-    [pagination]="true">
-    <swiper-slide *ngFor="let image of images">
-      <img [src]="image">
-    </swiper-slide>
-  </swiper-container>
+      (slidechange)="swiperSlideChanged($event)"
+      [loop]="true"
+      [pagination]="true">
+      <swiper-slide *ngFor="let image of images">
+        <img [src]="image">
+      </swiper-slide>
+    </swiper-container>
   </ion-card>
-  <br>
 
+  <!-- Sección de imágenes -->
+  <div class="flex overflow-x-auto scrollbar-hide">
+    <div class="flex items-stretch p-4 gap-3">
+      <div class="flex h-full flex-1 flex-col gap-4 rounded-lg min-w-60">
+        <div
+          class="w-full bg-center bg-no-repeat aspect-square bg-cover rounded-xl flex flex-col"
+          style="background-image: url('https://cdn.usegalileo.ai/sdxl10/18822606-bd10-40a2-8656-d89a347c2a41.png');"
+        ></div>
+      </div>
+      <div class="flex h-full flex-1 flex-col gap-4 rounded-lg min-w-60">
+        <div
+          class="w-full bg-center bg-no-repeat aspect-square bg-cover rounded-xl flex flex-col"
+          style="background-image: url('https://cdn.usegalileo.ai/stability/7d36a3e7-5a09-4e4a-8a73-e843675682f7.png');"
+        ></div>
+      </div>
+      <div class="flex h-full flex-1 flex-col gap-4 rounded-lg min-w-60">
+        <div
+          class="w-full bg-center bg-no-repeat aspect-square bg-cover rounded-xl flex flex-col"
+          style="background-image: url('https://cdn.usegalileo.ai/stability/864ba6f4-d80a-4812-ab07-847fa6e88b64.png');"
+        ></div>
+      </div>
+    </div>
+  </div>
 
-  <!-- Contenedor de las tarjetas de entrada y salida -->
-<div class="card-container">
+  <!-- Texto adicional centrado -->
+  <p class="text-primary text-base font-normal leading-normal pb-3 pt-1 px-4 text-center">
+    Es {{ hora }} del Miércoles, {{ fecha }}
+  </p>
 
-  <ion-card id="entrada" style="background: #40ff00c6;">
-    <ion-card-header>
-      <ion-card-title>ENTRADA</ion-card-title>
-      <ion-card-subtitle>Entrada tarjetero digital</ion-card-subtitle>
-    </ion-card-header>
-    <ion-button routerLink="/lockscreen" fill="clear">PIN</ion-button>
-  </ion-card>
-<br>
-  <ion-card id="salida" style="background:#ae0c0c;">
-    <ion-card-header>
-      <ion-card-title>SALIDA</ion-card-title>
-      <ion-card-subtitle>Salida tarjetero digital</ion-card-subtitle>
-    </ion-card-header>
-    <ion-button routerLink="/lockscreen" fill="clear">PIN</ion-button>
-  </ion-card>
-</div>
+  <div class="button-container">
+    <!-- Botón Entrada con color Danger -->
+    <ion-button color="success" class="button-success" routerLink="/lockscreen">
+      <span class="truncate">Entrada</span>
+    </ion-button>
+    
+    <!-- Botón Otra Acción con color Success -->
+    <ion-button color="danger" class="button-danger" routerLink="/lockscreen">
+      <span class="truncate">Salida</span>
+    </ion-button>
+  </div>
+  
 
+  <!-- Tarjetas con información (2 juntas y 1 al final) -->
+  <div class="flex justify-center mt-4">
+    <div class="grid grid-cols-2 gap-4 max-w-[480px] px-4 py-3">
+      <ion-card class="bg-card text-card-foreground p-4 rounded-xl">
+        <h3 class="text-primary text-lg font-bold mb-2">Horas Trabajadas</h3>
+        <p class="text-primary text-base font-normal">120 horas</p>
+      </ion-card>
+      <ion-card class="bg-card text-card-foreground p-4 rounded-xl">
+        <h3 class="text-primary text-lg font-bold mb-2">Días Asistidos</h3>
+        <p class="text-primary text-base font-normal">20 días</p>
+      </ion-card>
+    </div>
+    <div class="flex justify-center px-4 py-3">
+      <ion-card class="bg-card text-card-foreground p-4 rounded-xl w-full">
+        <h3 class="text-primary text-lg font-bold mb-2">Ausencias</h3>
+        <p class="text-primary text-base font-normal">2 días</p>
+      </ion-card>
+    </div>
+  </div>
 
 </ion-content>
-

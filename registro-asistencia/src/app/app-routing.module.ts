@@ -38,6 +38,14 @@ const routes: Routes = [
     path: 'adminpanel',
     loadChildren: () => import('./adminpanel/adminpanel.module').then( m => m.AdminpanelPageModule)
   },
+  {
+    path: 'perfilusuario',
+    loadChildren: () => import('./perfilusuario/perfilusuario.module').then( m => m.PerfilusuarioPageModule)
+  },
+  {
+    path: 'reporteadmin',
+    loadChildren: () => import('./reporteadmin/reporteadmin.module').then( m => m.ReporteadminPageModule)
+  },
 
 
 

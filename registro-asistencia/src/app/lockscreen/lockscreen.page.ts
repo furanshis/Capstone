@@ -13,6 +13,10 @@ export class LockscreenPage {
   numbers: string[] = ['1', '2', '3', '4', '5', '6', '7', '8', '9'];
   pinDots: boolean[] = [false, false, false, false]; // Estado de los círculos
 
+  goBack() {
+    window.history.back();
+  }
+
   constructor(
     private pinService: PinService,
     private router: Router,
