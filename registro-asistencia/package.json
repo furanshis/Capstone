@@ -31,6 +31,7 @@
     "@capacitor/status-bar": "6.0.1",
     "@codetrix-studio/capacitor-google-auth": "^3.4.0-rc.4",
     "@ionic/angular": "^8.3.2",
+    "@swimlane/ngx-datatable": "^20.1.0",
     "angular": "^1.8.3",
     "angularfire2": "^5.4.2",
     "capacitor": "^0.5.6",
