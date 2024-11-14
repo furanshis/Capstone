@@ -27,4 +27,11 @@ export class AsistenciaserviceService {
 
     return this.http.post<Asistencia>(`${this.apiUrl}/asistencia`, attendance);
   }
+
+  marcarSalida(id: number): Observable<Asistencia>{
+    const now = new Date();
+
+    const hora_salida = now.toTimeString().split(' ')[0],
+    return this.http.patch<Asistencia>(`${this.apiUrl}/asistencia`, id/'salida')
+  }
 }

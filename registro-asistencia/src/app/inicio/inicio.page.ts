@@ -18,7 +18,7 @@ export class InicioPage implements OnInit {
   private timeInterval: any;
 
   // TODO: Replace with actual Firebase UID
-  private currentUserid = 1;
+  private currentUserid = 4;
 
 
   images=[
