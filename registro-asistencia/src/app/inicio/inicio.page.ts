@@ -15,10 +15,12 @@ export class InicioPage implements OnInit {
   successMessage = '';
   errorMessage = '';
   currentTime = new Date();
+  pin: string = "1312";
   private timeInterval: any;
 
   // TODO: Replace with actual Firebase UID
   private currentUserid = 4;
+  currentUserUid: string = "0ofEtCqRcgY7lOx78RzouYfBCyh2"
 
 
   images=[
@@ -56,22 +58,34 @@ export class InicioPage implements OnInit {
   }
 
 
-  registerAttendance() {
+  async registerAttendance() {
+    
     this.isLoading = true;
     this.successMessage = '';
     this.errorMessage = '';
 
-    this.asistenciaService.createAttendance(this.currentUserid).subscribe({
-      next: (response) => {
+    //validar pin
+    this.asistenciaService.validarPin(this.currentUserUid, this.pin).subscribe(async (esValido) => {
+      if (esValido) {
+        this.asistenciaService.createAttendance(this.currentUserid).subscribe( async (response) => {
+            this.isLoading = false;
+            this.successMessage = `Asistencia registrada exitosamente a las ${response.hora_entrada}`;
+          },
+          async (error) => {
+            this.isLoading = false;
+            this.errorMessage = 'Error al registrar la asistencia. Por favor intente nuevamente.';
+            console.error('Error registering attendance:', error);
+          }
+        );
+      } else {
         this.isLoading = false;
-        this.successMessage = `Asistencia registrada exitosamente a las ${response.hora_entrada}`;
-      },
-      error: (error) => {
-        this.isLoading = false;
-        this.errorMessage = 'Error al registrar la asistencia. Por favor intente nuevamente.';
-        console.error('Error registering attendance:', error);
+        this.successMessage = `El pin ingresado no es correcto, por favor ingrese su pin`;
+        console.log('error')
       }
-    });
+      
+    })
+
+    
   }
 
 

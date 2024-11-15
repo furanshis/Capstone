@@ -1,5 +1,5 @@
 import { InjectRepository } from '@nestjs/typeorm';
-import { Injectable } from '@nestjs/common';
+import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { Repository } from 'typeorm';
 import { Empleados } from './empleados.entity';
 @Injectable()
@@ -51,6 +51,17 @@ export class EmpleadosService {
   // Obtener todos los empleados
   async getAllEmpleados(): Promise<Empleados[]> {
     return this.empleadosRepository.find();
+  }
+
+  // Método para validar el PIN del empleado
+  async validatePin(uid: string, pin: string): Promise<boolean> {
+    const empleado = await this.getEmpleadoByUid(uid);
+
+    if (empleado.pin !== pin) {
+      throw new UnauthorizedException('PIN incorrecto');
+    }
+
+    return true;
   }
 
 }

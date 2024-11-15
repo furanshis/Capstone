@@ -30,6 +30,9 @@ export class Empleados {
     @Column({type: 'time with time zone', nullable: true})
     horario_salida_real: string;
 
+    @Column()
+    pin: string;
+
     
 
     @ManyToOne(() => Departamento, (departamento) => departamento.id_departamento)
@@ -39,5 +42,7 @@ export class Empleados {
     @ManyToOne(() => Supervisor, (supervisor) => supervisor.id_supervisor)
     @JoinColumn({name: 'supervisor_id'})
     supervisor: Supervisor;
+
+
 
 }

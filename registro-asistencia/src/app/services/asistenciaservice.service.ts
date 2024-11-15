@@ -1,7 +1,8 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { HttpClient, HttpErrorResponse } from '@angular/common/http';
+import { Observable, of, throwError } from 'rxjs';
 import { Asistencia } from '../interfaces/models';
+import { catchError, switchMap } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root'
@@ -31,7 +32,15 @@ export class AsistenciaserviceService {
   marcarSalida(id: number): Observable<Asistencia>{
     const now = new Date();
 
-    const hora_salida = now.toTimeString().split(' ')[0],
-    return this.http.patch<Asistencia>(`${this.apiUrl}/asistencia`, id/'salida')
+    const hora_salida = now.toTimeString().split(' ')[0]
+    return this.http.patch<Asistencia>(`${this.apiUrl}/asistencia/${id}/salida`, {})
+  }
+
+  // Validar PIN
+  validarPin(uid: string, pin: string): Observable<boolean> {
+    return this.http.post<{ valido: boolean }>(`${this.apiUrl}/empleados/validate-pin`, { uid, pin }).pipe(
+      switchMap(response => (response.valido ? of(true) : throwError(() => new Error('PIN inválido')))),
+      catchError(error => throwError(() => error))
+    );
   }
 }

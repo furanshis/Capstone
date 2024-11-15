@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Param, ParseIntPipe } from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, ParseIntPipe, HttpCode, HttpStatus } from '@nestjs/common';
 import { EmpleadosService } from './empleados.service';
 import { Empleados } from './empleados.entity';
 
@@ -26,4 +26,21 @@ export class EmpleadosController {
     async getAllEmpleados(): Promise<Empleados[]> {
         return this.empleadosService.getAllEmpleados();
     }
+
+    // Endpoint para validar el PIN del empleado
+  @Post('validate-pin')
+  @HttpCode(HttpStatus.OK)
+  async validatePin(
+    @Body('uid') uid: string,
+    @Body('pin') pin: string,
+  ): Promise<{ message: string }> {
+    const isValid = await this.empleadosService.validatePin(uid, pin);
+
+    if (isValid) {
+      return { message: 'PIN validado exitosamente' };
+    } else {
+      return { message: 'PIN incorrecto' };
+    }
+  }
+    
 }
