@@ -54,14 +54,18 @@ export class EmpleadosService {
   }
 
   // Método para validar el PIN del empleado
-  async validatePin(uid: string, pin: string): Promise<boolean> {
-    const empleado = await this.getEmpleadoByUid(uid);
-
-    if (empleado.pin !== pin) {
-      throw new UnauthorizedException('PIN incorrecto');
+  async validarPin(uid: string, pin: string): Promise<boolean> {
+    // Aquí deberías tener la lógica para verificar el PIN.
+    // Por ejemplo, buscar el usuario por UID y comparar el PIN ingresado.
+    
+    const empleado = await this.empleadosRepository.findOne({ where: { uid_empleado: uid } });
+    console.log(empleado)
+    if (!empleado) {
+      return false; // Usuario no encontrado
     }
 
-    return true;
+    // Compara el PIN ingresado con el PIN almacenado
+    return empleado.pin === pin; // Retorna true si es válido, false si no lo es
   }
 
 }

@@ -65,23 +65,29 @@ export class InicioPage implements OnInit {
     this.errorMessage = '';
 
     //validar pin
-    this.asistenciaService.validarPin(this.currentUserUid, this.pin).subscribe(async (esValido) => {
-      if (esValido) {
-        this.asistenciaService.createAttendance(this.currentUserid).subscribe( async (response) => {
-            this.isLoading = false;
-            this.successMessage = `Asistencia registrada exitosamente a las ${response.hora_entrada}`;
-          },
-          async (error) => {
-            this.isLoading = false;
-            this.errorMessage = 'Error al registrar la asistencia. Por favor intente nuevamente.';
-            console.error('Error registering attendance:', error);
-          }
-        );
-      } else {
-        this.isLoading = false;
-        this.successMessage = `El pin ingresado no es correcto, por favor ingrese su pin`;
-        console.log('error')
-      }
+    this.asistenciaService.validarPin('0ofEtCqRcgY7lOx78RzouYfBCyh2', '1312').subscribe({ 
+      next: (esValido) => {
+        if (esValido === true) {
+          this.asistenciaService.createAttendance(this.currentUserid).subscribe( async (response) => {
+              this.isLoading = false;
+              this.successMessage = `Asistencia registrada exitosamente a las ${response.hora_entrada}`;
+            },
+            async (error) => {
+              this.isLoading = false;
+              this.errorMessage = 'Error al registrar la asistencia. Por favor intente nuevamente.';
+              console.error('Error registering attendance:', error);
+            }
+          );
+        } else {
+          this.isLoading = false;
+          this.successMessage = `El pin ingresado no es correcto, por favor ingrese su pin`;
+          console.log('error')
+        }
+      },
+      error: () => {
+        this.successMessage = 'Error al validar el PIN';
+      },
+      
       
     })
 

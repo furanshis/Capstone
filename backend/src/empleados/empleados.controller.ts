@@ -28,19 +28,10 @@ export class EmpleadosController {
     }
 
     // Endpoint para validar el PIN del empleado
-  @Post('validate-pin')
-  @HttpCode(HttpStatus.OK)
-  async validatePin(
-    @Body('uid') uid: string,
-    @Body('pin') pin: string,
-  ): Promise<{ message: string }> {
-    const isValid = await this.empleadosService.validatePin(uid, pin);
-
-    if (isValid) {
-      return { message: 'PIN validado exitosamente' };
-    } else {
-      return { message: 'PIN incorrecto' };
+    @Post('validar-pin')
+    async validarPin(@Body() body: { uid: string; pin: string }): Promise<boolean> {
+      const { uid, pin } = body;
+      return this.empleadosService.validarPin(uid, pin); // Retorna true o false
     }
-  }
     
 }

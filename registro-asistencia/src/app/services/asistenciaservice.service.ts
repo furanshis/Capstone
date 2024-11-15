@@ -38,9 +38,7 @@ export class AsistenciaserviceService {
 
   // Validar PIN
   validarPin(uid: string, pin: string): Observable<boolean> {
-    return this.http.post<{ valido: boolean }>(`${this.apiUrl}/empleados/validate-pin`, { uid, pin }).pipe(
-      switchMap(response => (response.valido ? of(true) : throwError(() => new Error('PIN inválido')))),
-      catchError(error => throwError(() => error))
-    );
+    const data = { uid, pin };
+    return this.http.post<boolean>(`${this.apiUrl}/empleados/validar-pin`, data);
   }
 }
