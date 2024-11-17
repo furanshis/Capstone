@@ -1,5 +1,6 @@
 import { NgModule } from '@angular/core';
 import { PreloadAllModules, RouterModule, Routes } from '@angular/router';
+import { AuthGuard } from './guards/auth.guard';
 
 const routes: Routes = [
   {
@@ -17,7 +18,8 @@ const routes: Routes = [
   },
   {
     path: 'inicio',
-    loadChildren: () => import('./inicio/inicio.module').then( m => m.InicioPageModule)
+    loadChildren: () => import('./inicio/inicio.module').then( m => m.InicioPageModule),
+    canActivate: [AuthGuard] // Protege también esta ruta
   },
   {
     path: 'lockscreen',
@@ -34,7 +36,8 @@ const routes: Routes = [
   {
     path: 'manage-employees',
     loadChildren: () => import('./manage-employees/manage-employees.module').then( m => m.ManageEmployeesPageModule)
-  },  {
+  },
+  {
     path: 'adminpanel',
     loadChildren: () => import('./adminpanel/adminpanel.module').then( m => m.AdminpanelPageModule)
   },
