@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { AngularFireAuth } from '@angular/fire/compat/auth';
 import { AngularFirestore } from '@angular/fire/compat/firestore';
 import { ToastController } from '@ionic/angular';
+import { EmpleadoService } from '../services/empleado.service';
 
 @Component({
   selector: 'app-admin',
@@ -16,6 +17,8 @@ export class AdminPage {
   secondName: string = '';
   lastName: string = '';
   secondLastName: string = '';
+  horario_entrada_real: string = '';
+  horario_salida_real: string = '';
   goBack(){
     window.history.back();
   }
@@ -24,25 +27,33 @@ export class AdminPage {
   constructor(
     private afAuth: AngularFireAuth,
     private firestore: AngularFirestore,
-    private toastController: ToastController
+    private toastController: ToastController,
+    private empleadoService: EmpleadoService
   ) {}
 
-  async addEmployee() {
+  async addEmployee(): Promise<any> {  
     try {
       // Crear usuario en Firebase Authentication
       const userCredential = await this.afAuth.createUserWithEmailAndPassword(this.email, this.password);
       const uid = userCredential.user?.uid;
 
       if (uid) {
-        // Guardar datos adicionales en Firestore
-        await this.firestore.collection('Empleados').doc(uid).set({
-          correo: this.email,
-          primer_nombre: this.firstName,
+        
+        const empleado = {
+          uid_empleado: uid,
+          primero_nombre: this.firstName,
           segundo_nombre: this.secondName,
           apellido_paterno: this.lastName,
           apellido_materno: this.secondLastName,
-          //role: 'employee',  // Rol por defecto como empleado
-        });
+          horario_entrada_real: this.horario_entrada_real,
+          horario_salida_real: this.horario_salida_real,
+        }
+        try {
+          await this.empleadoService.crearEmpleado(empleado)
+        } catch (error) {
+          console.error('Error al agregar empleado:', error);
+          return error
+        }
 
         // Mostrar notificación de éxito
         const toast = await this.toastController.create({
@@ -59,6 +70,8 @@ export class AdminPage {
         this.secondName = ''; 
         this.lastName = '';
         this.secondLastName = '';
+        this.horario_entrada_real = '';
+        this.horario_salida_real = '';
       }
     } catch (error) {
       console.error('Error al agregar empleado:', error);
