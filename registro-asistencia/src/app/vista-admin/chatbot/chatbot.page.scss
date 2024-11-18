@@ -1,0 +1,83 @@
+/* Estilos para el header */
+.header-row {
+    align-items: center;
+    padding: 10px;
+  }
+  
+  .logo-placeholder {
+    font-size: 40px; /* Tamaño del ícono */
+    color: #4a148c; /* Morado oscuro */
+  }
+  
+  .header-title {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: #4a148c; /* Morado oscuro para el título */
+    margin-left: 15px;
+    text-align: left;
+  }
+
+  .chat-container {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    padding: 1rem;
+    background-color: #f5f5f5;
+  }
+  
+
+  .messages {
+    flex-grow: 1;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    padding: 0.5rem;
+  }
+  
+  .message-user {
+    align-self: flex-end;
+    background-color: #007bff;
+    color: white;
+    padding: 0.5rem 1rem;
+    border-radius: 15px;
+    border-bottom-right-radius: 0;
+    max-width: 70%;
+    word-wrap: break-word;
+  }
+  
+  .message-bot {
+    align-self: flex-start;
+    background-color: #e0e0e0;
+    color: black;
+    padding: 0.5rem 1rem;
+    border-radius: 15px;
+    border-bottom-left-radius: 0;
+    max-width: 70%;
+    word-wrap: break-word;
+  }
+  
+  .input-container {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 0;
+    background-color: #ffffff;
+    border-top: 1px solid #ccc;
+  }
+  
+  ion-input {
+    flex-grow: 1;
+    background: #f9f9f9;
+    border-radius: 8px;
+    padding: 0.5rem;
+  }
+  
+  ion-button {
+    border-radius: 50%;
+    height: 2.5rem;
+    width: 2.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }

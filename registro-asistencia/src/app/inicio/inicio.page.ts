@@ -65,10 +65,19 @@ export class InicioPage implements OnInit {
     this.errorMessage = '';
 
     //validar pin
-    this.asistenciaService.validarPin('0ofEtCqRcgY7lOx78RzouYfBCyh2', '1312').subscribe({ 
-      next: (esValido) => {
+    this.asistenciaService.validarPin('0ofEtCqRcgY7lOx78RzouYfBCyh2', '1311').subscribe({ 
+      next: async (esValido) => {
+
+
         if (esValido === true) {
-          this.asistenciaService.createAttendance(this.currentUserid).subscribe( async (response) => {
+          const resultado = await this.asistenciaService.verificarAsistencia(this.currentUserUid).toPromise();  
+          if (resultado) {
+            console.log(resultado)
+            this.isLoading = false;
+            this.errorMessage = 'Ya tienes una asistencia registrada para hoy';
+          }
+          else {
+            this.asistenciaService.createAttendance(this.currentUserid).subscribe( async (response) => {
               this.isLoading = false;
               this.successMessage = `Asistencia registrada exitosamente a las ${response.hora_entrada}`;
             },
@@ -78,9 +87,12 @@ export class InicioPage implements OnInit {
               console.error('Error registering attendance:', error);
             }
           );
+
+          }
+          
         } else {
           this.isLoading = false;
-          this.successMessage = `El pin ingresado no es correcto, por favor ingrese su pin`;
+          this.errorMessage = `El pin ingresado no es correcto, por favor ingrese su pin`;
           console.log('error')
         }
       },

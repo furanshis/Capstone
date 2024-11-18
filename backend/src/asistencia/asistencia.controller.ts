@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Param, ParseIntPipe, Patch } from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, ParseIntPipe, Patch, HttpException, HttpStatus } from '@nestjs/common';
 import { AsistenciaService } from './asistencia.service';
 import { Asistencia } from './asistencia.entity';
 import { CreateAsistenciaDto } from './create-asistencia.dto';
@@ -20,6 +20,16 @@ export class AsistenciaController {
     @Param('empleadoId', ParseIntPipe) empleadoId: number,
   ): Promise<Asistencia[]> {
     return this.asistenciaService.getAsistenciasByEmpleadoId(empleadoId);
+  }
+
+  @Get('verificar/:uid')
+  async verificarAsistencia(@Param('uid') uid: string): Promise<any> {
+    try {
+      const existe = await this.asistenciaService.verificarAsistencia(uid);
+      return { registrada: existe }; // Retorna si ya está registrada
+    } catch (error) {
+      throw new HttpException(error.message, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
   }
 
   // Crear una nueva asistencia

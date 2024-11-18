@@ -1,0 +1,45 @@
+<ion-header>
+  <ion-toolbar color="light">
+    <ion-row class="header-row">
+      <ion-col size="auto">
+        <!-- Ícono como placeholder -->
+        <ion-icon name="business" class="logo-placeholder"></ion-icon>
+      </ion-col>
+      <ion-col>
+        <!-- Título del header -->
+        <h1 class="header-title">Panel de Administración</h1>
+      </ion-col>
+    </ion-row>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <div class="admin-container">
+    <!-- Menú lateral -->
+    <div class="menu">
+      <ion-list lines="none">
+        <ion-item routerLink="/vista-admin/crear-usuario" routerLinkActive="active">
+          <ion-icon slot="start" name="person-add-outline"></ion-icon>
+          <ion-label>Agregar Empleado</ion-label>
+        </ion-item>
+        <ion-item routerLink="/admin/view-employees" routerLinkActive="active">
+          <ion-icon slot="start" name="people-outline"></ion-icon>
+          <ion-label>Ver Empleados</ion-label>
+        </ion-item>
+        <ion-item routerLink="/admin/attendance-record" routerLinkActive="active">
+          <ion-icon slot="start" name="calendar-outline"></ion-icon>
+          <ion-label>Registro de Asistencia</ion-label>
+        </ion-item>
+        <ion-item routerLink="/admin/chatbot" routerLinkActive="active">
+          <ion-icon slot="start" name="chatbubbles-outline"></ion-icon>
+          <ion-label>Chatbot</ion-label>
+        </ion-item>
+      </ion-list>
+    </div>
+
+    <!-- Área principal -->
+    <div class="content">
+      <router-outlet></router-outlet>
+    </div>
+  </div>
+</ion-content>

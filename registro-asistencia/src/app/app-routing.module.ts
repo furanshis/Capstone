@@ -48,7 +48,15 @@ const routes: Routes = [
   {
     path: 'reporteadmin',
     loadChildren: () => import('./reporteadmin/reporteadmin.module').then( m => m.ReporteadminPageModule)
+  },  {
+    path: 'vista-admin',
+    loadChildren: () => import('./vista-admin/vista-admin.module').then( m => m.VistaAdminPageModule)
   },
+  {
+    path: 'ver-empleado',
+    loadChildren: () => import('./ver-empleado/ver-empleado.module').then( m => m.VerEmpleadoPageModule)
+  },
+
 
 
 

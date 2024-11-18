@@ -1,0 +1,44 @@
+<ion-header>
+  <ion-toolbar color="light">
+    <ion-row class="header-row">
+      <ion-col size="auto">
+        <!-- Ícono como placeholder -->
+        <ion-icon name="business" class="logo-placeholder"></ion-icon>
+      </ion-col>
+      <ion-col>
+        <!-- Título del header -->
+        <h1 class="header-title">Chatbot</h1>
+      </ion-col>
+    </ion-row>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-card>
+    <ion-card-content>
+      <!-- Mensajes del chat -->
+      <div class="chat-container">
+        <div class="messages">
+          <div
+            *ngFor="let message of messages"
+            [ngClass]="{ 'message-user': message.sender === 'user', 'message-bot': message.sender === 'bot' }"
+          >
+            {{ message.content }}
+          </div>
+        </div>
+      </div>
+    </ion-card-content>
+  </ion-card>
+
+  <!-- Barra de entrada -->
+  <ion-footer>
+    <ion-item lines="none">
+      <ion-input 
+        placeholder="Escribe tu mensaje..."
+        [(ngModel)]="userMessage"
+        (keyup.enter)="sendMessage()">
+      </ion-input>
+      <ion-button slot="end" color="primary" (click)="sendMessage()">Enviar</ion-button>
+    </ion-item>
+  </ion-footer>
+</ion-content>

@@ -14,7 +14,6 @@ export interface Asistencia {
   }
   
   export interface Empleado {
-    id_empleado: number;
     uid_empleado: string;
     primer_nombre: string;
     segundo_nombre: string;
@@ -22,6 +21,7 @@ export interface Asistencia {
     apellido_materno: string;
     hora_entrada_real: string;
     hora_salida_real: string;
+    pin: StaticRange;
   }
 
   interface Supervisor {

@@ -1,15 +1,16 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { AngularFireAuth } from '@angular/fire/compat/auth';
 import { AngularFirestore } from '@angular/fire/compat/firestore';
 import { ToastController } from '@ionic/angular';
-import { EmpleadoService } from '../services/empleado.service';
+import { EmpleadoService } from '../../services/empleado.service';
 
 @Component({
-  selector: 'app-admin',
-  templateUrl: './admin.page.html',
-  styleUrls: ['./admin.page.scss'],
+  selector: 'app-crear-usuario',
+  templateUrl: './crear-usuario.page.html',
+  styleUrls: ['./crear-usuario.page.scss'],
 })
-export class AdminPage {
+export class CrearUsuarioPage  {
+
 
   email: string = '';
   password: string = '';
@@ -54,7 +55,7 @@ export class AdminPage {
           departamento: this.departamento,
           pin: this.pin,
         }
-        console.log(empleado)
+        console.log(empleado.horario_entrada_real)
         
         await this.empleadoService.crearEmpleado(empleado).toPromise();
         console.log()
@@ -90,5 +91,5 @@ export class AdminPage {
       toast.present();
     }
   }
-}
 
+}

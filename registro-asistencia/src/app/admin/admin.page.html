@@ -32,27 +32,35 @@
         </ion-item>
         <ion-item>
           <ion-label position="floating">Primer Nombre</ion-label>
-          <ion-input [(ngModel)]="firstName" name="firstName" required></ion-input>
+          <ion-input [(ngModel)]="primer_nombre" name="firstName" required></ion-input>
         </ion-item>
         <ion-item>
           <ion-label position="floating">Segundo Nombre</ion-label>
-          <ion-input [(ngModel)]="secondName" name="secondName"></ion-input>
+          <ion-input [(ngModel)]="segundo_nombre" name="secondName"></ion-input>
         </ion-item>
         <ion-item>
           <ion-label position="floating">Apellido Paterno</ion-label>
-          <ion-input [(ngModel)]="lastName" name="lastName" required></ion-input>
+          <ion-input [(ngModel)]="apellido_paterno" name="lastName" required></ion-input>
         </ion-item>
         <ion-item>
           <ion-label position="floating">Apellido Materno</ion-label>
-          <ion-input [(ngModel)]="secondLastName" name="secondLastName"></ion-input>
+          <ion-input [(ngModel)]="apellido_materno" name="secondLastName"></ion-input>
         </ion-item>
         <ion-item>
           <ion-label position="floating">Horario entrada</ion-label>
-          <ion-input [(ngModel)]="horario_entrada_real" name="secondLastName"></ion-input>
+          <ion-input [(ngModel)]="horario_entrada_real" name="horarioEntrada"></ion-input>
         </ion-item>
         <ion-item>
           <ion-label position="floating">Horario Salida</ion-label>
-          <ion-input [(ngModel)]="horario_salida_real" name="secondLastName"></ion-input>
+          <ion-input [(ngModel)]="horario_salida_real" name="horarioSalida"></ion-input>
+        </ion-item>
+        <ion-item>
+          <ion-label position="floating">Supervisor</ion-label>
+          <ion-input [(ngModel)]="supervisor" name="supervisor"></ion-input>
+        </ion-item>
+        <ion-item>
+          <ion-label position="floating">Departamento</ion-label>
+          <ion-input [(ngModel)]="departamento" name="departamento"></ion-input>
         </ion-item>
         <ion-button expand="full" type="submit">Agregar Empleado</ion-button>
       </form>

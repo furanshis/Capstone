@@ -1,0 +1,139 @@
+<ion-header>
+  <ion-toolbar color="light">
+    <ion-row class="header-row">
+      <ion-col size="auto">
+        <!-- Ícono como placeholder -->
+        <ion-icon name="business" class="logo-placeholder"></ion-icon>
+      </ion-col>
+      <ion-col>
+        <!-- Título del header -->
+        <h1 class="header-title">Panel de Administración</h1>
+      </ion-col>
+    </ion-row>
+  </ion-toolbar>
+</ion-header>
+
+
+
+<ion-content>
+  <div class="form-container">
+    <h1>Agregar Empleado</h1>
+    <form (submit)="addEmployee()" #employeeForm="ngForm">
+      <!-- Correo Electrónico -->
+      <ion-item>
+        <ion-label position="floating">Correo Electrónico</ion-label>
+        <ion-input
+          type="email"
+          required
+          [(ngModel)]="email"
+          name="email"
+        ></ion-input>
+      </ion-item>
+
+      <!-- Contraseña -->
+      <ion-item>
+        <ion-label position="floating">Contraseña</ion-label>
+        <ion-input
+          type="password"
+          required
+          [(ngModel)]="password"
+          name="password"
+        ></ion-input>
+      </ion-item>
+
+      <!-- Primer Nombre -->
+      <ion-item>
+        <ion-label position="floating">Primer Nombre</ion-label>
+        <ion-input
+          type="text"
+          required
+          [(ngModel)]="primer_nombre"
+          name="primer_nombre"
+        ></ion-input>
+      </ion-item>
+
+      <!-- Segundo Nombre -->
+      <ion-item>
+        <ion-label position="floating">Segundo Nombre</ion-label>
+        <ion-input
+          type="text"
+          [(ngModel)]="segundo_nombre"
+          name="segundo_nombre"
+        ></ion-input>
+      </ion-item>
+
+      <!-- Apellido Paterno -->
+      <ion-item>
+        <ion-label position="floating">Apellido Paterno</ion-label>
+        <ion-input
+          type="text"
+          required
+          [(ngModel)]="apellido_paterno"
+          name="apellido_paterno"
+        ></ion-input>
+      </ion-item>
+
+      <!-- Apellido Materno -->
+      <ion-item>
+        <ion-label position="floating">Apellido Materno</ion-label>
+        <ion-input
+          type="text"
+          [(ngModel)]="apellido_materno"
+          name="apellido_materno"
+        ></ion-input>
+      </ion-item>
+
+      <!-- Horario de Entrada -->
+      <ion-item>
+        <ion-label position="stacked">Horario de Entrada</ion-label>
+        <ion-input
+          type="time"
+          [(ngModel)]="horario_entrada_real"
+          name="horario_entrada_real"
+          required
+          placeholder="HH:mm"
+        ></ion-input>
+      </ion-item>
+
+      <!-- Horario de Salida -->
+      <ion-item>
+        <ion-label position="stacked">Horario de Salida</ion-label>
+        <ion-input
+          type="time"
+          [(ngModel)]="horario_salida_real"
+          name="horario_salida_real"
+          required
+          placeholder="HH:mm"
+        ></ion-input>
+      </ion-item>
+
+      <!-- Supervisor -->
+      <ion-item>
+        <ion-label position="floating">ID Supervisor</ion-label>
+        <ion-input
+          type="number"
+          required
+          [(ngModel)]="supervisor"
+          name="supervisor"
+        ></ion-input>
+      </ion-item>
+
+      <!-- Departamento -->
+      <ion-item>
+        <ion-label position="floating">ID Departamento</ion-label>
+        <ion-input
+          type="number"
+          required
+          [(ngModel)]="departamento"
+          name="departamento"
+        ></ion-input>
+      </ion-item>
+
+      <!-- Botones -->
+      <div class="button-container">
+        <ion-button expand="block" type="submit" color="secondary">Agregar Empleado</ion-button>
+        <ion-button expand="block" fill="outline" color="danger" (click)="goBack()">Cancelar</ion-button>
+      </div>
+    </form>
+  </div>
+</ion-content>

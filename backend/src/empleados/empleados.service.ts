@@ -15,6 +15,7 @@ export class EmpleadosService {
   async createEmpleado(data: Partial<Empleados>): Promise<Empleados> {
     try {
       const empleado = this.empleadosRepository.create(data);
+      console.log(empleado)
       return this.empleadosRepository.save(empleado);
     } catch (error) {
       return error;

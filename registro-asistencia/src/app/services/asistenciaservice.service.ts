@@ -41,4 +41,9 @@ export class AsistenciaserviceService {
     const data = { uid, pin };
     return this.http.post<boolean>(`${this.apiUrl}/empleados/validar-pin`, data);
   }
+
+  // Verificar si existe una asistencia para el empleado hoy
+  verificarAsistencia(uid: string): Observable<any> {
+    return this.http.get(`${this.apiUrl}/asistencia/verificar/${uid}`);
+  }
 }
