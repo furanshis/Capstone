@@ -52,6 +52,19 @@
         &.active {
           background-color: #cdb5cd; /* Fondo morado claro para la opción activa */
         }
+        
+        &.logout {
+          background-color: #d9534f; // Rojo suave para distinguir la acción
+          color: #ffffff;
+      
+          ion-icon {
+            color: #ffffff; // Ícono blanco
+          }
+      
+          &:hover {
+            background-color: #c9302c; // Rojo más oscuro al pasar el mouse
+          }
+        }
       }
     }
   
@@ -61,4 +74,6 @@
       overflow-y: auto;
     }
   }
+
+
   

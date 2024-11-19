@@ -1,6 +1,7 @@
 import { NgModule } from '@angular/core';
 import { PreloadAllModules, RouterModule, Routes } from '@angular/router';
 import { AuthGuard } from './guards/auth.guard';
+import { AuthAdmin } from './guards/admin.guard';
 
 const routes: Routes = [
   {
@@ -48,13 +49,19 @@ const routes: Routes = [
   {
     path: 'reporteadmin',
     loadChildren: () => import('./reporteadmin/reporteadmin.module').then( m => m.ReporteadminPageModule)
-  },  {
+  },
+  {
     path: 'vista-admin',
-    loadChildren: () => import('./vista-admin/vista-admin.module').then( m => m.VistaAdminPageModule)
+    loadChildren: () => import('./vista-admin/vista-admin.module').then( m => m.VistaAdminPageModule),
+    canActivate: [AuthAdmin]
   },
   {
     path: 'ver-empleado',
     loadChildren: () => import('./ver-empleado/ver-empleado.module').then( m => m.VerEmpleadoPageModule)
+  },
+  {
+    path: 'login-admin',
+    loadChildren: () => import('./login-admin/login-admin.module').then( m => m.LoginAdminPageModule)
   },
 
 

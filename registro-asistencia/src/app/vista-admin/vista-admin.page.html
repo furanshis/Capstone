@@ -30,9 +30,13 @@
           <ion-icon slot="start" name="calendar-outline"></ion-icon>
           <ion-label>Registro de Asistencia</ion-label>
         </ion-item>
-        <ion-item routerLink="/admin/chatbot" routerLinkActive="active">
+        <ion-item routerLink="/vista-admin/chatbot" routerLinkActive="active">
           <ion-icon slot="start" name="chatbubbles-outline"></ion-icon>
           <ion-label>Chatbot</ion-label>
+        </ion-item>
+        <ion-item (click)="logout()">
+          <ion-icon slot="start" name="log-out-outline"></ion-icon>
+          <ion-label>Cerrar Sesión</ion-label>
         </ion-item>
       </ion-list>
     </div>

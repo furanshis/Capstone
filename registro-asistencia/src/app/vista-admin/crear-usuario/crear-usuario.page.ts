@@ -39,6 +39,16 @@ export class CrearUsuarioPage  {
     try {
       // Crear usuario en Firebase Authentication
       const userCredential = await this.afAuth.createUserWithEmailAndPassword(this.email, this.password);
+
+      const user = userCredential.user;
+
+      if (user) {
+        
+        const displayName = `${this.primer_nombre} ${this.apellido_paterno}`;
+        
+        await user.updateProfile({ displayName: displayName });
+        
+      }
       const uid = userCredential.user?.uid;
 
       if (uid) {

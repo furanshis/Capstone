@@ -8,7 +8,7 @@ import { catchError, switchMap } from 'rxjs/operators';
   providedIn: 'root'
 })
 export class AsistenciaserviceService {
-  private apiUrl = 'http://localhost:3000';
+  private apiUrl = 'http://25.55.64.170:3000';
 
   constructor(private http: HttpClient) { }
 
