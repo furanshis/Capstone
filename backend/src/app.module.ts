@@ -1,5 +1,6 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { ConfigModule } from '@nestjs/config';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { EmpleadosModule } from './empleados/empleados.module';
@@ -12,10 +13,11 @@ import { Supervisor } from './supervisor/supervisor.entity';
 import { Departamento } from './departamento/departamento.entity';
 import { ReporteAsistenciaModule } from './reporte_asistencia/reporte_asistencia.module';
 import { ReporteAsistencia } from './reporte_asistencia/reporte_asistencia.entity';
+import { ChatbotAdminModule } from './chatbot-admin/chatbot-admin.module';
 
 
 @Module({
-  imports: [
+  imports: [ ConfigModule.forRoot({cache:true}), 
     TypeOrmModule.forRoot({
       type: 'postgres',
       host: 'localhost',
@@ -34,7 +36,8 @@ import { ReporteAsistencia } from './reporte_asistencia/reporte_asistencia.entit
     SupervisorModule,
     DepartamentoModule,
     AsistenciaModule,
-    ReporteAsistenciaModule
+    ReporteAsistenciaModule,
+    ChatbotAdminModule
   ],
   controllers: [AppController],
   providers: [AppService],
