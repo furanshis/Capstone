@@ -38,7 +38,7 @@ export class ReporteadminPage implements OnInit {
   constructor(private http: HttpClient) {}
 
   ngOnInit() {
-    this.http.get<Reporte[]>('http://localhost:3000/reporte-asistencia').subscribe(
+    this.http.get<Reporte[]>('http://25.55.64.170:3000/reporte-asistencia').subscribe(
       data => this.reportes = data
     );
     

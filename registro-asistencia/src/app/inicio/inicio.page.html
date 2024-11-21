@@ -81,6 +81,7 @@
     </div>
   </div>
 
+
   
 
   <div class="button-container">
@@ -89,7 +90,7 @@
       size="large"
       expand="block"
       [disabled]="isLoading"
-      (click)="authenticateAndRegisterAttendance()"
+      (click)="registerAttendance()"
     >
       <ion-icon slot="start" name="finger-print-outline"></ion-icon>
       {{ isLoading ? 'Registrando...' : 'Registrar Asistencia' }}
@@ -108,13 +109,6 @@
     <ion-label>{{ errorMessage }}</ion-label>
   </ion-item>
           
-    
-    <div class="button-container">
-      <!-- Botón Otra Acción con color Success -->
-      <ion-button color="danger" class="button-danger" routerLink="/lockscreen">
-        <span class="truncate">Salida</span>
-      </ion-button>
-    </div>
   
   
 

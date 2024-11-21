@@ -53,3 +53,61 @@
 .button-success:hover {
   background-color: #0da350; /* Fondo ligeramente más oscuro al pasar el mouse */
 }
+
+
+.pin-container {
+  max-width: 400px;
+  margin: 2rem auto;
+  padding: 1rem;
+}
+
+.pin-display {
+  margin: 2rem 0;
+}
+
+.pin-dots {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+  margin: 2rem 0;
+}
+
+.pin-dot {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  border: 2px solid var(--ion-color-medium);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  .dot {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: transparent;
+    transition: background-color 0.2s;
+
+    &.filled {
+      background: var(--ion-color-primary);
+    }
+  }
+}
+
+.numpad-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.5rem;
+  margin-bottom: 2rem;
+
+  ion-button {
+    height: 60px;
+    font-size: 1.5rem;
+    --padding-start: 0;
+    --padding-end: 0;
+  }
+}
+
+.submit-button {
+  margin-top: 2rem;
+}

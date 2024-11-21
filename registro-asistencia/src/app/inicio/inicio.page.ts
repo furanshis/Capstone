@@ -1,4 +1,5 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core'
+import { AlertController, LoadingController, ToastController } from '@ionic/angular';;
 import { AngularFireAuth } from '@angular/fire/compat/auth';
 import { AngularFirestore } from '@angular/fire/compat/firestore';
 import { FingerprintAIO } from '@ionic-native/fingerprint-aio/ngx';
@@ -16,14 +17,13 @@ export class InicioPage implements OnInit {
   successMessage = '';
   errorMessage = '';
   currentTime = new Date();
-  pin: string = "1312";
+  pin: string = "1234";
   private timeInterval: any;
   userName: string = 'Usuario';
 
   // TODO: Replace with actual Firebase UID
   private currentUserid = 4;
-  currentUserUid: string = "0ofEtCqRcgY7lOx78RzouYfBCyh2"
-
+  uid: string = '';
 
   images=[
     '/assets/imginicio/navegacion-gps-establece-iconos_24877-51664.jpg',
@@ -39,6 +39,10 @@ export class InicioPage implements OnInit {
   hora: string;
 
   constructor(
+
+    private toastCtrl: ToastController,
+    private alertController: AlertController,
+    private loadingCtrl: LoadingController,
     private fingerprintAIO: FingerprintAIO,
     private asistenciaService: AsistenciaserviceService,
     private afAuth: AngularFireAuth,
@@ -60,83 +64,94 @@ export class InicioPage implements OnInit {
     }
   }
 
-  // Método para validar la autenticación biométrica
-  async authenticateAndRegisterAttendance() {
-    try {
-      this.isLoading = true;
+  
 
-      const result = await this.fingerprintAIO.show({
-        title: 'Autenticación',
-        description: 'Por favor, valide su identidad',
-        fallbackButtonTitle: 'Usar PIN',
-        disableBackup: false, // permitir el uso de PIN si la biometría falla
-      });
-
-      // Si la autenticación biométrica es exitosa, registrar la asistencia
-      if (result && result.withFingerprint) {
-        this.registerAttendance(); // Llama a la función de registrar la asistencia
-      } else {
-        this.errorMessage = 'Autenticación fallida. Intenta nuevamente.';
-      }
-    } catch (error) {
-      console.error('Error de autenticación biométrica', error);
-      // Maneja el error (por ejemplo, si la biometría no está disponible o es rechazada)
-    }finally {
-      this.isLoading = false;
+  onNumberClick(number: number): void {
+    if (this.pin.length < 4) {
+      this.pin += number.toString();
     }
   }
 
+  onDelete(): void {
+    this.pin = this.pin.slice(0, -1);
+  }
 
-  async registerAttendance() {
-    
+  onClear(): void {
+    this.pin = '';
+  }
+  
+
+
+  async registerAttendance(): Promise<void> {
+    if (this.pin.length !== 4) {
+      await this.showToast('Por favor ingrese un PIN de 4 dígitos', 'warning');
+      return;
+    }
+
+    if (!this.currentUserid) {
+      await this.showToast('Error: Usuario no identificado', 'danger');
+      return;
+    }
+
     this.isLoading = true;
     this.successMessage = '';
     this.errorMessage = '';
 
-    //validar pin
-    this.asistenciaService.validarPin('0ofEtCqRcgY7lOx78RzouYfBCyh2', '1311').subscribe({ 
+    const loading = await this.loadingCtrl.create({
+      message: 'Validando PIN...',
+      spinner: 'circular'
+    });
+    await loading.present();
+
+    this.asistenciaService.validarPin(this.uid, this.pin).subscribe({
       next: async (esValido) => {
-
-
         if (esValido === true) {
-          const resultado = await this.asistenciaService.verificarAsistencia(this.currentUserUid).toPromise();  
-          if (resultado) {
-            console.log(resultado)
-            this.isLoading = false;
-            this.errorMessage = 'Ya tienes una asistencia registrada para hoy';
-          }
-          else {
-            this.asistenciaService.createAttendance(this.currentUserid).subscribe( async (response) => {
-              this.isLoading = false;
-              this.successMessage = `Asistencia registrada exitosamente a las ${response.hora_entrada}`;
-            },
-            async (error) => {
-              this.isLoading = false;
-              this.errorMessage = 'Error al registrar la asistencia. Por favor intente nuevamente.';
-              console.error('Error registering attendance:', error);
-            }
-          );
-
-          }
+          const resultado = await this.asistenciaService.verificarAsistencia(this.uid).toPromise();
           
+          if (resultado) {
+            this.errorMessage = 'Ya tienes una asistencia registrada para hoy';
+            await this.showToast(this.errorMessage, 'warning');
+          } else {
+            this.asistenciaService.createAttendance(this.uid).subscribe(
+              async (response) => {
+                this.successMessage = `Asistencia registrada exitosamente a las ${response.hora_entrada}`;
+                await this.showToast(this.successMessage, 'success');
+                this.pin = '';
+              },
+              async (error) => {
+                this.errorMessage = 'Error al registrar la asistencia. Por favor intente nuevamente.';
+                await this.showToast(this.errorMessage, 'danger');
+                console.error('Error registering attendance:', error);
+              }
+            );
+          }
         } else {
-          this.isLoading = false;
-          this.errorMessage = `El pin ingresado no es correcto, por favor ingrese su pin`;
-          console.log('error')
+          this.errorMessage = 'El pin ingresado no es correcto, por favor ingrese su pin';
+          await this.showToast(this.errorMessage, 'danger');
         }
       },
-      error: () => {
-        this.successMessage = 'Error al validar el PIN';
+      error: async () => {
+        this.errorMessage = 'Error al validar el PIN';
+        await this.showToast(this.errorMessage, 'danger');
       },
-      
-      
-    })
-
-    
+      complete: async () => {
+        this.isLoading = false;
+        await loading.dismiss();
+      }
+    });
   }
+  
 
 
-
+  private async showToast(message: string, color: string): Promise<void> {
+    const toast = await this.toastCtrl.create({
+      message,
+      duration: 3000,
+      color,
+      position: 'top'
+    });
+    await toast.present();
+  }
 
 
 
@@ -164,6 +179,17 @@ export class InicioPage implements OnInit {
       this.userName = user.displayName || 'Usuario';
     }
     this.empleado = localStorage.getItem('Empleados')!;
+
+    this.afAuth.authState.subscribe((user) => {
+      if (user) {
+        this.uid = user.uid; // UID del usuario autenticado
+        this.userName = user.displayName || 'Empleado'; // Opcional: nombre del usuario
+        console.log('UID:', this.uid);
+      } else {
+        // Manejo en caso de que no haya usuario autenticado
+        this.uid = '';
+      }
+    });
     
   }
 
