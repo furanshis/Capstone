@@ -81,3 +81,13 @@
     align-items: center;
     justify-content: center;
   }
+
+  .file-upload-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  
+  ion-button span {
+    margin-left: 8px;
+  }

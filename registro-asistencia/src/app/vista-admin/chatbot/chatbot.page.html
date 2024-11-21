@@ -20,9 +20,11 @@
       <div class="chat-container">
         <div class="messages">
           <div
-            *ngFor="let message of messages"
-            [ngClass]="{ 'message-user': message.sender === 'user', 'message-bot': message.sender === 'bot' }"
+          *ngFor="let message of messages"
+          [ngClass]="{ 'message-user': message.sender === 'user', 'message-bot': message.sender === 'bot' }"
+          [innerHTML]="formatMessage(message.content)">
           >
+          
             {{ message.content }}
           </div>
         </div>
@@ -39,6 +41,14 @@
         (keyup.enter)="sendMessage()">
       </ion-input>
       <ion-button slot="end" color="primary" (click)="sendMessage()">Enviar</ion-button>
+    </ion-item>
+    <!-- Cargar archivo -->
+    <ion-item lines="none" class="file-upload-item">
+      <ion-button color="secondary" expand="full" (click)="fileInput.click()">
+        <ion-icon slot="start" name="attach"></ion-icon>
+        <span>Cargar archivo</span>
+      </ion-button>
+      <input #fileInput type="file" (change)="onFileSelected($event)" multiple hidden />
     </ion-item>
   </ion-footer>
 </ion-content>

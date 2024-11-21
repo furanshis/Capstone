@@ -1,6 +1,8 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { RouteReuseStrategy } from '@angular/router';
+import { FingerprintAIO } from '@ionic-native/fingerprint-aio/ngx';
+
 
 import { HttpClientModule } from '@angular/common/http';
 
@@ -21,7 +23,7 @@ import { ManageEmployeesPageModule } from './manage-employees/manage-employees.m
   declarations: [AppComponent
   ],
   imports: [BrowserModule,ManageEmployeesPageModule ,IonicModule.forRoot(), AppRoutingModule, AngularFireModule.initializeApp(environment.firebaseConfig), AngularFireAuthModule, AngularFirestoreModule, HttpClientModule],
-  providers: [{ provide: RouteReuseStrategy, useClass: IonicRouteStrategy }],
+  providers: [FingerprintAIO,{ provide: RouteReuseStrategy, useClass: IonicRouteStrategy }],
   bootstrap: [AppComponent],
 })
 export class AppModule {}

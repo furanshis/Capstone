@@ -37,7 +37,7 @@ export class ChatbotAdminService {
         console.log('Performing web search for:', query);
         const json = await getJson({
           engine: "google",
-          api_key: this.configService.get<string>('SERPAPI_KEY'),
+          api_key: process.env.SERPAPI_KEY,
           q: query,
           location: "Chile",
         });

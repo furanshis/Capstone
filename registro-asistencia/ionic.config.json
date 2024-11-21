@@ -1,7 +1,8 @@
 {
   "name": "registro-asistencia",
   "integrations": {
-    "capacitor": {}
+    "capacitor": {},
+    "cordova": {}
   },
   "type": "angular"
 }

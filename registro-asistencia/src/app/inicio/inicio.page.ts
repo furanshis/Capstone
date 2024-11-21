@@ -1,6 +1,7 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { AngularFireAuth } from '@angular/fire/compat/auth';
 import { AngularFirestore } from '@angular/fire/compat/firestore';
+import { FingerprintAIO } from '@ionic-native/fingerprint-aio/ngx';
 import { Router } from '@angular/router';
 import { IonicModule } from '@ionic/angular';
 import { AsistenciaserviceService } from '../services/asistenciaservice.service';
@@ -17,6 +18,7 @@ export class InicioPage implements OnInit {
   currentTime = new Date();
   pin: string = "1312";
   private timeInterval: any;
+  userName: string = 'Usuario';
 
   // TODO: Replace with actual Firebase UID
   private currentUserid = 4;
@@ -37,6 +39,7 @@ export class InicioPage implements OnInit {
   hora: string;
 
   constructor(
+    private fingerprintAIO: FingerprintAIO,
     private asistenciaService: AsistenciaserviceService,
     private afAuth: AngularFireAuth,
     private firestore: AngularFirestore,
@@ -54,6 +57,32 @@ export class InicioPage implements OnInit {
   ngOnDestroy() {
     if (this.timeInterval) {
       clearInterval(this.timeInterval);
+    }
+  }
+
+  // Método para validar la autenticación biométrica
+  async authenticateAndRegisterAttendance() {
+    try {
+      this.isLoading = true;
+
+      const result = await this.fingerprintAIO.show({
+        title: 'Autenticación',
+        description: 'Por favor, valide su identidad',
+        fallbackButtonTitle: 'Usar PIN',
+        disableBackup: false, // permitir el uso de PIN si la biometría falla
+      });
+
+      // Si la autenticación biométrica es exitosa, registrar la asistencia
+      if (result && result.withFingerprint) {
+        this.registerAttendance(); // Llama a la función de registrar la asistencia
+      } else {
+        this.errorMessage = 'Autenticación fallida. Intenta nuevamente.';
+      }
+    } catch (error) {
+      console.error('Error de autenticación biométrica', error);
+      // Maneja el error (por ejemplo, si la biometría no está disponible o es rechazada)
+    }finally {
+      this.isLoading = false;
     }
   }
 
@@ -128,7 +157,12 @@ export class InicioPage implements OnInit {
   }
 
 
-  ngOnInit(){  
+  async ngOnInit(){  
+    // Obtener el nombre del usuario desde Firebase Authentication
+    const user = await this.afAuth.currentUser;
+    if (user) {
+      this.userName = user.displayName || 'Usuario';
+    }
     this.empleado = localStorage.getItem('Empleados')!;
     
   }

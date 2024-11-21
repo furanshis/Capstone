@@ -41,7 +41,7 @@
     </ion-label>
   </ion-item>
   <h2 class="text-primary text-[26px] font-bold leading-tight tracking-[-0.015em] px-4 pb-3 pt-5 text-center">
-    Bienvenido, Mateo
+    Bienvenido, {{ userName }}
     
   </h2>
 
@@ -87,17 +87,16 @@
   </p>
 
   <div class="button-container">
-    <!-- Botón Entrada con color Danger -->
+    <!-- Botón de Registro de Asistencia -->
     <ion-button
-                size="large"
-                expand="block"
-                [disabled]="isLoading"
-                (click)="registerAttendance()"
-              >
-              <ion-icon slot="start" name="finger-print-outline"></ion-icon>
-              {{ isLoading ? 'Registrando...' : 'Registrar Asistencia' }}
-            </ion-button>
-      
+      size="large"
+      expand="block"
+      [disabled]="isLoading"
+      (click)="authenticateAndRegisterAttendance()"
+    >
+      <ion-icon slot="start" name="finger-print-outline"></ion-icon>
+      {{ isLoading ? 'Registrando...' : 'Registrar Asistencia' }}
+    </ion-button>
   </div>
 
   <!-- Success Message -->
