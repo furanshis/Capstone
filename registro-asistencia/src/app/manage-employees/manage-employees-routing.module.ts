@@ -5,7 +5,7 @@ import { ManageEmployeesPage } from './manage-employees.page';
 
 const routes: Routes = [
   {
-    path: '',
+    path: 'empleados',
     component: ManageEmployeesPage
   }
 ];
