@@ -79,10 +79,41 @@ export class InicioPage implements OnInit {
   onClear(): void {
     this.pin = '';
   }
+
+  async checkFingerprint(): Promise<boolean> {
+    try {
+      const available = await this.fingerprintAIO.isAvailable();
+      if (!available) {
+        await this.showToast('Autenticación biométrica no disponible en este dispositivo', 'warning');
+        return false;
+      }
+
+      await this.fingerprintAIO.show({
+        title: 'Verificación de Huella Digital',
+        subtitle: 'Coloque su huella digital para registrar asistencia',
+        description: 'Por favor autentique su identidad',
+        fallbackButtonTitle: 'Usar PIN',
+        disableBackup: false,
+      });
+
+      return true;
+    } catch (error) {
+      console.error('Error en autenticación biométrica:', error);
+      await this.showToast('Error en la autenticación biométrica', 'danger');
+      return false;
+    }
+  }
   
 
 
   async registerAttendance(): Promise<void> {
+
+    // First validate fingerprint
+    const fingerprintValid = await this.checkFingerprint();
+    if (!fingerprintValid) {
+      return;
+    }
+    
     if (this.pin.length !== 4) {
       await this.showToast('Por favor ingrese un PIN de 4 dígitos', 'warning');
       return;

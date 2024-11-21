@@ -17,7 +17,7 @@ dependencies {
     implementation project(':codetrix-studio-capacitor-google-auth')
 
 }
-
+apply from: "../../node_modules/cordova-plugin-fingerprint-aio/src/android/build.gradle"
 
 if (hasProperty('postBuildExtras')) {
   postBuildExtras()

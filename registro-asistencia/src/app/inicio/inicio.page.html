@@ -84,8 +84,7 @@
 
   
 
-  <div class="button-container">
-    <!-- Botón de Registro de Asistencia -->
+  <div class="button-container px-4">
     <ion-button
       size="large"
       expand="block"
@@ -97,18 +96,16 @@
     </ion-button>
   </div>
 
-  <!-- Success Message -->
+  <!-- Messages -->
   <ion-item *ngIf="successMessage" lines="none" color="success">
     <ion-icon name="checkmark-circle" slot="start"></ion-icon>
     <ion-label>{{ successMessage }}</ion-label>
   </ion-item>
 
-  <!-- Error Message -->
   <ion-item *ngIf="errorMessage" lines="none" color="danger">
     <ion-icon name="alert-circle" slot="start"></ion-icon>
     <ion-label>{{ errorMessage }}</ion-label>
   </ion-item>
-          
   
   
 
