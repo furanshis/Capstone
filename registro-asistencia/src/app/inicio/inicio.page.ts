@@ -6,6 +6,7 @@ import { FingerprintAIO } from '@ionic-native/fingerprint-aio/ngx';
 import { Router } from '@angular/router';
 import { IonicModule } from '@ionic/angular';
 import { AsistenciaserviceService } from '../services/asistenciaservice.service';
+import { Geolocation } from '@capacitor/geolocation';
 
 @Component({
   selector: 'app-inicio',
@@ -21,6 +22,14 @@ export class InicioPage implements OnInit {
   private timeInterval: any;
   userName: string = 'Usuario';
 
+  
+ // Coordenadas del recinto de trabajo
+ workplaceCoords = {
+  lat: -33.060258, // Reemplaza con la latitud real
+  lng: -71.449084  // Reemplaza con la longitud real
+};
+toleranceRadius = 3000; // Radio de 1 km en metros
+
   // TODO: Replace with actual Firebase UID
   private currentUserid = 4;
   uid: string = '';
@@ -32,7 +41,9 @@ export class InicioPage implements OnInit {
     '/assets/imginicio/servicio-eficiente-logistica-entrega-exhibido-almacen-cajas-despertador_209190-272449.jpg'
   ]
 
-  empleado = ""
+  empleado = "";
+
+  message: string | null = null;
 
 
   fecha: string;
@@ -61,6 +72,55 @@ export class InicioPage implements OnInit {
   ngOnDestroy() {
     if (this.timeInterval) {
       clearInterval(this.timeInterval);
+    }
+  }
+
+  
+  // Función para calcular la distancia usando la fórmula de Haversine
+  calculateDistance(lat1: number, lon1: number, lat2: number, lon2: number): number {
+    const R = 6371e3; // Radio de la Tierra en metros
+    const φ1 = lat1 * (Math.PI / 180);
+    const φ2 = lat2 * (Math.PI / 180);
+    const Δφ = (lat2 - lat1) * (Math.PI / 180);
+    const Δλ = (lon2 - lon1) * (Math.PI / 180);
+
+    const a = Math.sin(Δφ / 2) * Math.sin(Δφ / 2) +
+              Math.cos(φ1) * Math.cos(φ2) *
+              Math.sin(Δλ / 2) * Math.sin(Δλ / 2);
+    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+
+    return R * c; // Retorna la distancia en metros
+  }
+
+  // Función para obtener la ubicación actual del usuario
+  async getCurrentPosition() {
+    const position = await Geolocation.getCurrentPosition();
+    console.log('Accuracy:', position.coords.accuracy);
+    return {
+      lat: position.coords.latitude,
+      lng: position.coords.longitude
+    };
+  }
+
+  // Función para verificar si el usuario está dentro del área permitida
+  async checkAttendance() {
+    try {
+      const userCoords = await this.getCurrentPosition();
+      const distance = this.calculateDistance(
+        userCoords.lat,
+        userCoords.lng,
+        this.workplaceCoords.lat,
+        this.workplaceCoords.lng
+      );
+
+      if (distance <= this.toleranceRadius) {
+        this.message = 'Estás dentro del área permitida. Puedes registrar tu asistencia.';
+      } else {
+        this.message = 'Estás fuera del área permitida. No puedes registrar tu asistencia.';
+      }
+    } catch (error) {
+      this.message = 'Error al obtener tu ubicación. Verifica los permisos de geolocalización.';
+      console.error('Error:', error);
     }
   }
 

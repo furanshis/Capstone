@@ -81,6 +81,12 @@
     </div>
   </div>
 
+  <ion-content class="ion-padding">
+    <ion-button expand="block" (click)="checkAttendance()">Verificar Ubicación</ion-button>
+    <ion-text *ngIf="message" color="primary">
+      <p>{{ message }}</p>
+    </ion-text>
+  </ion-content>
 
   
 
