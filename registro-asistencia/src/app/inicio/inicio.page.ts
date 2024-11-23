@@ -28,7 +28,7 @@ export class InicioPage implements OnInit {
   lat: -33.060258, // Reemplaza con la latitud real
   lng: -71.449084  // Reemplaza con la longitud real
 };
-toleranceRadius = 3000; // Radio de 1 km en metros
+toleranceRadius = 3000; // Radio de 3 km en metros
 
   // TODO: Replace with actual Firebase UID
   private currentUserid = 4;
@@ -119,7 +119,7 @@ toleranceRadius = 3000; // Radio de 1 km en metros
         this.message = 'Estás fuera del área permitida. No puedes registrar tu asistencia.';
       }
     } catch (error) {
-      this.message = 'Error al obtener tu ubicación. Verifica los permisos de geolocalización.';
+      this.message = 'Error al obtener tu ubicación. Verifica los permisos de geolocalización del dispositivo.';
       console.error('Error:', error);
     }
   }
