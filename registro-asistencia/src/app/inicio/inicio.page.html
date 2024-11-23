@@ -5,29 +5,23 @@
     </ion-toolbar>
   </ion-header>
 
-  
-
   <ion-content>
     <ion-list>
       <!-- Menú de opciones -->
       <ion-item routerLink="/perfilusuario">Perfil</ion-item>
-      <ion-item routerLink="/change-pin">Cambiar PIN</ion-item>
       <ion-button (click)="logout()">Cerrar Sesión</ion-button>
     </ion-list>
   </ion-content>
 </ion-menu>
 
-
 <!-- Contenido principal -->
 <ion-content id="main-content" class="bg-background text-primary-foreground" style="font-family: Manrope, 'Noto Sans', sans-serif;">
   <ion-header>
     <ion-toolbar>
-      
       <p style="color: black;" slot="end">Fecha: {{ fecha }} <br> Hora: {{ hora }}</p>
       <ion-buttons slot="start">
         <ion-menu-button></ion-menu-button> <!-- Botón para abrir el menú -->
       </ion-buttons>
-      
     </ion-toolbar>
   </ion-header>
 
@@ -36,12 +30,10 @@
     <ion-avatar slot="start">
       <img src="assets/time-location-control-icon-simple-work-clock-vector.jpg" alt="">
     </ion-avatar>
-    <ion-label>
-    </ion-label>
+    <ion-label></ion-label>
   </ion-item>
   <h2 class="text-primary text-[26px] font-bold leading-tight tracking-[-0.015em] px-4 pb-3 pt-5 text-center">
     Bienvenido, {{ userName }}
-    
   </h2>
 
   <!-- Carrusel de imágenes -->
@@ -80,14 +72,7 @@
     </div>
   </div>
 
-  <ion-content class="ion-padding">
-    <ion-button expand="block" (click)="checkAttendance()">Verificar Ubicación</ion-button>
-    <ion-text *ngIf="message" color="primary">
-      <p>{{ message }}</p>
-    </ion-text>
-  </ion-content>
-
-  
+ 
 
   <div class="button-container px-4">
     <ion-button
@@ -111,8 +96,6 @@
     <ion-icon name="alert-circle" slot="start"></ion-icon>
     <ion-label>{{ errorMessage }}</ion-label>
   </ion-item>
-  
-  
 
   <!-- Tarjetas con información (2 juntas y 1 al final) -->
   <div class="flex justify-center mt-4">
@@ -133,5 +116,4 @@
       </ion-card>
     </div>
   </div>
-
 </ion-content>

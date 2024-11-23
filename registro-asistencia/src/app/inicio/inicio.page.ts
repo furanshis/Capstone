@@ -28,7 +28,7 @@ export class InicioPage implements OnInit {
   lat: -33.060258, // Reemplaza con la latitud real
   lng: -71.449084  // Reemplaza con la longitud real
 };
-toleranceRadius = 3000; // Radio de 3 km en metros
+toleranceRadius = 3000; // Radio de 1 km en metros
 
   // TODO: Replace with actual Firebase UID
   private currentUserid = 4;
@@ -93,17 +93,23 @@ toleranceRadius = 3000; // Radio de 3 km en metros
   }
 
   // Función para obtener la ubicación actual del usuario
-  async getCurrentPosition() {
-    const position = await Geolocation.getCurrentPosition();
-    console.log('Accuracy:', position.coords.accuracy);
-    return {
-      lat: position.coords.latitude,
-      lng: position.coords.longitude
-    };
+  async getCurrentPosition(): Promise<{ lat: number; lng: number }> {
+    try {
+      const position = await Geolocation.getCurrentPosition();
+      console.log('Accuracy:', position.coords.accuracy);
+
+      return {
+        lat: position.coords.latitude,
+        lng: position.coords.longitude
+      };
+    } catch (error) {
+      console.error('Error obteniendo posición:', error);
+      throw new Error('No se pudo obtener la ubicación actual.');
+    }
   }
 
   // Función para verificar si el usuario está dentro del área permitida
-  async checkAttendance() {
+  async checkLocation(): Promise<boolean>  {
     try {
       const userCoords = await this.getCurrentPosition();
       const distance = this.calculateDistance(
@@ -115,12 +121,15 @@ toleranceRadius = 3000; // Radio de 3 km en metros
 
       if (distance <= this.toleranceRadius) {
         this.message = 'Estás dentro del área permitida. Puedes registrar tu asistencia.';
+        return true;
       } else {
         this.message = 'Estás fuera del área permitida. No puedes registrar tu asistencia.';
+        return false;
       }
     } catch (error) {
-      this.message = 'Error al obtener tu ubicación. Verifica los permisos de geolocalización del dispositivo.';
+      this.message = 'Error al obtener tu ubicación. Verifica los permisos de geolocalización.';
       console.error('Error:', error);
+      return false;
     }
   }
 
@@ -142,9 +151,9 @@ toleranceRadius = 3000; // Radio de 3 km en metros
 
   async checkFingerprint(): Promise<boolean> {
     try {
-      const available = await this.fingerprintAIO.isAvailable();
-      if (!available) {
-        await this.showToast('Autenticación biométrica no disponible en este dispositivo', 'warning');
+      const isBiometryAvailable = await this.fingerprintAIO.isAvailable();
+      if (!isBiometryAvailable) {
+        await this.showToast('Autenticación biométrica no disponible en este dispositivo.', 'warning');
         return false;
       }
 
@@ -152,84 +161,66 @@ toleranceRadius = 3000; // Radio de 3 km en metros
         title: 'Verificación de Huella Digital',
         subtitle: 'Coloque su huella digital para registrar asistencia',
         description: 'Por favor autentique su identidad',
-        fallbackButtonTitle: 'Usar PIN',
-        disableBackup: false,
+        disableBackup: true, // Se desactiva la opción de PIN
       });
 
       return true;
     } catch (error) {
-      console.error('Error en autenticación biométrica:', error);
-      await this.showToast('Error en la autenticación biométrica', 'danger');
+      console.error('Error en la autenticación biométrica:', error);
+      await this.showToast('Error en la autenticación biométrica.', 'danger');
       return false;
     }
   }
-  
-
 
   async registerAttendance(): Promise<void> {
-
-    // First validate fingerprint
     const fingerprintValid = await this.checkFingerprint();
     if (!fingerprintValid) {
       return;
     }
-    
-    if (this.pin.length !== 4) {
-      await this.showToast('Por favor ingrese un PIN de 4 dígitos', 'warning');
+
+    if (!this.uid) {
+      await this.showToast('Error: Usuario no identificado.', 'danger');
       return;
     }
 
-    if (!this.currentUserid) {
-      await this.showToast('Error: Usuario no identificado', 'danger');
+    // Verificar geolocalización
+    const isInAllowedArea = await this.checkLocation();
+    if (!isInAllowedArea) {
+      this.errorMessage = 'No puedes registrar asistencia fuera del área permitida.';
+      this.isLoading = false;
       return;
     }
-
-    this.isLoading = true;
-    this.successMessage = '';
-    this.errorMessage = '';
 
     const loading = await this.loadingCtrl.create({
-      message: 'Validando PIN...',
-      spinner: 'circular'
+      message: 'Registrando asistencia...',
+      spinner: 'circular',
     });
     await loading.present();
 
-    this.asistenciaService.validarPin(this.uid, this.pin).subscribe({
-      next: async (esValido) => {
-        if (esValido === true) {
-          const resultado = await this.asistenciaService.verificarAsistencia(this.uid).toPromise();
-          
-          if (resultado) {
-            this.errorMessage = 'Ya tienes una asistencia registrada para hoy';
-            await this.showToast(this.errorMessage, 'warning');
-          } else {
-            this.asistenciaService.createAttendance(this.uid).subscribe(
-              async (response) => {
-                this.successMessage = `Asistencia registrada exitosamente a las ${response.hora_entrada}`;
-                await this.showToast(this.successMessage, 'success');
-                this.pin = '';
-              },
-              async (error) => {
-                this.errorMessage = 'Error al registrar la asistencia. Por favor intente nuevamente.';
-                await this.showToast(this.errorMessage, 'danger');
-                console.error('Error registering attendance:', error);
-              }
-            );
+    try {
+      const resultado = await this.asistenciaService.verificarAsistencia(this.uid).toPromise();
+      if (resultado) {
+        this.errorMessage = 'Ya tienes una asistencia registrada para hoy.';
+        await this.showToast(this.errorMessage, 'warning');
+      } else {
+        this.asistenciaService.createAttendance(this.uid).subscribe(
+          async (response) => {
+            this.successMessage = `Asistencia registrada exitosamente a las ${response.hora_entrada}`;
+            await this.showToast(this.successMessage, 'success');
+          },
+          async () => {
+            this.errorMessage = 'Error al registrar la asistencia. Por favor intente nuevamente.';
+            await this.showToast(this.errorMessage, 'danger');
           }
-        } else {
-          this.errorMessage = 'El pin ingresado no es correcto, por favor ingrese su pin';
-          await this.showToast(this.errorMessage, 'danger');
-        }
-      },
-      error: async () => {
-        this.errorMessage = 'Error al validar el PIN';
-        await this.showToast(this.errorMessage, 'danger');
-      },
-      complete: async () => {
-        this.isLoading = false;
-        await loading.dismiss();
+        );
       }
-    });
+    } catch (error) {
+      this.errorMessage = 'Error al validar la asistencia. Inténtelo de nuevo.';
+      console.error(error);
+      await this.showToast(this.errorMessage, 'danger');
+    } finally {
+      await loading.dismiss();
+    }
   }
   
 
