@@ -1,7 +1,7 @@
 import { Entity, PrimaryGeneratedColumn, Column, OneToMany, ManyToOne, JoinTable, JoinColumn } from 'typeorm';
-import { Asistencia } from 'src/asistencia/asistencia.entity';
-import { Departamento } from 'src/departamento/departamento.entity';
-import { Supervisor } from 'src/supervisor/supervisor.entity';
+import {Departamento} from '../departamento/departamento.entity';
+import {Supervisor} from '../supervisor/supervisor.entity';
+import { Asistencia } from '../asistencia/asistencia.entity';
 
 @Entity()
 export class Empleados {

@@ -1,6 +1,6 @@
 // departamento.entity.ts
 import { Entity, Column, PrimaryGeneratedColumn, OneToMany, JoinTable } from 'typeorm';
-import { Empleados } from 'src/empleados/empleados.entity';
+import { Empleados } from '../empleados/empleados.entity';
 
 @Entity()
 export class Departamento {

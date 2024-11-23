@@ -1,6 +1,6 @@
 import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn, CreateDateColumn, UpdateDateColumn } from 'typeorm';
-import { Asistencia } from 'src/asistencia/asistencia.entity';
-import { Supervisor } from 'src/supervisor/supervisor.entity';
+import { Asistencia } from '../asistencia/asistencia.entity';
+import { Supervisor } from '../supervisor/supervisor.entity';
 
 
 @Entity('reporte_asistencia')

@@ -1,6 +1,6 @@
 // supervisor.entity.ts
 import { Entity, Column, PrimaryGeneratedColumn, OneToMany } from 'typeorm';
-import { Empleados } from 'src/empleados/empleados.entity';
+import { Empleados } from '../empleados/empleados.entity';
 
 @Entity()
 export class Supervisor {

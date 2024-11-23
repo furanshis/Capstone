@@ -4,7 +4,7 @@ import { Asistencia } from './asistencia.entity';
 import { Repository } from 'typeorm';
 import { CreateAsistenciaDto } from './create-asistencia.dto';
 import { UpdateHoraDto } from './update-hora.dto';
-import { Empleados } from 'src/empleados/empleados.entity';
+import { Empleados } from '../empleados/empleados.entity';
 
 @Injectable()
 export class AsistenciaService {
