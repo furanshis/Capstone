@@ -14,6 +14,7 @@ export interface Asistencia {
   }
   
   export interface Empleado {
+    id_empleado: number;
     uid_empleado: string;
     primer_nombre: string;
     segundo_nombre: string;

@@ -1,0 +1,16 @@
+.container {
+    padding: 16px;
+  }
+  
+  ion-button {
+    margin-right: 8px;
+  }
+  .fade-out {
+    animation: fadeOut 0.5s ease;
+  }
+  
+  @keyframes fadeOut {
+    0% { opacity: 1; }
+    100% { opacity: 0; }
+  }
+  

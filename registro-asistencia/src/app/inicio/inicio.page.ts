@@ -199,10 +199,11 @@ toleranceRadius = 3000; // Radio de 1 km en metros
 
     try {
       const resultado = await this.asistenciaService.verificarAsistencia(this.uid).toPromise();
-      if (resultado) {
+      console.log('Resultado:', resultado);
+      if (resultado === "true") {
         this.errorMessage = 'Ya tienes una asistencia registrada para hoy.';
         await this.showToast(this.errorMessage, 'warning');
-      } else {
+      } else if (resultado === "false") {
         this.asistenciaService.createAttendance(this.uid).subscribe(
           async (response) => {
             this.successMessage = `Asistencia registrada exitosamente a las ${response.hora_entrada}`;
