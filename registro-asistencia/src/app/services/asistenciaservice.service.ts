@@ -8,7 +8,7 @@ import { Asistencia, Empleado } from '../interfaces/models';
   providedIn: 'root'
 })
 export class AsistenciaserviceService {
-  private apiUrl = 'http://25.55.64.170:3000';
+  private apiUrl = 'http://192.168.1.84:3000';
 
   constructor(private http: HttpClient) { }
 
@@ -31,7 +31,7 @@ export class AsistenciaserviceService {
           horas_extras: 0,
           geolocacion: `(40.7128, -74.006)`,
           validacion_biometrica: false,
-          empleado: empleado
+          empleado: 13
         };
 
         console.log(attendance)

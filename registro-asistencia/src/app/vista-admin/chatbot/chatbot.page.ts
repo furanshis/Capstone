@@ -64,7 +64,7 @@ export class ChatbotPage implements OnInit {
     try {
       const response: any = await this.http
         .post(
-          `http://25.55.64.170:3000/chatbot-admin/thread/${this.threadId}/message`,
+          `http://192.168.1.84:3000/chatbot-admin/thread/${this.threadId}/message`,
           formData,
           { headers: new HttpHeaders(), responseType: 'text' }
         )
@@ -90,7 +90,7 @@ export class ChatbotPage implements OnInit {
   async createThread() {
     try {
       const response: any = await this.http
-        .post('http://25.55.64.170:3000/chatbot-admin/thread/create', {}, { responseType: 'text' })
+        .post('http://192.168.1.84:3000/chatbot-admin/thread/create', {}, { responseType: 'text' })
         .toPromise();
       this.threadId = response; // Asignar el threadId retornado.
       console.log('Thread creado:', this.threadId);
