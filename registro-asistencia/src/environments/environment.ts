@@ -11,7 +11,8 @@ firebaseConfig: {
     messagingSenderId: "633821769217",
     appId: "1:633821769217:web:40f21296ad77157b7c5a00",
     measurementId: "G-Z9DS0PFLK7"
-  }
+  },
+  apiUrl: "http://192.168.0.21:3000",
 };
 
 /*
