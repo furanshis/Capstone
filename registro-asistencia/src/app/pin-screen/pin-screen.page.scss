@@ -1,0 +1,56 @@
+
+.pin-container {
+    text-align: center;
+  }
+  
+  .pin-dots {
+    display: flex;
+    justify-content: center;
+    margin: 20px 0;
+  }
+  
+  .dot {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    border: 2px solid #000;
+    margin: 0 10px;
+    font-size: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background-color 0.3s ease;
+  }
+  
+  .filled {
+    background-color: #000; /* Cambia el color de fondo cuando se llena */
+    color: white;
+  }
+  
+  .keyboard {
+    margin-top: 20px;
+  }
+  
+  .keyboard-row {
+    display: flex;
+    justify-content: center;
+    margin: 10px 0;
+  }
+  
+  .key {
+    width: 40px;
+    height: 40px;
+    margin: 5px;
+    text-align: center;
+    font-size: 18px;
+  }
+  
+  .key.special {
+    width: 60px;
+  }
+  
+  .ok {
+    background-color: #4CAF50;
+    color: white;
+  }
+  

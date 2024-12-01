@@ -63,7 +63,11 @@ const routes: Routes = [
   {
     path: 'login-admin',
     loadChildren: () => import('./login-admin/login-admin.module').then( m => m.LoginAdminPageModule)
+  },  {
+    path: 'pin-screen',
+    loadChildren: () => import('./pin-screen/pin-screen.module').then( m => m.PinScreenPageModule)
   },
+
 
 
 

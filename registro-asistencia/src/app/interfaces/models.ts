@@ -42,3 +42,17 @@ export interface Asistencia {
     asistencia: Asistencia;
     supervisor: Supervisor;
   }
+  
+  export interface Asistencia2 {
+    uid: string; // UID del empleado
+    fechaCreacion: Date;
+    fechaSalida?: Date; // Fecha de creación
+    horaEntrada: string; // Hora de entrada
+    horaSalida: string; // Hora de salida (opcional)
+    horasTrabajadas: number; // Horas trabajadas (opcional)
+    validacionBiometrica: boolean; // Validación biométrica
+    horasExtras: number; // Horas extras
+    latitud: number; // Latitud
+    longitud: number; // Longitud
+  }
+  

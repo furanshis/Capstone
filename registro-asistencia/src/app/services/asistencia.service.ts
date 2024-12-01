@@ -8,7 +8,7 @@ import { AutenticacionService } from './autenticacion.service';
   providedIn: 'root'
 })
 export class AsistenciaService {
-  private apiUrl = 'http://192.168.1.84:3000/asistencia';
+  private apiUrl = 'http://192.168.1.85:3000/asistencia';
 
   constructor(private http: HttpClient, private autenticacionService: AutenticacionService) { }
 

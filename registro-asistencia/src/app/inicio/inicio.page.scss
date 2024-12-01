@@ -111,3 +111,23 @@
 .submit-button {
   margin-top: 2rem;
 }
+
+.card-container {
+  display: flex;
+  justify-content: space-between; /* Espacio entre tarjetas */
+  align-items: center;            /* Alinea las tarjetas verticalmente */
+}
+
+#entrada, #salida {
+  width: 48%; /* Ajusta el tamaño de las tarjetas para que se alineen en la misma fila */
+}
+
+
+.button-container-d {
+  display: flex;              /* Alineación en fila */
+  justify-content: space-between; /* Distribuir los botones */
+  align-items: center;        /* Centrar los botones verticalmente */
+  gap: 10px;                  /* Espacio entre los botones */
+  flex-wrap: nowrap;          /* Evitar que los botones se muevan a una nueva línea */
+  padding: 12px;
+}

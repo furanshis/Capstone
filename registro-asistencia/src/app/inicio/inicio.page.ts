@@ -7,6 +7,8 @@ import { Router } from '@angular/router';
 import { IonicModule } from '@ionic/angular';
 import { AsistenciaserviceService } from '../services/asistenciaservice.service';
 import { Geolocation } from '@capacitor/geolocation';
+import { Asistencia2 } from '../interfaces/models';
+import { Observable } from 'rxjs';
 
 @Component({
   selector: 'app-inicio',
@@ -14,24 +16,30 @@ import { Geolocation } from '@capacitor/geolocation';
   styleUrls: ['./inicio.page.scss'],
 })
 export class InicioPage implements OnInit {
+  
   isLoading = false;
   successMessage = '';
   errorMessage = '';
+  succesMessageSalida= '';
+  errorMessageSalida = '';
   currentTime = new Date();
   pin: string = "1234";
   private timeInterval: any;
   userName: string = 'Usuario';
-
+  userLatitude: number = 0;
+  userLongitude: number = 0;
+  asistenciaHoy: Asistencia2 | null = null;
+  fechaHoy: string = new Date().toISOString().split('T')[0];
   
  // Coordenadas del recinto de trabajo
  workplaceCoords = {
   lat: -33.060258, // Reemplaza con la latitud real
   lng: -71.449084  // Reemplaza con la longitud real
 };
-toleranceRadius = 3000; // Radio de 1 km en metros
+toleranceRadius = 5000; // Radio de 1 km en metros
 
   // TODO: Replace with actual Firebase UID
-  private currentUserid = 4;
+  
   uid: string = '';
 
   images=[
@@ -108,10 +116,14 @@ toleranceRadius = 3000; // Radio de 1 km en metros
     }
   }
 
+  
+
   // Función para verificar si el usuario está dentro del área permitida
   async checkLocation(): Promise<boolean>  {
     try {
       const userCoords = await this.getCurrentPosition();
+      this.userLatitude = userCoords.lat;
+      this.userLongitude = userCoords.lng;
       const distance = this.calculateDistance(
         userCoords.lat,
         userCoords.lng,
@@ -121,9 +133,11 @@ toleranceRadius = 3000; // Radio de 1 km en metros
 
       if (distance <= this.toleranceRadius) {
         this.message = 'Estás dentro del área permitida. Puedes registrar tu asistencia.';
+        console.log('Estás dentro del área permitida. Puedes registrar tu asistencia.');
         return true;
       } else {
         this.message = 'Estás fuera del área permitida. No puedes registrar tu asistencia.';
+        console.log('Estás fuera del área permitida. No puedes registrar tu asistencia.');
         return false;
       }
     } catch (error) {
@@ -132,6 +146,20 @@ toleranceRadius = 3000; // Radio de 1 km en metros
       return false;
     }
   }
+
+  // Verificar si el usuario tiene una asistencia registrada para hoy
+  async checkAsistenciaHoy() {
+    const tieneAsistencia = await this.asistenciaService.verificarAsistenciaHoy(this.uid);
+  
+    if (tieneAsistencia) {
+      console.log('Ya existe una asistencia para hoy.');
+      return true
+    } else {
+      console.log('No hay asistencia registrada para hoy.');
+      return false
+      
+    }
+    }
 
   
 
@@ -149,30 +177,68 @@ toleranceRadius = 3000; // Radio de 1 km en metros
     this.pin = '';
   }
 
+  //ve las dos opciones de autenticación biétrica y huella dactilar
   async checkFingerprint(): Promise<boolean> {
     try {
       const isBiometryAvailable = await this.fingerprintAIO.isAvailable();
       if (!isBiometryAvailable) {
-        await this.showToast('Autenticación biométrica no disponible en este dispositivo.', 'warning');
-        return false;
+        await this.showToast('Biometría no disponible. Usando PIN del dispositivo.', 'warning');
+        // Si no hay biometría, se utiliza el PIN de bloqueo del teléfono
+        const result = await this.fingerprintAIO.show({
+          title: 'Verificación de Huella Digital',
+          subtitle: 'Coloque su huella digital para continuar',
+          description: 'Por favor autentique su identidad.',
+          disableBackup: false, // Permite usar el PIN si no se reconoce la huella
+        });
+        
+        if (result) {
+          // Si la autenticación fue exitosa
+          return true;
+        } else {
+          // Si el usuario cancela o no se autentica
+          await this.showToast('Autenticación fallida o cancelada.', 'danger');
+          return false;
+        }
+      } else {
+        await this.showToast('Autenticación biométrica disponible. Usando huella dactilar.', 'success');
+        // Si hay biometría, se usa la huella dactilar
+        const result = await this.fingerprintAIO.show({
+          title: 'Verificación de Huella Digital',
+          subtitle: 'Coloque su huella digital para continuar',
+          description: 'Por favor autentique su identidad.',
+          disableBackup: false, // Permite usar el PIN si no se reconoce la huella
+        });
+  
+        if (result) {
+          // Si la autenticación fue exitosa
+          return true;
+        } else {
+          // Si el usuario cancela o no se autentica
+          await this.showToast('Autenticación fallida o cancelada.', 'danger');
+          return false;
+        }
       }
-
-      await this.fingerprintAIO.show({
-        title: 'Verificación de Huella Digital',
-        subtitle: 'Coloque su huella digital para registrar asistencia',
-        description: 'Por favor autentique su identidad',
-        disableBackup: true, // Se desactiva la opción de PIN
-      });
-
-      return true;
     } catch (error) {
       console.error('Error en la autenticación biométrica:', error);
-      await this.showToast('Error en la autenticación biométrica.', 'danger');
+      await this.showToast('Error en la autenticación. Intente de nuevo.', 'danger');
       return false;
     }
   }
 
-  async registerAttendance(): Promise<void> {
+   // Función para registrar la asistencia (entrada o salida)
+   probarAsistencia() {
+    if (this.asistenciaHoy) {
+      // Si ya tiene una asistencia, registrar salida
+      this.registerSalida();
+    } else {
+      // Si no tiene asistencia, registrar entrada
+      this.registrarAsistencia();
+    }
+  }
+
+ 
+
+  async registrarAsistencia() {
     const fingerprintValid = await this.checkFingerprint();
     if (!fingerprintValid) {
       return;
@@ -191,39 +257,92 @@ toleranceRadius = 3000; // Radio de 1 km en metros
       return;
     }
 
+    
+    
+
     const loading = await this.loadingCtrl.create({
       message: 'Registrando asistencia...',
       spinner: 'circular',
     });
     await loading.present();
 
-    try {
-      const resultado = await this.asistenciaService.verificarAsistencia(this.uid).toPromise();
-      console.log('Resultado:', resultado);
-      if (resultado === "true") {
-        this.errorMessage = 'Ya tienes una asistencia registrada para hoy.';
-        await this.showToast(this.errorMessage, 'warning');
-      } else if (resultado === "false") {
-        this.asistenciaService.createAttendance(this.uid).subscribe(
-          async (response) => {
-            this.successMessage = `Asistencia registrada exitosamente a las ${response.hora_entrada}`;
-            await this.showToast(this.successMessage, 'success');
-          },
-          async () => {
-            this.errorMessage = 'Error al registrar la asistencia. Por favor intente nuevamente.';
-            await this.showToast(this.errorMessage, 'danger');
-          }
-        );
+    
+      // Si no tiene asistencia, registrar entrada
+      try {
+        const nueva_asistencia: Asistencia2 = {
+          uid: this.uid, // Reemplaza con el UID del empleado
+          fechaCreacion: new Date(),
+          horaEntrada: new Date().toLocaleTimeString(),
+          validacionBiometrica: true,
+          horaSalida: '',
+          horasTrabajadas: 0,
+          horasExtras: 0,
+          latitud: this.userLatitude, // Reemplaza con la latitud actual
+          longitud: this.userLongitude, // Reemplaza con la longitud actual
+        
+        }
+  
+        this.asistenciaService.crearAsistencia(nueva_asistencia)
+        .then(() => this.successMessage = 'Asistencia registrada con éxito!')
+        .catch((error) => this.errorMessage = 'Hubo un error al registrar la entrada.');
+        
+  
+  
+      } catch (error) {
+        this.errorMessage = 'Error al validar la asistencia. Inténtelo de nuevo.';
+        console.error(error);
+        await this.showToast(this.errorMessage, 'danger');
+      } finally {
+        await loading.dismiss();
       }
+    
+  }
+
+
+  // Registrar la salida
+  async registerSalida() {
+    
+    const fingerprintValid = await this.checkFingerprint();
+    if (!fingerprintValid) {
+      return;
+    }
+
+    if (!this.uid) {
+      await this.showToast('Error: Usuario no identificado.', 'danger');
+      return;
+    }
+
+    // Verificar geolocalización
+    const isInAllowedArea = await this.checkLocation();
+    if (!isInAllowedArea) {
+      this.errorMessage = 'No puedes marcar salida fuera del área permitida.';
+      this.isLoading = false;
+      return;
+    }
+    
+    
+
+    this.isLoading = true;
+    try {
+      
+
+      // Actualizar la asistencia con la hora de salida
+      await this.asistenciaService.actualizarAsistencia(this.uid);
+      this.succesMessageSalida = 'Salida registrada con éxito!';
     } catch (error) {
-      this.errorMessage = 'Error al validar la asistencia. Inténtelo de nuevo.';
-      console.error(error);
-      await this.showToast(this.errorMessage, 'danger');
+      console.error('Error al registrar la salida:', error);
+      this.errorMessageSalida = 'Hubo un error al registrar la salida.';
     } finally {
-      await loading.dismiss();
+      this.isLoading = false;
     }
   }
-  
+
+  // Calcular las horas trabajadas entre la hora de entrada y salida
+  calcularHorasTrabajadas(entrada: Date): number {
+    const salida = new Date();
+    const diferencia = salida.getTime() - entrada.getTime(); // Diferencia en milisegundos
+    return diferencia / (1000 * 60 * 60); // Convertir de milisegundos a horas
+  }
 
 
   private async showToast(message: string, color: string): Promise<void> {
@@ -282,6 +401,9 @@ toleranceRadius = 3000; // Radio de 1 km en metros
     localStorage.removeItem('Empleados'); // Limpiar el localStorage
     this.router.navigate(['/home']); // Redirigir al login
   }
+
+  
+
 
  
 };
