@@ -20,10 +20,10 @@ import { ChatbotAdminModule } from './chatbot-admin/chatbot-admin.module';
   imports: [ ConfigModule.forRoot({cache:true}), 
     TypeOrmModule.forRoot({
       type: 'postgres',
-      host: 'localhost',
+      host: 'peppy-gist-443202-b9:us-central1:my-project',
       port: 5432,
       username: 'postgres',
-      password: 'admin123',
+      password: '-0a[ZLhF-H{%Rl"}',
       database: 'capstone',
       entities: [Empleados, Asistencia, Supervisor, Departamento, ReporteAsistencia],
       
