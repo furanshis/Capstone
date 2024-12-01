@@ -5,12 +5,16 @@
         <ion-icon name="arrow-back"></ion-icon>
       </ion-button>
     </ion-buttons>
-    <ion-title>Ingresa tu PIN</ion-title>
+    <ion-title></ion-title>
   </ion-toolbar>
 </ion-header>
 
+
+
 <ion-content class="ion-padding">
-  <div class="pin-indicator">
+  <h2 class="centered">Introduzca el PIN</h2>
+  <br>
+  <div class="pin-indicator ">
     <ion-icon *ngFor="let dot of pinDots" [name]="dot ? 'ellipse' : 'ellipse-outline'" class="pin-dot"></ion-icon>
   </div>
 

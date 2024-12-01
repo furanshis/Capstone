@@ -1,3 +1,9 @@
+.centered {
+  text-align: center; /* Centra el texto horizontalmente */
+  margin: 0 auto; /* Asegura que el texto se mantenga centrado */
+  display: block; /* Se asegura de que sea un bloque de nivel de bloque */
+}
+
 .pin-indicator {
     display: flex;
     justify-content: center;
@@ -200,7 +206,6 @@
         }
       }
     }
-
 
 
 

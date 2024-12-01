@@ -1,12 +1,15 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
+import { environment } from 'src/environments/environment';
 
 @Injectable({
   providedIn: 'root'
 })
 export class ChatbotService {
 
-  private apiUrl = 'http://192.168.1.84:3000/chatbot';
+  // private apiUrl = environment.apiUrl + '/chatbot-admin';
+
+  private apiUrl = 'http://192.168.1.85:3000/chatbot-admin';
 
   constructor(private http: HttpClient) { }
 

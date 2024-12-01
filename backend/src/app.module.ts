@@ -23,7 +23,7 @@ import { ChatbotAdminModule } from './chatbot-admin/chatbot-admin.module';
       host: 'localhost',
       port: 5432,
       username: 'postgres',
-      password: 'admin123',
+      password: 'admin',
       database: 'capstone',
       entities: [Empleados, Asistencia, Supervisor, Departamento, ReporteAsistencia],
       

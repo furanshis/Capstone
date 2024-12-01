@@ -1,0 +1,44 @@
+<ion-content>
+  <div class="pin-container">
+<h2 class="centered">Introduzca el PIN</h2>
+    
+    <div class="pin-dots">
+      <div *ngFor="let dot of dots; let i = index" 
+           class="dot" 
+           [class.filled]="pin.length > i">
+        ●
+      </div>
+    </div>
+
+    <ion-button fill="clear" expand="block" class="biometric-button" (click)="useBiometric()">
+      <ion-text>Usar Biométrico</ion-text>
+      <ion-icon name="finger-print-outline"></ion-icon>
+    </ion-button>
+
+    <ion-button fill="clear" expand="block" (click)="cancel()">
+      CANCELAR
+    </ion-button>
+
+    <div class="keyboard">
+      <div class="keyboard-row" *ngFor="let row of [0,1,2,3]">
+        <ion-button *ngIf="row === 0" fill="clear" class="key special">*</ion-button>
+        <ion-button *ngFor="let num of [1,2,3]" 
+                    fill="clear" 
+                    class="key"
+                    (click)="addNumber(((row * 3) + num).toString())"
+                    [style.visibility]="row === 3 ? 'hidden' : 'visible'">
+          {{(row * 3) + num}}
+        </ion-button>
+        <ion-button *ngIf="row === 0" fill="clear" class="key special">&#64;</ion-button>
+      </div>
+      <div class="keyboard-row">
+        <ion-button fill="clear" class="key">ABC</ion-button>
+        <ion-button fill="clear" class="key" (click)="addNumber('0')">0</ion-button>
+        <ion-button fill="clear" class="key" (click)="deleteNumber()">
+          <ion-icon name="backspace-outline"></ion-icon>
+        </ion-button>
+        <ion-button fill="clear" class="key ok">OK</ion-button>
+      </div>
+    </div>
+  </div>
+</ion-content>
