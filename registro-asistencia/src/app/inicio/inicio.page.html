@@ -36,41 +36,25 @@
     Bienvenido, {{ userName }}
   </h2>
 
-  <!-- Carrusel de imágenes -->
-  <ion-card>
-    <swiper-container
-      (slidechange)="swiperSlideChanged($event)"
-      [loop]="true"
-      [pagination]="true">
-      <swiper-slide *ngFor="let image of images">
-        <img [src]="image">
-      </swiper-slide>
-    </swiper-container>
-  </ion-card>
+  <!-- Google Maps -->
+    <google-map
+    height="400px"
+    width="100%"
+    [center]="workplaceCoords"
+    [zoom]="15"
+  >
+    <map-circle
+      [center]="workplaceCoords"
+      [radius]="toleranceRadius"
+      [options]="circleOptions"
+    ></map-circle>
+    <map-marker [position]="workplaceCoords" [label]="'Recinto de trabajo'"></map-marker>
+  </google-map>
 
-  <!-- Sección de imágenes -->
-  <div class="flex overflow-x-auto scrollbar-hide">
-    <div class="flex items-stretch p-4 gap-3">
-      <div class="flex h-full flex-1 flex-col gap-4 rounded-lg min-w-60">
-        <div
-          class="w-full bg-center bg-no-repeat aspect-square bg-cover rounded-xl flex flex-col"
-          style="background-image: url('https://cdn.usegalileo.ai/sdxl10/18822606-bd10-40a2-8656-d89a347c2a41.png');"
-        ></div>
-      </div>
-      <div class="flex h-full flex-1 flex-col gap-4 rounded-lg min-w-60">
-        <div
-          class="w-full bg-center bg-no-repeat aspect-square bg-cover rounded-xl flex flex-col"
-          style="background-image: url('https://cdn.usegalileo.ai/stability/7d36a3e7-5a09-4e4a-8a73-e843675682f7.png');"
-        ></div>
-      </div>
-      <div class="flex h-full flex-1 flex-col gap-4 rounded-lg min-w-60">
-        <div
-          class="w-full bg-center bg-no-repeat aspect-square bg-cover rounded-xl flex flex-col"
-          style="background-image: url('https://cdn.usegalileo.ai/stability/864ba6f4-d80a-4812-ab07-847fa6e88b64.png');"
-        ></div>
-      </div>
-    </div>
-  </div>
+
+  <head>
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAytLKvZwgACu9OyMxIwx0nJLfukEnxxJE"></script>
+  </head>
 
  
 

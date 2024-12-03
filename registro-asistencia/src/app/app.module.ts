@@ -2,7 +2,7 @@ import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { RouteReuseStrategy } from '@angular/router';
 import { FingerprintAIO } from '@ionic-native/fingerprint-aio/ngx';
-
+import { GoogleMapsModule } from '@angular/google-maps';
 
 import { HttpClientModule } from '@angular/common/http';
 
@@ -22,7 +22,7 @@ import { ManageEmployeesPageModule } from './manage-employees/manage-employees.m
 @NgModule({
   declarations: [AppComponent
   ],
-  imports: [BrowserModule,ManageEmployeesPageModule ,IonicModule.forRoot(), AppRoutingModule, AngularFireModule.initializeApp(environment.firebaseConfig), AngularFireAuthModule, AngularFirestoreModule, HttpClientModule],
+  imports: [BrowserModule,ManageEmployeesPageModule ,IonicModule.forRoot(), GoogleMapsModule, AppRoutingModule, AngularFireModule.initializeApp(environment.firebaseConfig), AngularFireAuthModule, AngularFirestoreModule, HttpClientModule],
   providers: [FingerprintAIO,{ provide: RouteReuseStrategy, useClass: IonicRouteStrategy }],
   bootstrap: [AppComponent],
 })

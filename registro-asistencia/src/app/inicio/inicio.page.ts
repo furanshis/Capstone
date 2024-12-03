@@ -9,6 +9,7 @@ import { AsistenciaserviceService } from '../services/asistenciaservice.service'
 import { Geolocation } from '@capacitor/geolocation';
 import { Asistencia2 } from '../interfaces/models';
 import { Observable } from 'rxjs';
+import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'app-inicio',
@@ -37,6 +38,15 @@ export class InicioPage implements OnInit {
   lng: -71.449084  // Reemplaza con la longitud real
 };
 toleranceRadius = 5000; // Radio de 1 km en metros
+
+  // Opciones de estilo para el círculo
+  circleOptions = {
+    strokeColor: '#FF0000',
+    strokeOpacity: 0.8,
+    strokeWeight: 2,
+    fillColor: '#FF0000',
+    fillOpacity: 0.35
+  };
 
   // TODO: Replace with actual Firebase UID
   
