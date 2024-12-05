@@ -13,6 +13,7 @@ firebaseConfig: {
     measurementId: "G-Z9DS0PFLK7"
   },
   apiUrl: "http://192.168.1.85:3000",
+  GOOGLE_MAPS_API: "AIzaSyBKKXYc73Z6OXprfewfwJWHLGHZ9LcYuJc"
 };
 
 /*

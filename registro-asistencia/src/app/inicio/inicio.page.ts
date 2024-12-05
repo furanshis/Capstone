@@ -46,7 +46,7 @@ workplaceCoords = {
 lat: -33.0337, // Reemplaza con la latitud real
 lng: -71.5332  // Reemplaza con la longitud real
 };
-toleranceRadius = 5000; // Radio de 5 km en metros
+toleranceRadius = 5000; // Radio de 1 km en metros
 
   // TODO: Replace with actual Firebase UID
   
