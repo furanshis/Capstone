@@ -9,6 +9,8 @@ import { AsistenciaserviceService } from '../services/asistenciaservice.service'
 import { Geolocation } from '@capacitor/geolocation';
 import { Asistencia2 } from '../interfaces/models';
 import { Observable } from 'rxjs';
+import { provideFirestore, getFirestore } from '@angular/fire/firestore';
+import { Firestore, collection, query, where, getDocs } from '@angular/fire/firestore';
 
 @Component({
   selector: 'app-inicio',
@@ -30,13 +32,21 @@ export class InicioPage implements OnInit {
   userLongitude: number = 0;
   asistenciaHoy: Asistencia2 | null = null;
   fechaHoy: string = new Date().toISOString().split('T')[0];
-  
+
+  //cASA JUAN
  // Coordenadas del recinto de trabajo
- workplaceCoords = {
-  lat: -33.060258, // Reemplaza con la latitud real
-  lng: -71.449084  // Reemplaza con la longitud real
+// workplaceCoords = {
+//  lat: -33.060258, // Reemplaza con la latitud real
+//  lng: -71.449084  // Reemplaza con la longitud real
+//};
+//toleranceRadius = 5000; // Radio de 5 km en metros
+
+//DUOC 33.0337° S, 71.5332° W
+workplaceCoords = {
+lat: -33.0337, // Reemplaza con la latitud real
+lng: -71.5332  // Reemplaza con la longitud real
 };
-toleranceRadius = 5000; // Radio de 1 km en metros
+toleranceRadius = 5000; // Radio de 5 km en metros
 
   // TODO: Replace with actual Firebase UID
   
@@ -391,7 +401,15 @@ toleranceRadius = 5000; // Radio de 1 km en metros
         // Manejo en caso de que no haya usuario autenticado
         this.uid = '';
       }
+      try {
+        const empresa = async () => await this.getEmpresaCoords();
+        this.workplaceCoords.lng = this.empresa.lng;
+        console.log('workplace actualizado:', this.workplaceCoords);
+      } catch (error) {
+        console.error('Error al obtener la empresa:', error);
+      }
     });
+
     
   }
 
@@ -403,6 +421,27 @@ toleranceRadius = 5000; // Radio de 1 km en metros
   }
 
   
+
+
+  async getEmpresaCoords() {
+    try {
+      const empresaRef = collection(this.firestore, 'empresa');
+      const q = query(empresaRef, where('uid', '==', this.uid));
+      const querySnapshot = await getDocs(q);
+
+      if (!querySnapshot.empty) {
+        querySnapshot.forEach(doc => {
+          const data = doc.data();
+          this.workplaceCoords = { lat: data['latitud'], lng: data['longitud'] };
+          this.empresaNombre = data['nombre'];
+        });
+      } else {
+        console.error('No se encontró ninguna empresa asociada a este UID');
+      }
+    } catch (error) {
+      console.error('Error al obtener datos de la empresa:', error);
+}
+}
 
 
  
