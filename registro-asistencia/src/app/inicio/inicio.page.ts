@@ -30,7 +30,7 @@ export class InicioPage implements OnInit {
   succesMessageSalida= '';
   errorMessageSalida = '';
   currentTime = new Date();
-  pin: string = "1234";
+  pinpass: number = 1234 ;
   private timeInterval: any;
   userName: string = 'Usuario';
   userLatitude: number = 0;
@@ -38,6 +38,9 @@ export class InicioPage implements OnInit {
   asistenciaHoy: Asistencia2 | null = null;
   fechaHoy: string = new Date().toISOString().split('T')[0];
   registroAsistencia = false
+  enteredPin: number = 1234; // PIN ingresado por el usuario
+  storedPin: number =  1234;  // PIN almacenado en Firestore
+  type: string = '';
 
   //cASA JUAN
  // Coordenadas del recinto de trabajo
@@ -199,20 +202,6 @@ toleranceRadius = 1000; // Radio de 1 km en metros
 
   
 
-  onNumberClick(number: number): void {
-    if (this.pin.length < 4) {
-      this.pin += number.toString();
-    }
-  }
-
-  onDelete(): void {
-    this.pin = this.pin.slice(0, -1);
-  }
-
-  onClear(): void {
-    this.pin = '';
-  }
-
   //ve las dos opciones de autenticación biétrica y huella dactilar
   async checkFingerprint(): Promise<boolean> {
     try {
@@ -261,6 +250,21 @@ toleranceRadius = 1000; // Radio de 1 km en metros
     }
   }
 
+
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+
+
    // Función para registrar la asistencia (entrada o salida)
    probarAsistencia() {
     if (this.asistenciaHoy) {
@@ -272,7 +276,7 @@ toleranceRadius = 1000; // Radio de 1 km en metros
     }
   }
 
- 
+  
 
   async registrarAsistencia() {
     /*
@@ -293,10 +297,7 @@ toleranceRadius = 1000; // Radio de 1 km en metros
       this.isLoading = false;
       return;
     }
-    
-
-    
-    
+  
 
     const loading = await this.loadingCtrl.create({
       message: 'Registrando asistencia...',
@@ -454,11 +455,80 @@ toleranceRadius = 1000; // Radio de 1 km en metros
 
       
     });
-
-    
-
-    
   }
+
+  async validatePinAndRegister() {
+    // Verificar geolocalización
+    const isInAllowedArea = await this.checkLocation();
+    if (!isInAllowedArea) {
+      this.errorMessage = 'No puedes registrar asistencia fuera del área permitida.';
+      this.isLoading = false;
+      return;
+    }
+  
+    // Crear un loading spinner mientras se procesa
+    const loading = await this.loadingCtrl.create({
+      message: 'Registrando asistencia...',
+      spinner: 'circular',
+    });
+    await loading.present();
+  
+    try {
+      // Asegúrate de que 'this.uid' tiene el valor correcto
+      if (!this.uid) {
+        this.errorMessage = 'No se encontró el UID del usuario.';
+        return;
+      }
+  
+      // Obtener el PIN almacenado en Firestore
+      const pinpassSnapshot = await this.firestore
+        .collection('empleados')
+        .doc(this.uid)  // Usamos el UID para acceder al documento
+        .get()
+        .toPromise(); // Convertimos el observable en una promesa
+  
+      if (pinpassSnapshot && pinpassSnapshot.exists) {
+        const storedPin = (pinpassSnapshot.data() as { pinpass: number })?.pinpass;
+        console.log('PIN almacenado:', storedPin);
+        console.log('PIN ingresado:', this.enteredPin);
+  
+        // Comparar los valores de forma correcta
+        if (storedPin === this.enteredPin) {
+          console.log('PIN correcto, registrando asistencia...');
+          
+          // Crear el objeto de asistencia para almacenar en Firestore
+          const asistencia: Asistencia2 = {
+            uid: this.uid,
+            fechaCreacion: new Date(),
+            horaEntrada: new Date().toLocaleTimeString(),
+            horaSalida: '',  // Este campo puede quedar vacío por ahora
+            horasTrabajadas: 0, // Puedes calcular las horas trabajadas más tarde
+            validacionBiometrica: false, // Si es necesario, puedes usar la validación biométrica
+            horasExtras: 0, // Puedes calcular las horas extras si es necesario
+            latitud: this.workplaceCoords.lat,
+            longitud: this.workplaceCoords.lng,
+          };
+  
+          // Guardar la asistencia en la colección de Firestore
+          await this.firestore.collection('asistencias').add(asistencia);
+  
+          console.log('Asistencia registrada correctamente.');
+          // Aquí puedes añadir más lógica si es necesario, como cambiar el estado o actualizar la UI
+        } else {
+          this.errorMessage = 'El PIN ingresado es incorrecto.';
+        }
+      } else {
+        this.errorMessage = 'No se encontró el PIN del usuario en la base de datos.';
+      }
+    } catch (error) {
+      this.errorMessage = 'Hubo un error al validar el PIN.';
+      console.error(error);
+    } finally {
+      await loading.dismiss();
+    }
+  }
+  
+  
 
   // Método para cerrar sesión
   async logout() {
@@ -474,3 +544,7 @@ toleranceRadius = 1000; // Radio de 1 km en metros
 
  
 };
+function validatePinAndRegister() {
+  throw new Error('Function not implemented.');
+}
+

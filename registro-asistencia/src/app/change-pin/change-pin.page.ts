@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { PinService } from 'src/app/services/pin.service';
 import { AlertController, NavController } from '@ionic/angular';
 
+
 @Component({
   selector: 'app-change-pin',
   templateUrl: './change-pin.page.html',
