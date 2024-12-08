@@ -275,6 +275,8 @@ toleranceRadius = 1000; // Radio de 1 km en metros
  
 
   async registrarAsistencia() {
+
+    
     /*
     const fingerprintValid = await this.checkFingerprint();
     if (!fingerprintValid) {
@@ -289,7 +291,7 @@ toleranceRadius = 1000; // Radio de 1 km en metros
     // Verificar geolocalización
     const isInAllowedArea = await this.checkLocation();
     if (!isInAllowedArea) {
-      this.errorMessage = 'No puedes registrar asistencia fuera del área permitida.';
+      await this.showToast('No puedes registrar asistencia fuera del área permitida.', 'danger');
       this.isLoading = false;
       return;
     }
@@ -321,15 +323,14 @@ toleranceRadius = 1000; // Radio de 1 km en metros
         }
   
         this.asistenciaService.crearAsistencia(nueva_asistencia)
-        .then(() => this.successMessage = 'Asistencia registrada con éxito!')
-        .catch((error) => this.errorMessage = 'Hubo un error al registrar la entrada.');
+        .then(() => this.showToast('Asistencia registrada con éxito!', 'success'))//this.successMessage = 'Asistencia registrada con éxito!')
+      .catch((error) => this.showToast('Hubo un error al registrar la entrada.', 'danger'))//this.errorMessage = 'Hubo un error al registrar la entrada.');
         
   
   
       } catch (error) {
-        this.errorMessage = 'Error al validar la asistencia. Inténtelo de nuevo.';
+        await this.showToast('Error al validar la asistencia. Inténtelo de nuevo.', 'danger')  //this.errorMessage = 'Error al validar la asistencia. Inténtelo de nuevo.';
         console.error(error);
-        await this.showToast(this.errorMessage, 'danger');
       } finally {
         await loading.dismiss();
       }
@@ -382,6 +383,43 @@ toleranceRadius = 1000; // Radio de 1 km en metros
     return diferencia / (1000 * 60 * 60); // Convertir de milisegundos a horas
   }
 
+  async verificarAsistenciaHoy(firestore: Firestore, uid: string): Promise<boolean> {
+    try {
+      if (!uid) {
+        console.error("UID no proporcionado.");
+        return false;
+      }
+  
+      // Obtener la fecha actual sin hora
+      const fechaActual = new Date();
+      fechaActual.setHours(0, 0, 0, 0);
+  
+      // Referencia a la colección
+      const asistenciaRef = collection(firestore, 'asistencia');
+  
+      // Consulta a Firestore
+      const consulta = query(
+        asistenciaRef,
+        where('uid', '==', uid),
+        where('fechaCreacion', '>=', fechaActual)
+      );
+  
+      const resultados = await getDocs(consulta);
+  
+      if (!resultados.empty) {
+        console.log("Asistencia ya registrada para hoy.");
+        return true; // Ya existe una asistencia
+      } else {
+        console.log("No se encontró asistencia registrada para hoy.");
+        return false; // No existe asistencia
+      }
+    } catch (error) {
+      console.error("Error al verificar la asistencia:", error);
+      return false; // Error al consultar Firestore
+    }
+  }
+
+
 
   private async showToast(message: string, color: string): Promise<void> {
     const toast = await this.toastCtrl.create({
@@ -419,6 +457,9 @@ toleranceRadius = 1000; // Radio de 1 km en metros
       this.userName = user.displayName || 'Usuario';
     }
     this.empleado = localStorage.getItem('Empleados')!;
+
+    this.asistenciaService.verificarAsistenciaHoy(this.uid)
+
 
     this.afAuth.authState.subscribe((user) => {
       if (user) {

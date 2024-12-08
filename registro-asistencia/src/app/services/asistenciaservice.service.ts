@@ -172,6 +172,7 @@ export class AsistenciaserviceService {
     );
   
     // Retorna true si existe al menos una asistencia, false de lo contrario
+    console.log(asistencias)
     return asistencias.length > 0;
   }
 
