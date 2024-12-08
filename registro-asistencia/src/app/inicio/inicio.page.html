@@ -36,25 +36,7 @@
     Bienvenido, {{ userName }}
   </h2>
 
-  <!-- Google Maps -->
-    <google-map
-    height="400px"
-    width="100%"
-    [center]="workplaceCoords"
-    [zoom]="15"
-  >
-    <map-circle
-      [center]="workplaceCoords"
-      [radius]="toleranceRadius"
-      [options]="circleOptions"
-    ></map-circle>
-    <map-marker [position]="workplaceCoords" [label]="'Recinto de trabajo'"></map-marker>
-  </google-map>
-
-
-  <head>
-    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAytLKvZwgACu9OyMxIwx0nJLfukEnxxJE"></script>
-  </head>
+  
 
  
 

@@ -12,6 +12,11 @@ import { Observable } from 'rxjs';
 import { provideFirestore, getFirestore } from '@angular/fire/firestore';
 import { Firestore, collection, query, where, getDocs } from '@angular/fire/firestore';
 
+interface EmpresaData {
+  latitud: number;
+  longitud: number;
+}
+
 @Component({
   selector: 'app-inicio',
   templateUrl: './inicio.page.html',
@@ -32,6 +37,7 @@ export class InicioPage implements OnInit {
   userLongitude: number = 0;
   asistenciaHoy: Asistencia2 | null = null;
   fechaHoy: string = new Date().toISOString().split('T')[0];
+  registroAsistencia = false
 
   //cASA JUAN
  // Coordenadas del recinto de trabajo
@@ -43,10 +49,10 @@ export class InicioPage implements OnInit {
 
 //DUOC 33.0337° S, 71.5332° W
 workplaceCoords = {
-lat: -33.0337, // Reemplaza con la latitud real
-lng: -71.5332  // Reemplaza con la longitud real
+lat: 0, // Reemplaza con la latitud real
+lng: 0  // Reemplaza con la longitud real
 };
-toleranceRadius = 5000; // Radio de 1 km en metros
+toleranceRadius = 1000; // Radio de 1 km en metros
 
   // TODO: Replace with actual Firebase UID
   
@@ -132,6 +138,7 @@ toleranceRadius = 5000; // Radio de 1 km en metros
   async checkLocation(): Promise<boolean>  {
     try {
       const userCoords = await this.getCurrentPosition();
+      console.log('User coordinates:', userCoords);
       this.userLatitude = userCoords.lat;
       this.userLongitude = userCoords.lng;
       const distance = this.calculateDistance(
@@ -156,6 +163,25 @@ toleranceRadius = 5000; // Radio de 1 km en metros
       return false;
     }
   }
+
+  async obtenerCoordenadasEmpresa(uid: string) {
+    try {
+      const empresaRef = this.firestore.collection('empresas', ref => ref.where('uid_empleado', '==', uid));
+      const snapshot = await empresaRef.get().toPromise();
+      if (snapshot && !snapshot.empty) {
+        const empresaData = snapshot.docs[0].data() as EmpresaData;
+        console.log('Coordenadas de la empresa:', empresaData);
+        this.workplaceCoords.lat = empresaData?.latitud;
+        this.workplaceCoords.lng = empresaData?.longitud;
+      } else {
+        this.showToast('Empresa no encontrada para el empleado.', 'danger');
+      }
+    } catch (error) {
+      console.error('Error al obtener coordenadas de empresa:', error);
+    }
+  }
+
+  
 
   // Verificar si el usuario tiene una asistencia registrada para hoy
   async checkAsistenciaHoy() {
@@ -249,6 +275,7 @@ toleranceRadius = 5000; // Radio de 1 km en metros
  
 
   async registrarAsistencia() {
+    /*
     const fingerprintValid = await this.checkFingerprint();
     if (!fingerprintValid) {
       return;
@@ -258,7 +285,7 @@ toleranceRadius = 5000; // Radio de 1 km en metros
       await this.showToast('Error: Usuario no identificado.', 'danger');
       return;
     }
-
+    */
     // Verificar geolocalización
     const isInAllowedArea = await this.checkLocation();
     if (!isInAllowedArea) {
@@ -266,6 +293,7 @@ toleranceRadius = 5000; // Radio de 1 km en metros
       this.isLoading = false;
       return;
     }
+    
 
     
     
@@ -397,18 +425,37 @@ toleranceRadius = 5000; // Radio de 1 km en metros
         this.uid = user.uid; // UID del usuario autenticado
         this.userName = user.displayName || 'Empleado'; // Opcional: nombre del usuario
         console.log('UID:', this.uid);
+
+        // Obtener coordenadas de la empresa
+        this.firestore
+          .collection('Empresa', (ref) => ref.where('uid_empleado', '==', this.uid))
+          .valueChanges()
+          .subscribe(
+            (empresas: any[]) => {
+              if (empresas.length > 0) {
+                const empresa = empresas[0];
+                this.workplaceCoords.lat = empresa.latitud;
+                this.workplaceCoords.lng = empresa.longitud;
+
+                console.log("latitud", this.workplaceCoords.lat);
+                console.log("longitud", this.workplaceCoords.lng);  
+              } else {
+                console.error('Empresa no encontrada');
+              }
+            },
+            (error) => {
+              console.error('Error al obtener datos de la empresa:', error);
+            }
+          );
       } else {
         // Manejo en caso de que no haya usuario autenticado
         this.uid = '';
       }
-      try {
-        const empresa = async () => await this.getEmpresaCoords();
-        this.workplaceCoords.lng = this.empresa.lng;
-        console.log('workplace actualizado:', this.workplaceCoords);
-      } catch (error) {
-        console.error('Error al obtener la empresa:', error);
-      }
+
+      
     });
+
+    
 
     
   }
@@ -423,25 +470,6 @@ toleranceRadius = 5000; // Radio de 1 km en metros
   
 
 
-  async getEmpresaCoords() {
-    try {
-      const empresaRef = collection(this.firestore, 'empresa');
-      const q = query(empresaRef, where('uid', '==', this.uid));
-      const querySnapshot = await getDocs(q);
-
-      if (!querySnapshot.empty) {
-        querySnapshot.forEach(doc => {
-          const data = doc.data();
-          this.workplaceCoords = { lat: data['latitud'], lng: data['longitud'] };
-          this.empresaNombre = data['nombre'];
-        });
-      } else {
-        console.error('No se encontró ninguna empresa asociada a este UID');
-      }
-    } catch (error) {
-      console.error('Error al obtener datos de la empresa:', error);
-}
-}
 
 
  
