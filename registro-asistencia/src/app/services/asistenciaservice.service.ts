@@ -106,7 +106,7 @@ export class AsistenciaserviceService {
         .get()
         .toPromise();
   
-        console.log(asistencias)
+        console.log(asistencias?.docs[0])
         if (!asistencias || asistencias.empty) {
           console.log('No se encontró ninguna asistencia para este usuario.');
           return
@@ -118,6 +118,8 @@ export class AsistenciaserviceService {
       // Calcula las horas trabajadas
       const fechaEntrada = new Date(asistencia.fechaCreacion);
       const fechaSalidaDate = new Date(`${fechaSalida}T${horaSalida}`);
+      console.log('hora de entrada: ',asistencia.horaEntrada)
+      console.log('hora de salida: ',horaSalida)
       const horasTrabajadas = this.calcularHorasTrabajadas(asistencia.horaEntrada, horaSalida);
       console.log(horasTrabajadas)
   
@@ -130,6 +132,9 @@ export class AsistenciaserviceService {
           horaSalida,
           horasTrabajadas,
         });
+      
+        // Actualiza reporte_asistencia
+        await this.actualizarReporteAsistencia(uid, horasTrabajadas);
     }
   
     calcularHorasTrabajadas(horaEntrada: string, horaSalida: string): number {
@@ -172,7 +177,46 @@ export class AsistenciaserviceService {
     );
   
     // Retorna true si existe al menos una asistencia, false de lo contrario
+    console.log(asistencias)
     return asistencias.length > 0;
+  }
+
+  async actualizarReporteAsistencia(uid: string, horasTrabajadas: number): Promise<void> {
+    const fechaActual = new Date().toISOString().split('T')[0];
+  
+    // Verifica si ya existe un reporte para hoy
+    const reportes = await this.firestore
+    .collection('reporte_asistencia', ref => ref.where('uid', '==', uid))
+    .get()
+    .toPromise();
+  
+    if (reportes && !reportes.empty) {
+      // Si existe, actualiza el reporte existente
+    const reporteDoc = reportes.docs[0];
+    const reporteActual = reporteDoc.data() as any;
+
+    await this.firestore.collection('reporte_asistencia').doc(reporteDoc.id).update({
+      horas_totales_trabajadas: reporteActual.horas_totales_trabajadas + horasTrabajadas,
+    });
+    } else {
+      // Si no existe, crea uno nuevo
+      await this.firestore.collection('reporte_asistencia').add({
+        uid,
+        fecha_reporte: fechaActual,
+        horas_totales_trabajadas: horasTrabajadas,
+        numero_tardanzas: 0, // Inicializa en 0 o según lógica
+        numero_ausencias: 0, // Inicializa en 0 o según lógica
+      });
+    }
+  }
+
+  getReporteAsistencia(uid: string): Observable<any> {
+    return this.firestore
+      .collection('reporte_asistencia', ref => ref.where('uid', '==', uid))
+      .valueChanges({ idField: 'id' }) // Trae el documento con el ID
+      .pipe(
+        map(reporte => (reporte.length > 0 ? reporte[0] : null))
+      );
   }
 
   
