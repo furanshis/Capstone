@@ -11,6 +11,7 @@ import { Asistencia2 } from '../interfaces/models';
 import { Observable } from 'rxjs';
 import { provideFirestore, getFirestore } from '@angular/fire/firestore';
 import { Firestore, collection, query, where, getDocs } from '@angular/fire/firestore';
+import { firstValueFrom } from 'rxjs';
 
 interface EmpresaData {
   latitud: number;
@@ -25,6 +26,7 @@ interface EmpresaData {
 export class InicioPage implements OnInit {
   
   isLoading = false;
+  horasTrabajadas = '';
   successMessage = '';
   errorMessage = '';
   succesMessageSalida= '';
@@ -52,7 +54,7 @@ workplaceCoords = {
 lat: 0, // Reemplaza con la latitud real
 lng: 0  // Reemplaza con la longitud real
 };
-toleranceRadius = 1000; // Radio de 1 km en metros
+toleranceRadius = 5000; // Radio de 1 km en metros
 
   // TODO: Replace with actual Firebase UID
   
@@ -312,7 +314,7 @@ toleranceRadius = 1000; // Radio de 1 km en metros
         const nueva_asistencia: Asistencia2 = {
           uid: this.uid, // Reemplaza con el UID del empleado
           fechaCreacion: new Date(),
-          horaEntrada: new Date().toLocaleTimeString(),
+          horaEntrada: new Date().toLocaleTimeString('en-GB', { hour12: false }),
           validacionBiometrica: true,
           horaSalida: '',
           horasTrabajadas: 0,
@@ -323,12 +325,18 @@ toleranceRadius = 1000; // Radio de 1 km en metros
         }
   
         this.asistenciaService.crearAsistencia(nueva_asistencia)
-        .then(() => this.showToast('Asistencia registrada con éxito!', 'success'))//this.successMessage = 'Asistencia registrada con éxito!')
-      .catch((error) => this.showToast('Hubo un error al registrar la entrada.', 'danger'))//this.errorMessage = 'Hubo un error al registrar la entrada.');
+        .then(() => {
+          this.registroAsistencia = true;
+          this.showToast('Asistencia registrada con éxito!', 'success');
+        })
+      .catch((error) => {
+        this.registroAsistencia = false;
+        this.showToast('Hubo un error al registrar la entrada.', 'danger')} )//this.errorMessage = 'Hubo un error al registrar la entrada.');
         
   
   
       } catch (error) {
+        this.registroAsistencia = false;
         await this.showToast('Error al validar la asistencia. Inténtelo de nuevo.', 'danger')  //this.errorMessage = 'Error al validar la asistencia. Inténtelo de nuevo.';
         console.error(error);
       } finally {
@@ -340,7 +348,7 @@ toleranceRadius = 1000; // Radio de 1 km en metros
 
   // Registrar la salida
   async registerSalida() {
-    
+    /*
     const fingerprintValid = await this.checkFingerprint();
     if (!fingerprintValid) {
       return;
@@ -350,7 +358,7 @@ toleranceRadius = 1000; // Radio de 1 km en metros
       await this.showToast('Error: Usuario no identificado.', 'danger');
       return;
     }
-
+    */
     // Verificar geolocalización
     const isInAllowedArea = await this.checkLocation();
     if (!isInAllowedArea) {
@@ -367,10 +375,11 @@ toleranceRadius = 1000; // Radio de 1 km en metros
 
       // Actualizar la asistencia con la hora de salida
       await this.asistenciaService.actualizarAsistencia(this.uid);
-      this.succesMessageSalida = 'Salida registrada con éxito!';
+      this.registroAsistencia = false;
+      await this.showToast('Salida registrada con éxito!', 'success');
     } catch (error) {
       console.error('Error al registrar la salida:', error);
-      this.errorMessageSalida = 'Hubo un error al registrar la salida.';
+      await this.showToast('Hubo un error al registrar la salida.', 'danger');
     } finally {
       this.isLoading = false;
     }
@@ -449,6 +458,36 @@ toleranceRadius = 1000; // Radio de 1 km en metros
     console.log('changed: ',e);
   }
 
+  async cargarHorasTrabajadas(uid: string) {
+    try {
+  
+      console.log('Consultando reporte para UID:', uid);
+  
+      const reporte = await firstValueFrom(
+        this.asistenciaService.getReporteAsistencia(uid)
+      );
+  
+      console.log('Datos recibidos:', reporte);
+  
+      if (reporte && reporte.horas_totales_trabajadas !== undefined) {
+        console.log('se encontraron datos')
+        this.horasTrabajadas = this.formatearHoras(reporte.horas_totales_trabajadas);
+      } else {
+        console.log('No se encontró el reporte para este UID.');
+        this.horasTrabajadas = '0h 0m';
+      }
+    } catch (error) {
+      console.log('Error al cargar el reporte:', error);
+      this.horasTrabajadas = 'Error al cargar datos';
+    }
+  }
+
+  formatearHoras(horas: number): string {
+    const horasEnteras = Math.floor(horas);
+    const minutos = Math.round((horas - horasEnteras) * 60);
+    return `${horasEnteras}h ${minutos}m`;
+  }
+
 
   async ngOnInit(){  
     // Obtener el nombre del usuario desde Firebase Authentication
@@ -466,6 +505,9 @@ toleranceRadius = 1000; // Radio de 1 km en metros
         this.uid = user.uid; // UID del usuario autenticado
         this.userName = user.displayName || 'Empleado'; // Opcional: nombre del usuario
         console.log('UID:', this.uid);
+
+        //obtener registro
+        this.cargarHorasTrabajadas(this.uid);
 
         // Obtener coordenadas de la empresa
         this.firestore
@@ -492,14 +534,9 @@ toleranceRadius = 1000; // Radio de 1 km en metros
         // Manejo en caso de que no haya usuario autenticado
         this.uid = '';
       }
-
-      
     });
-
     
-
-    
-  }
+  } 
 
   // Método para cerrar sesión
   async logout() {

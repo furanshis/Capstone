@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-perfilusuario',
@@ -6,13 +7,28 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./perfilusuario.page.scss'],
 })
 export class PerfilusuarioPage implements OnInit {
-  goBack(){
-    window.history.back();
+
+  primerNombre: string = '';
+  segundoNombre: string = '';
+  apellidoPaterno: string = '';
+  apellidoMaterno: string = '';
+  nombreEmpresa: string = '';
+  horarioEntrada: string = '';
+  horarioSalida: string = '';
+
+  uidEmpleado: string = '';
+
+  goBack() {
+    this.router.navigate(['/inicio']);
   }
 
-  constructor() { }
+  constructor(
+    private router: Router
+  ) { }
 
   ngOnInit() {
   }
+
+  
 
 }

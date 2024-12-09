@@ -1,30 +1,38 @@
-<ion-content></ion-content>
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Perfil de Linda Hill</title>
+  <title>Perfil de Usuario</title>
   <link href="https://cdn.jsdelivr.net/npm/@ionic/core/css/ionic.bundle.css" rel="stylesheet">
   <script type="module" src="https://cdn.jsdelivr.net/npm/@ionic/core@6.0.0/dist/ionic/ionic.js"></script>
 </head>
 
 <body>
   <ion-app>
-    <ion-buttons slot="start"> 
-      <ion-button expand="block" (click)="goBack()">
-        <ion-icon name="arrow-back"></ion-icon>
-      </ion-button>
-    </ion-buttons>
+    <ion-header>
+      <ion-toolbar>
+        <ion-buttons slot="start">
+          <ion-button (click)="goBack()">
+            <ion-icon name="arrow-back"></ion-icon>
+          </ion-button>
+        </ion-buttons>
+        <ion-title>Perfil de Usuario</ion-title>
+      </ion-toolbar>
+    </ion-header>
+
     <ion-content>
-      
       <div style="padding: 16px;">
         <!-- Card de perfil -->
         <ion-card>
           <!-- Imagen de perfil -->
           <ion-img src="https://placehold.co/600x400" alt="Imagen de perfil"></ion-img>
-          
+
           <ion-card-header>
-            <ion-card-title class="ion-text-center">Linda Hill</ion-card-title>
-            <ion-card-subtitle class="ion-text-center">Product Manager at Intel</ion-card-subtitle>
+            <ion-card-title class="ion-text-center">
+              {{ primerNombre }} {{ segundoNombre }} {{ apellidoPaterno }} {{ apellidoMaterno }}
+            </ion-card-title>
+            <ion-card-subtitle class="ion-text-center">
+              {{ nombreEmpresa }}
+            </ion-card-subtitle>
           </ion-card-header>
 
           <ion-card-content>
@@ -33,28 +41,7 @@
               <ion-icon name="time" slot="start" color="primary"></ion-icon>
               <ion-label>
                 <h3>Horario laboral</h3>
-                <p><strong>Flexible</strong></p>
-                <p>Lunes a Viernes</p>
-                <p>8:00 am - 5:00 pm</p>
-              </ion-label>
-            </ion-item>
-
-            <!-- Información de Trabajo Adicional -->
-            <ion-item lines="none">
-              <ion-icon name="briefcase" slot="start" color="primary"></ion-icon>
-              <ion-label>
-                <h3>Trabajo adicional</h3>
-                <p><strong>Estilo de trabajo</strong></p>
-                <p>No es necesario hacer un esfuerzo adicional</p>
-              </ion-label>
-            </ion-item>
-
-            <!-- Información de Metas Profesionales -->
-            <ion-item lines="none">
-              <ion-icon name="ribbon" slot="start" color="primary"></ion-icon>
-              <ion-label>
-                <h3>Metas profesionales</h3>
-                <p>No me interesa una carrera que me lleve a ser CEO o CTO</p>
+                <p><strong>{{ horarioEntrada }} - {{ horarioSalida }}</strong></p>
               </ion-label>
             </ion-item>
           </ion-card-content>
