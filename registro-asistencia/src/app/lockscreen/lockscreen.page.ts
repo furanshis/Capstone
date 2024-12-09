@@ -8,6 +8,7 @@ import { doc, getDoc } from 'firebase/firestore';
 import { first } from 'rxjs/operators';
 import { Asistencia2, Empleado } from '../interfaces/models';
 import { LoadingController } from '@ionic/angular';
+import { Geolocation } from '@capacitor/geolocation';
 
 
 
@@ -43,7 +44,7 @@ export class LockscreenPage implements OnInit {
     private firestore: AngularFirestore,
     private toastController: ToastController,
     private loadingCtrl: LoadingController,
-    private afAuth: AngularFireAuth  // Inyectamos AngularFireAuth
+    private afAuth: AngularFireAuth  
 
 
   ) {}
@@ -51,17 +52,15 @@ export class LockscreenPage implements OnInit {
 
   async ngOnInit() {
 
-    interface UserData {  
-      pinpass: string;
-    }
 
-    const uid = localStorage.getItem('uid_empelados'); // Obtén el UID del usuario
+
+    const uid = localStorage.getItem('uid'); // Obtiene el UID del usuario
     if (uid) {
       try {
-        const userDoc = await this.firestore.collection('users').doc(uid).get().toPromise();
-        if (userDoc && userDoc.exists) {
-          const userData = userDoc.data() as UserData; // Cast a la estructura esperada
-          this.pinpass = userData.pinpass; // Accede a `pinpass`
+        const empleadoDoc = await this.firestore.collection('empleados').doc(uid).get().toPromise();
+        if (empleadoDoc && empleadoDoc.exists) {
+          const empleadoData = empleadoDoc.data() as Empleado;
+          this.pinpass = empleadoData.pinpass; // Accede a `pinpass`
         } else {
           await this.showToast('Error: Usuario no encontrado.', 'danger');
         }
@@ -88,11 +87,11 @@ export class LockscreenPage implements OnInit {
   async validatePinAndRegister() {
     try {
       // Asegurarse de que el UID esté disponible usando AngularFireAuth
-      const user = await this.afAuth.authState.pipe(first()).toPromise(); // Usamos authState
+      const empleado = await this.afAuth.authState.pipe(first()).toPromise();
       
       // Verificar explícitamente si 'user' es null o undefined
-      if (user) {
-        this.uid = user.uid; // Asignamos UID solo si 'user' no es null
+      if (empleado) {
+        this.uid = empleado.uid; // Asignamos UID solo si 'user' no es null
       } else {
         this.errorMessage = 'No se encontró el UID del usuario.';
         console.error('Error: UID del usuario no está definido.');
@@ -102,7 +101,7 @@ export class LockscreenPage implements OnInit {
       console.log(`Buscando empleado con UID: ${this.uid} en la colección empleados...`);
   
       // Consultamos la colección de empleados usando el UID del usuario
-      const empleadoRef = this.firestore.collection('empleados', ref => ref.where('uid_empelado', '==', this.uid));
+      const empleadoRef = this.firestore.collection('empleado', ref => ref.where('uid_empelado', '==', this.uid));
       const snapshot = await empleadoRef.get().toPromise();  // Convertimos el Observable en Promesa
   
       if (snapshot && !snapshot.empty) {
@@ -169,15 +168,6 @@ export class LockscreenPage implements OnInit {
     }
   }
   
-  
-
-  
-
-  
-
-
-
-
 
   // Agregar número al PIN ingresado
   addNumber(number: string) {
@@ -197,18 +187,4 @@ export class LockscreenPage implements OnInit {
     this.pinDots.fill(false); // Restablecer los círculos
   }
 
-  async submitPin() {
-    const isValid = await this.pinpass.includes(this.enteredPin);
-    if (isValid) {
-      this.router.navigateByUrl('/inicio');
-    } else {
-      const alert = await this.alertController.create({
-        header: 'Codigo Incorrecto',
-        message: 'Porfavor Intentalo Denuevo.',
-        buttons: ['OK'],
-      });
-      await alert.present();
-      this.clearPin(); // Restablecer el PIN en caso de que sea inválido
-    }
-  }
 }

@@ -251,20 +251,6 @@ toleranceRadius = 5000; // Radio de 1 km en metros
   }
 
 
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-
-
    // Función para registrar la asistencia (entrada o salida)
    probarAsistencia() {
     if (this.asistenciaHoy) {
@@ -535,7 +521,6 @@ toleranceRadius = 5000; // Radio de 1 km en metros
       }
     });
   }
-
 
   
   
