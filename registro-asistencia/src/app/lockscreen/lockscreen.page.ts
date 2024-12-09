@@ -16,6 +16,7 @@ import { Geolocation } from '@capacitor/geolocation';
 
 
 
+
 @Component({
   selector: 'app-lockscreen',
   templateUrl: './lockscreen.page.html',
@@ -31,7 +32,20 @@ export class LockscreenPage implements OnInit {
   uid: string = '';
   errorMessage: string ='';
   geoLocationService: any;
-  userLatitude: any;
+  userLatitude: number = 0;
+
+  isLoading = false;
+  horasTrabajadas = '';
+  successMessage = '';
+  succesMessageSalida= '';
+  errorMessageSalida = '';
+  currentTime = new Date();
+  userName: string = 'Usuario';
+  userLongitude: number = 0;
+  asistenciaHoy: Asistencia2 | null = null;
+  fechaHoy: string = new Date().toISOString().split('T')[0];
+  registroAsistencia = false
+  type: string = '';
 
 
   goBack() {
@@ -84,75 +98,78 @@ export class LockscreenPage implements OnInit {
 
   // Método para validar el PIN y registrar la asistencia
 
-  async validatePinAndRegister() {
-    try {
-      // Asegurarse de que el UID esté disponible usando AngularFireAuth
-      const empleado = await this.afAuth.authState.pipe(first()).toPromise();
-      
-      // Verificar explícitamente si 'user' es null o undefined
-      if (empleado) {
-        this.uid = empleado.uid; // Asignamos UID solo si 'user' no es null
-      } else {
-        this.errorMessage = 'No se encontró el UID del usuario.';
-        console.error('Error: UID del usuario no está definido.');
-        return; // Salir si no hay usuario autenticado
-      }
-  
-      console.log(`Buscando empleado con UID: ${this.uid} en la colección empleados...`);
-  
-      // Consultamos la colección de empleados usando el UID del usuario
-      const empleadoRef = this.firestore.collection('empleado', ref => ref.where('uid_empelado', '==', this.uid));
-      const snapshot = await empleadoRef.get().toPromise();  // Convertimos el Observable en Promesa
-  
-      if (snapshot && !snapshot.empty) {
-        const empleadoData = snapshot.docs[0].data() as Empleado;  // Casteamos el documento obtenido
-        console.log('Datos del empleado:', empleadoData);
-  
-        // Verificar si el PIN ingresado coincide con el PIN almacenado en Firestore
-        if (this.enteredPin === empleadoData.pinpass) {
-          console.log('PIN correcto, registrando asistencia...');
-          
-          // Obtener la ubicación del empleado
-          const location = await this.geoLocationService.getLocation();
-          if (!location) {
-            this.showToast('No se pudo obtener la geolocalización', 'danger');
-            return;
-          }
-  
+  // Método para validar el PIN y registrar la asistencia
+async validatePinAndRegister() {
+  try {
+    // Asegurarse de que el UID esté disponible usando AngularFireAuth
+    const empleado = await this.afAuth.authState.pipe(first()).toPromise();
+
+    if (empleado) {
+      this.uid = empleado.uid; // Asignamos UID solo si el usuario está autenticado
+    } else {
+      this.errorMessage = 'No se encontró el UID del usuario.';
+      console.error('Error: UID del usuario no está definido.');
+      return; // Salir si no hay usuario autenticado
+    }
+
+    console.log(`Buscando empleado con UID: ${this.uid} en la colección empleados...`);
+
+    // Consultamos la colección de empleados usando el UID
+    const empleadoRef = this.firestore.collection('empleado', ref => ref.where('uid_empelado', '==', this.uid));
+    const snapshot = await empleadoRef.get().toPromise();
+
+    if (snapshot && !snapshot.empty) {
+      const empleadoData = snapshot.docs[0].data() as Empleado; // Cast al tipo de empleado
+      console.log('Datos del empleado:', empleadoData);
+
+      // Verificar si el PIN ingresado coincide con el PIN almacenado en Firestore
+      if (this.enteredPin === empleadoData.pinpass) {
+        console.log('PIN correcto, registrando asistencia...');
+
+        // Obtener la ubicación del empleado
+        try {
+          const location = await this.getCurrentPosition();
+          console.log('Ubicación obtenida:', location);
+
           // Crear el objeto de asistencia
           const asistencia = {
             fecha_asistencia: new Date().toISOString(),
             hora_entrada: new Date().toLocaleTimeString(),
-            hora_salida: '',  // Se llenará más tarde cuando salga
+            hora_salida: '', // Se llenará más tarde cuando salga
             horas_trabajadas: 0,
             horas_extras: 0,
             geolocacion: {
-              x: location.latitude,
-              y: location.longitude
+              x: location.lat,
+              y: location.lng,
             },
             validacion_biometrica: false,
           };
-  
-          // Ahora guardamos la asistencia
-          await this.registrarAsistencia(asistencia); // Pasamos el objeto de asistencia a la función
-  
-        } else {
-          this.errorMessage = 'El PIN ingresado es incorrecto.';
-          console.error('Error: El PIN ingresado no coincide con el almacenado.');
+
+          // Guardar la asistencia en Firestore
+          await this.registrarAsistencia(asistencia);
+        } catch (locationError) {
+          this.showToast('No se pudo obtener la geolocalización', 'danger');
+          console.error('Error al obtener ubicación:', locationError);
           return;
         }
       } else {
-        this.errorMessage = 'No se encontró el empleado en la base de datos.';
-        console.error('Error: Documento del empleado no encontrado en la base de datos.');
+        this.errorMessage = 'El PIN ingresado es incorrecto.';
+        console.error('Error: El PIN ingresado no coincide con el almacenado.');
+        return;
       }
-    } catch (error) {
-      this.errorMessage = 'Hubo un error al validar el PIN.';
-      console.error('Error al validar el PIN:', error);
-    } finally {
-      console.log('Finalizando proceso de validación...');
-      await this.loadingCtrl.dismiss();
+    } else {
+      this.errorMessage = 'No se encontró el empleado en la base de datos.';
+      console.error('Error: Documento del empleado no encontrado en la base de datos.');
     }
+  } catch (error) {
+    this.errorMessage = 'Hubo un error al validar el PIN.';
+    console.error('Error al validar el PIN:', error);
+  } finally {
+    console.log('Finalizando proceso de validación...');
+    await this.loadingCtrl.dismiss();
   }
+}
+
   
   // Método para registrar la asistencia con ubicación
   async registrarAsistencia(asistencia: any) {
@@ -161,7 +178,7 @@ export class LockscreenPage implements OnInit {
       await this.firestore.collection('asistencia').add(asistencia);  // Guardamos en la colección 'asistencia'
     
       this.showToast('Asistencia registrada con éxito', 'success');
-      this.router.navigate(['/home']); // Redirigimos al usuario a la página principal
+      this.router.navigate(['/inicio']); // Redirigimos al usuario a la página principal
     } catch (error) {
       console.error('Error al registrar la asistencia:', error);
       this.showToast('Hubo un error al registrar la asistencia', 'danger');
@@ -187,4 +204,26 @@ export class LockscreenPage implements OnInit {
     this.pinDots.fill(false); // Restablecer los círculos
   }
 
+
+
+
+
+  async getCurrentPosition(): Promise<{ lat: number; lng: number }> {
+    try {
+      const position = await Geolocation.getCurrentPosition();
+      console.log('Accuracy:', position.coords.accuracy);
+
+      return {
+        lat: position.coords.latitude,
+        lng: position.coords.longitude
+      };
+    } catch (error) {
+      console.error('Error obteniendo posición:', error);
+      throw new Error('No se pudo obtener la ubicación actual.');
+    }
+  }
+
+
+
 }
+
