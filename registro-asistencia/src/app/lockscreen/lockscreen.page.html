@@ -9,12 +9,10 @@
   </ion-toolbar>
 </ion-header>
 
-
-
 <ion-content class="ion-padding">
   <h2 class="centered">Introduzca el PIN</h2>
   <br>
-  <div class="pin-indicator ">
+  <div class="pin-indicator">
     <ion-icon *ngFor="let dot of pinDots" [name]="dot ? 'ellipse' : 'ellipse-outline'" class="pin-dot"></ion-icon>
   </div>
 
@@ -58,4 +56,11 @@
       </ion-row>
     </ion-grid>
   </div>
-</ion-content>
+
+  <!-- Aquí agregamos el botón para registrar la asistencia -->
+  <ion-button *ngIf="enteredPin.length === 4 && enteredPin === pinpass" 
+  expand="block" 
+  color="success" 
+  (click)="validatePinAndRegister()">
+  Registrar Asistencia
+</ion-button>

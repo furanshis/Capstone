@@ -6,10 +6,23 @@
   </ion-header>
 
   <ion-content>
-    <ion-list>
+    <ion-list style="display: flex; flex-direction: column; height: 100%; padding: 10px;">
       <!-- Menú de opciones -->
-      <ion-item routerLink="/perfilusuario">Perfil</ion-item>
-      <ion-button (click)="logout()">Cerrar Sesión</ion-button>
+      <ion-item routerLink="/perfilusuario" style="border-radius: 10px; margin-bottom: 15px; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); background-color: #f9f9f9; transition: 0.3s;">
+        <ion-label style="font-weight: bold; font-size: 18px; color: #333;">Perfil</ion-label>
+      </ion-item>
+
+      <!-- Espacio vacío para empujar el botón hacia abajo -->
+      <div style="flex-grow: 1;"></div>
+
+      <!-- Botón de Cerrar Sesión (al final) -->
+      <ion-button 
+  (click)="logout()" 
+  fill="solid"
+  color="danger"
+  style="border-radius: 25px; padding: 12px 20px; transition: 0.3s; margin-top: 20px;">
+  Cerrar Sesión
+</ion-button>
     </ion-list>
   </ion-content>
 </ion-menu>
@@ -88,52 +101,52 @@
   </ion-item>
 
 
-  <!-- Contenedor de las tarjetas de entrada y salida -->
-  <div class="card-container">
+ <!-- Contenedor de las tarjetas de entrada y salida -->
+ <div class="card-container">
+  <ion-card id="entrada" style="background: #40ff00c6; border-radius: 15px; box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);">
+    <ion-card-header>
+      <ion-card-title>ENTRADA</ion-card-title>
+      <ion-card-subtitle>Entrada tarjetero digital</ion-card-subtitle>
+    </ion-card-header>
+    <div class="button-container-d">
+      <ion-button id="pin" routerLink="/lockscreen" fill="clear" style="border-radius: 20px; color: #000000;">PIN</ion-button>
+      <ion-button id="biometrico" [disabled]="isLoading" (click)="registrarAsistencia()" style="border-radius: 20px; background-color: #40ff00; color: white;">
+        <ion-icon slot="start" name="finger-print-outline"></ion-icon>
+        {{ isLoading ? 'Registrando...' : '' }}
+      </ion-button>
+    </div>
+  </ion-card>
 
-    <ion-card id="entrada" style="background: #40ff00c6;">
-      <ion-card-header>
-        <ion-card-title>ENTRADA</ion-card-title>
-        <ion-card-subtitle>Entrada tarjetero digital</ion-card-subtitle>
-      </ion-card-header>
-      <div class="button-container-d">
-      <ion-button id="pin" routerLink="/lockscreen" fill="clear">PIN</ion-button>
-      <ion-button id="biometrico"
-      [disabled]="isLoading"
-      (click)="registrarAsistencia()"
-    >
-      <ion-icon slot="start" name="finger-print-outline"></ion-icon>
-      {{ isLoading ? 'Registrando...' : '' }}
-    </ion-button>
-  </div>
-    </ion-card>
   <br>
-    <ion-card id="salida" style="background:#ae0c0c;">
-      <ion-card-header>
-        <ion-card-title>SALIDA</ion-card-title>
-        <ion-card-subtitle>Salida tarjetero digital</ion-card-subtitle>
-      </ion-card-header>
-      <ion-button routerLink="/lockscreen" fill="clear">PIN</ion-button>
-    </ion-card>
-  </div>
+
+  <ion-card id="salida" style="background:#ae0c0c; border-radius: 15px; box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);">
+    <ion-card-header>
+      <ion-card-title>SALIDA</ion-card-title>
+      <ion-card-subtitle>Salida tarjetero digital</ion-card-subtitle>
+    </ion-card-header>
+    <ion-button routerLink="/lockscreen" fill="clear" style="border-radius: 20px; color: #020000;">PIN</ion-button>
+  </ion-card>
+</div>
 
 
 
 
-  <!-- Tarjetas con información (2 juntas y 1 al final) -->
+
+  <!-- Tarjetas con información -->
   <div class="flex justify-center mt-4">
     <div class="grid grid-cols-2 gap-4 max-w-[480px] px-4 py-3">
-      <ion-card class="bg-card text-card-foreground p-4 rounded-xl">
+      <ion-card class="bg-card text-card-foreground p-4 rounded-xl shadow-md">
         <h3 class="text-primary text-lg font-bold mb-2">Horas Trabajadas</h3>
         <p class="text-primary text-base font-normal">120 horas</p>
       </ion-card>
-      <ion-card class="bg-card text-card-foreground p-4 rounded-xl">
+      <ion-card class="bg-card text-card-foreground p-4 rounded-xl shadow-md">
         <h3 class="text-primary text-lg font-bold mb-2">Días Asistidos</h3>
         <p class="text-primary text-base font-normal">20 días</p>
       </ion-card>
     </div>
+
     <div class="flex justify-center px-4 py-3">
-      <ion-card class="bg-card text-card-foreground p-4 rounded-xl w-full">
+      <ion-card class="bg-card text-card-foreground p-4 rounded-xl w-full shadow-md">
         <h3 class="text-primary text-lg font-bold mb-2">Ausencias</h3>
         <p class="text-primary text-base font-normal">2 días</p>
       </ion-card>

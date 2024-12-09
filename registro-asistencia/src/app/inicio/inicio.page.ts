@@ -11,6 +11,8 @@ import { Asistencia2 } from '../interfaces/models';
 import { Observable } from 'rxjs';
 import { provideFirestore, getFirestore } from '@angular/fire/firestore';
 import { Firestore, collection, query, where, getDocs } from '@angular/fire/firestore';
+import { Empleado } from 'src/app/interfaces/models'; // Importa la interfaz si no lo has hecho ya
+
 
 interface EmpresaData {
   latitud: number;
@@ -30,7 +32,6 @@ export class InicioPage implements OnInit {
   succesMessageSalida= '';
   errorMessageSalida = '';
   currentTime = new Date();
-  pinpass: number = 1234 ;
   private timeInterval: any;
   userName: string = 'Usuario';
   userLatitude: number = 0;
@@ -38,8 +39,7 @@ export class InicioPage implements OnInit {
   asistenciaHoy: Asistencia2 | null = null;
   fechaHoy: string = new Date().toISOString().split('T')[0];
   registroAsistencia = false
-  enteredPin: number = 1234; // PIN ingresado por el usuario
-  storedPin: number =  1234;  // PIN almacenado en Firestore
+  enteredPin: string = ''; // PIN ingresado por el usuario
   type: string = '';
 
   //cASA JUAN
@@ -457,11 +457,14 @@ toleranceRadius = 1000; // Radio de 1 km en metros
     });
   }
 
+
   async validatePinAndRegister() {
     // Verificar geolocalización
+    console.log('Iniciando validación de ubicación...');
     const isInAllowedArea = await this.checkLocation();
     if (!isInAllowedArea) {
       this.errorMessage = 'No puedes registrar asistencia fuera del área permitida.';
+      console.error('Error: Usuario fuera del área permitida.');
       this.isLoading = false;
       return;
     }
@@ -474,59 +477,54 @@ toleranceRadius = 1000; // Radio de 1 km en metros
     await loading.present();
   
     try {
-      // Asegúrate de que 'this.uid' tiene el valor correcto
       if (!this.uid) {
         this.errorMessage = 'No se encontró el UID del usuario.';
+        console.error('Error: UID del usuario no está definido.');
         return;
       }
   
-      // Obtener el PIN almacenado en Firestore
-      const pinpassSnapshot = await this.firestore
-        .collection('empleados')
-        .doc(this.uid)  // Usamos el UID para acceder al documento
+      console.log(`Buscando empleado con UID: ${this.uid} en la colección empleados...`);
+      
+      // Obtener el documento del empleado y castear los datos a la interfaz Empleado
+      const empleadoSnapshot = await this.firestore
+        .collection('empleados') // Asegúrate de que la colección sea correcta
+        .doc(this.uid)           // Usamos el UID para acceder al documento
         .get()
-        .toPromise(); // Convertimos el observable en una promesa
+        .toPromise();            // Convertimos el observable en una promesa
   
-      if (pinpassSnapshot && pinpassSnapshot.exists) {
-        const storedPin = (pinpassSnapshot.data() as { pinpass: number })?.pinpass;
-        console.log('PIN almacenado:', storedPin);
-        console.log('PIN ingresado:', this.enteredPin);
+      if (empleadoSnapshot && empleadoSnapshot.exists) {
+        console.log('Documento del empleado encontrado en la base de datos.');
+        // Castear el contenido del documento a la interfaz Empleado
+        const empleado = empleadoSnapshot.data() as Empleado;
+        console.log('Datos del empleado:', empleado);
   
-        // Comparar los valores de forma correcta
-        if (storedPin === this.enteredPin) {
+        // Acceder al pinpass del empleado
+        const pinpass = empleado.pinpass;
+        console.log(`PIN en Firestore: ${pinpass}, PIN ingresado: ${this.enteredPin}`);
+  
+        // Validar el PIN ingresado contra el de Firestore
+        if ((this.enteredPin) === pinpass) {
           console.log('PIN correcto, registrando asistencia...');
-          
-          // Crear el objeto de asistencia para almacenar en Firestore
-          const asistencia: Asistencia2 = {
-            uid: this.uid,
-            fechaCreacion: new Date(),
-            horaEntrada: new Date().toLocaleTimeString(),
-            horaSalida: '',  // Este campo puede quedar vacío por ahora
-            horasTrabajadas: 0, // Puedes calcular las horas trabajadas más tarde
-            validacionBiometrica: false, // Si es necesario, puedes usar la validación biométrica
-            horasExtras: 0, // Puedes calcular las horas extras si es necesario
-            latitud: this.workplaceCoords.lat,
-            longitud: this.workplaceCoords.lng,
-          };
-  
-          // Guardar la asistencia en la colección de Firestore
-          await this.firestore.collection('asistencias').add(asistencia);
-  
-          console.log('Asistencia registrada correctamente.');
-          // Aquí puedes añadir más lógica si es necesario, como cambiar el estado o actualizar la UI
+          // Lógica para registrar asistencia
+          await this.registrarAsistencia(); // Implementa tu lógica de registro aquí
         } else {
           this.errorMessage = 'El PIN ingresado es incorrecto.';
+          console.error('Error: El PIN ingresado no coincide con el almacenado.');
+          return;
         }
       } else {
-        this.errorMessage = 'No se encontró el PIN del usuario en la base de datos.';
+        this.errorMessage = 'No se encontró el empleado en la base de datos.';
+        console.error('Error: Documento del empleado no encontrado en la base de datos.');
       }
     } catch (error) {
       this.errorMessage = 'Hubo un error al validar el PIN.';
-      console.error(error);
+      console.error('Error al validar el PIN:', error);
     } finally {
+      console.log('Finalizando proceso de validación...');
       await loading.dismiss();
     }
   }
+  
   
   
 
@@ -536,15 +534,6 @@ toleranceRadius = 1000; // Radio de 1 km en metros
     localStorage.removeItem('Empleados'); // Limpiar el localStorage
     this.router.navigate(['/home']); // Redirigir al login
   }
-
-  
-
-
-
-
  
 };
-function validatePinAndRegister() {
-  throw new Error('Function not implemented.');
-}
 

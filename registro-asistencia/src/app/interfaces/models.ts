@@ -22,7 +22,7 @@ export interface Asistencia {
     apellido_materno: string;
     hora_entrada_real: string;
     hora_salida_real: string;
-    pinpass: number;
+    pinpass: string;
   }
 
   interface Supervisor {
