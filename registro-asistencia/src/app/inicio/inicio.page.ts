@@ -11,7 +11,7 @@ import { Asistencia2 } from '../interfaces/models';
 import { Observable } from 'rxjs';
 import { provideFirestore, getFirestore } from '@angular/fire/firestore';
 import { Firestore, collection, query, where, getDocs } from '@angular/fire/firestore';
-import { Empleado } from 'src/app/interfaces/models'; // Importa la interfaz si no lo has hecho ya
+import { Empleado } from 'src/app/interfaces/models';
 
 
 interface EmpresaData {

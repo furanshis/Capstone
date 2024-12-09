@@ -102,7 +102,7 @@ export class LockscreenPage implements OnInit {
       console.log(`Buscando empleado con UID: ${this.uid} en la colección empleados...`);
   
       // Consultamos la colección de empleados usando el UID del usuario
-      const empleadoRef = this.firestore.collection('empleados', ref => ref.where('uid', '==', this.uid));
+      const empleadoRef = this.firestore.collection('empleados', ref => ref.where('uid_empelado', '==', this.uid));
       const snapshot = await empleadoRef.get().toPromise();  // Convertimos el Observable en Promesa
   
       if (snapshot && !snapshot.empty) {
