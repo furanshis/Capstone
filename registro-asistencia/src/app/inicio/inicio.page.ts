@@ -11,8 +11,7 @@ import { Asistencia2 } from '../interfaces/models';
 import { Observable } from 'rxjs';
 import { provideFirestore, getFirestore } from '@angular/fire/firestore';
 import { Firestore, collection, query, where, getDocs } from '@angular/fire/firestore';
-import { Empleado } from 'src/app/interfaces/models';
-
+import { firstValueFrom } from 'rxjs';
 
 interface EmpresaData {
   latitud: number;
@@ -27,6 +26,7 @@ interface EmpresaData {
 export class InicioPage implements OnInit {
   
   isLoading = false;
+  horasTrabajadas = '';
   successMessage = '';
   errorMessage = '';
   succesMessageSalida= '';
@@ -55,7 +55,7 @@ workplaceCoords = {
 lat: 0, // Reemplaza con la latitud real
 lng: 0  // Reemplaza con la longitud real
 };
-toleranceRadius = 1000; // Radio de 1 km en metros
+toleranceRadius = 5000; // Radio de 1 km en metros
 
   // TODO: Replace with actual Firebase UID
   
@@ -279,6 +279,8 @@ toleranceRadius = 1000; // Radio de 1 km en metros
   
 
   async registrarAsistencia() {
+
+    
     /*
     const fingerprintValid = await this.checkFingerprint();
     if (!fingerprintValid) {
@@ -293,7 +295,7 @@ toleranceRadius = 1000; // Radio de 1 km en metros
     // Verificar geolocalización
     const isInAllowedArea = await this.checkLocation();
     if (!isInAllowedArea) {
-      this.errorMessage = 'No puedes registrar asistencia fuera del área permitida.';
+      await this.showToast('No puedes registrar asistencia fuera del área permitida.', 'danger');
       this.isLoading = false;
       return;
     }
@@ -311,7 +313,7 @@ toleranceRadius = 1000; // Radio de 1 km en metros
         const nueva_asistencia: Asistencia2 = {
           uid: this.uid, // Reemplaza con el UID del empleado
           fechaCreacion: new Date(),
-          horaEntrada: new Date().toLocaleTimeString(),
+          horaEntrada: new Date().toLocaleTimeString('en-GB', { hour12: false }),
           validacionBiometrica: true,
           horaSalida: '',
           horasTrabajadas: 0,
@@ -322,15 +324,20 @@ toleranceRadius = 1000; // Radio de 1 km en metros
         }
   
         this.asistenciaService.crearAsistencia(nueva_asistencia)
-        .then(() => this.successMessage = 'Asistencia registrada con éxito!')
-        .catch((error) => this.errorMessage = 'Hubo un error al registrar la entrada.');
+        .then(() => {
+          this.registroAsistencia = true;
+          this.showToast('Asistencia registrada con éxito!', 'success');
+        })
+      .catch((error) => {
+        this.registroAsistencia = false;
+        this.showToast('Hubo un error al registrar la entrada.', 'danger')} )//this.errorMessage = 'Hubo un error al registrar la entrada.');
         
   
   
       } catch (error) {
-        this.errorMessage = 'Error al validar la asistencia. Inténtelo de nuevo.';
+        this.registroAsistencia = false;
+        await this.showToast('Error al validar la asistencia. Inténtelo de nuevo.', 'danger')  //this.errorMessage = 'Error al validar la asistencia. Inténtelo de nuevo.';
         console.error(error);
-        await this.showToast(this.errorMessage, 'danger');
       } finally {
         await loading.dismiss();
       }
@@ -340,7 +347,7 @@ toleranceRadius = 1000; // Radio de 1 km en metros
 
   // Registrar la salida
   async registerSalida() {
-    
+    /*
     const fingerprintValid = await this.checkFingerprint();
     if (!fingerprintValid) {
       return;
@@ -350,7 +357,7 @@ toleranceRadius = 1000; // Radio de 1 km en metros
       await this.showToast('Error: Usuario no identificado.', 'danger');
       return;
     }
-
+    */
     // Verificar geolocalización
     const isInAllowedArea = await this.checkLocation();
     if (!isInAllowedArea) {
@@ -367,10 +374,11 @@ toleranceRadius = 1000; // Radio de 1 km en metros
 
       // Actualizar la asistencia con la hora de salida
       await this.asistenciaService.actualizarAsistencia(this.uid);
-      this.succesMessageSalida = 'Salida registrada con éxito!';
+      this.registroAsistencia = false;
+      await this.showToast('Salida registrada con éxito!', 'success');
     } catch (error) {
       console.error('Error al registrar la salida:', error);
-      this.errorMessageSalida = 'Hubo un error al registrar la salida.';
+      await this.showToast('Hubo un error al registrar la salida.', 'danger');
     } finally {
       this.isLoading = false;
     }
@@ -382,6 +390,43 @@ toleranceRadius = 1000; // Radio de 1 km en metros
     const diferencia = salida.getTime() - entrada.getTime(); // Diferencia en milisegundos
     return diferencia / (1000 * 60 * 60); // Convertir de milisegundos a horas
   }
+
+  async verificarAsistenciaHoy(firestore: Firestore, uid: string): Promise<boolean> {
+    try {
+      if (!uid) {
+        console.error("UID no proporcionado.");
+        return false;
+      }
+  
+      // Obtener la fecha actual sin hora
+      const fechaActual = new Date();
+      fechaActual.setHours(0, 0, 0, 0);
+  
+      // Referencia a la colección
+      const asistenciaRef = collection(firestore, 'asistencia');
+  
+      // Consulta a Firestore
+      const consulta = query(
+        asistenciaRef,
+        where('uid', '==', uid),
+        where('fechaCreacion', '>=', fechaActual)
+      );
+  
+      const resultados = await getDocs(consulta);
+  
+      if (!resultados.empty) {
+        console.log("Asistencia ya registrada para hoy.");
+        return true; // Ya existe una asistencia
+      } else {
+        console.log("No se encontró asistencia registrada para hoy.");
+        return false; // No existe asistencia
+      }
+    } catch (error) {
+      console.error("Error al verificar la asistencia:", error);
+      return false; // Error al consultar Firestore
+    }
+  }
+
 
 
   private async showToast(message: string, color: string): Promise<void> {
@@ -412,6 +457,36 @@ toleranceRadius = 1000; // Radio de 1 km en metros
     console.log('changed: ',e);
   }
 
+  async cargarHorasTrabajadas(uid: string) {
+    try {
+  
+      console.log('Consultando reporte para UID:', uid);
+  
+      const reporte = await firstValueFrom(
+        this.asistenciaService.getReporteAsistencia(uid)
+      );
+  
+      console.log('Datos recibidos:', reporte);
+  
+      if (reporte && reporte.horas_totales_trabajadas !== undefined) {
+        console.log('se encontraron datos')
+        this.horasTrabajadas = this.formatearHoras(reporte.horas_totales_trabajadas);
+      } else {
+        console.log('No se encontró el reporte para este UID.');
+        this.horasTrabajadas = '0h 0m';
+      }
+    } catch (error) {
+      console.log('Error al cargar el reporte:', error);
+      this.horasTrabajadas = 'Error al cargar datos';
+    }
+  }
+
+  formatearHoras(horas: number): string {
+    const horasEnteras = Math.floor(horas);
+    const minutos = Math.round((horas - horasEnteras) * 60);
+    return `${horasEnteras}h ${minutos}m`;
+  }
+
 
   async ngOnInit(){  
     // Obtener el nombre del usuario desde Firebase Authentication
@@ -421,11 +496,17 @@ toleranceRadius = 1000; // Radio de 1 km en metros
     }
     this.empleado = localStorage.getItem('Empleados')!;
 
+    this.asistenciaService.verificarAsistenciaHoy(this.uid)
+
+
     this.afAuth.authState.subscribe((user) => {
       if (user) {
         this.uid = user.uid; // UID del usuario autenticado
         this.userName = user.displayName || 'Empleado'; // Opcional: nombre del usuario
         console.log('UID:', this.uid);
+
+        //obtener registro
+        this.cargarHorasTrabajadas(this.uid);
 
         // Obtener coordenadas de la empresa
         this.firestore
@@ -452,79 +533,10 @@ toleranceRadius = 1000; // Radio de 1 km en metros
         // Manejo en caso de que no haya usuario autenticado
         this.uid = '';
       }
-
-      
     });
   }
 
 
-  async validatePinAndRegister() {
-    // Verificar geolocalización
-    console.log('Iniciando validación de ubicación...');
-    const isInAllowedArea = await this.checkLocation();
-    if (!isInAllowedArea) {
-      this.errorMessage = 'No puedes registrar asistencia fuera del área permitida.';
-      console.error('Error: Usuario fuera del área permitida.');
-      this.isLoading = false;
-      return;
-    }
-  
-    // Crear un loading spinner mientras se procesa
-    const loading = await this.loadingCtrl.create({
-      message: 'Registrando asistencia...',
-      spinner: 'circular',
-    });
-    await loading.present();
-  
-    try {
-      if (!this.uid) {
-        this.errorMessage = 'No se encontró el UID del usuario.';
-        console.error('Error: UID del usuario no está definido.');
-        return;
-      }
-  
-      console.log(`Buscando empleado con UID: ${this.uid} en la colección empleados...`);
-      
-      // Obtener el documento del empleado y castear los datos a la interfaz Empleado
-      const empleadoSnapshot = await this.firestore
-        .collection('empleados') // Asegúrate de que la colección sea correcta
-        .doc(this.uid)           // Usamos el UID para acceder al documento
-        .get()
-        .toPromise();            // Convertimos el observable en una promesa
-  
-      if (empleadoSnapshot && empleadoSnapshot.exists) {
-        console.log('Documento del empleado encontrado en la base de datos.');
-        // Castear el contenido del documento a la interfaz Empleado
-        const empleado = empleadoSnapshot.data() as Empleado;
-        console.log('Datos del empleado:', empleado);
-  
-        // Acceder al pinpass del empleado
-        const pinpass = empleado.pinpass;
-        console.log(`PIN en Firestore: ${pinpass}, PIN ingresado: ${this.enteredPin}`);
-  
-        // Validar el PIN ingresado contra el de Firestore
-        if ((this.enteredPin) === pinpass) {
-          console.log('PIN correcto, registrando asistencia...');
-          // Lógica para registrar asistencia
-          await this.registrarAsistencia(); // Implementa tu lógica de registro aquí
-        } else {
-          this.errorMessage = 'El PIN ingresado es incorrecto.';
-          console.error('Error: El PIN ingresado no coincide con el almacenado.');
-          return;
-        }
-      } else {
-        this.errorMessage = 'No se encontró el empleado en la base de datos.';
-        console.error('Error: Documento del empleado no encontrado en la base de datos.');
-      }
-    } catch (error) {
-      this.errorMessage = 'Hubo un error al validar el PIN.';
-      console.error('Error al validar el PIN:', error);
-    } finally {
-      console.log('Finalizando proceso de validación...');
-      await loading.dismiss();
-    }
-  }
-  
   
   
 
