@@ -9,6 +9,10 @@ import { first } from 'rxjs/operators';
 import { Asistencia2, Empleado } from '../interfaces/models';
 import { LoadingController } from '@ionic/angular';
 import { Geolocation } from '@capacitor/geolocation';
+import { firstValueFrom } from 'rxjs';
+import { AsistenciaserviceService } from '../services/asistenciaservice.service';
+
+
 
 
 
@@ -47,24 +51,120 @@ export class LockscreenPage implements OnInit {
   registroAsistencia = false
   type: string = '';
 
+  workplaceCoords = {
+    lat: 0, // Reemplaza con la latitud real
+    lng: 0  // Reemplaza con la longitud real
+    };
+    toleranceRadius = 5000; // Radio de 1 km en metros
+  
+
 
   goBack() {
     window.history.back();
   }
 
   constructor(
+    private toastCtrl: ToastController,
+
     private router: Router,
     private alertController: AlertController,
     private firestore: AngularFirestore,
     private toastController: ToastController,
     private loadingCtrl: LoadingController,
-    private afAuth: AngularFireAuth  
+    private afAuth: AngularFireAuth,
+    private asistenciaService: AsistenciaserviceService,
 
 
   ) {}
 
+  // Función para calcular la distancia usando la fórmula de Haversine
+  calculateDistance(lat1: number, lon1: number, lat2: number, lon2: number): number {
+    const R = 6371e3; // Radio de la Tierra en metros
+    const φ1 = lat1 * (Math.PI / 180);
+    const φ2 = lat2 * (Math.PI / 180);
+    const Δφ = (lat2 - lat1) * (Math.PI / 180);
+    const Δλ = (lon2 - lon1) * (Math.PI / 180);
+
+    const a = Math.sin(Δφ / 2) * Math.sin(Δφ / 2) +
+              Math.cos(φ1) * Math.cos(φ2) *
+              Math.sin(Δλ / 2) * Math.sin(Δλ / 2);
+    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+
+    return R * c; // Retorna la distancia en metros
+  }
+
+  formatearHoras(horas: number): string {
+    const horasEnteras = Math.floor(horas);
+    const minutos = Math.round((horas - horasEnteras) * 60);
+    return `${horasEnteras}h ${minutos}m`;
+  }
+
+  async cargarHorasTrabajadas(uid: string) {
+    try {
+  
+      console.log('Consultando reporte para UID:', uid);
+  
+      const reporte = await firstValueFrom(
+        this.asistenciaService.getReporteAsistencia(uid)
+      );
+  
+      console.log('Datos recibidos:', reporte);
+  
+      if (reporte && reporte.horas_totales_trabajadas !== undefined) {
+        console.log('se encontraron datos')
+        this.horasTrabajadas = this.formatearHoras(reporte.horas_totales_trabajadas);
+      } else {
+        console.log('No se encontró el reporte para este UID.');
+        this.horasTrabajadas = '0h 0m';
+      }
+    } catch (error) {
+      console.log('Error al cargar el reporte:', error);
+      this.horasTrabajadas = 'Error al cargar datos';
+    }
+  }
+
+  
+
 
   async ngOnInit() {
+
+    const user = await this.afAuth.currentUser;
+
+    this.afAuth.authState.subscribe((user) => {
+      if (user) {
+        this.uid = user.uid; // UID del usuario autenticado
+        this.userName = user.displayName || 'Empleado'; // Opcional: nombre del usuario
+        console.log('UID:', this.uid);
+
+        //obtener registro
+        this.cargarHorasTrabajadas(this.uid);
+
+        // Obtener coordenadas de la empresa
+        this.firestore
+          .collection('Empresa', (ref) => ref.where('uid_empleado', '==', this.uid))
+          .valueChanges()
+          .subscribe(
+            (empresas: any[]) => {
+              if (empresas.length > 0) {
+                const empresa = empresas[0];
+                this.workplaceCoords.lat = empresa.latitud;
+                this.workplaceCoords.lng = empresa.longitud;
+
+                console.log("latitud", this.workplaceCoords.lat);
+                console.log("longitud", this.workplaceCoords.lng);  
+              } else {
+                console.error('Empresa no encontrada');
+              }
+            },
+            (error) => {
+              console.error('Error al obtener datos de la empresa:', error);
+            }
+          );
+      } else {
+        // Manejo en caso de que no haya usuario autenticado
+        this.uid = '';
+      }
+    });
 
 
 
@@ -85,14 +185,6 @@ export class LockscreenPage implements OnInit {
     }
   }
 
-  async showToast(message: string, color: string) {
-    const toast = await this.toastController.create({
-      message,
-      color,
-      duration: 2000
-    });
-    toast.present();
-  }
 
 
 
@@ -107,9 +199,17 @@ async validatePinAndRegister() {
     if (empleado) {
       this.uid = empleado.uid; // Asignamos UID solo si el usuario está autenticado
     } else {
+      this.showToast('Error: Usuario no identificado.', 'danger');
       this.errorMessage = 'No se encontró el UID del usuario.';
       console.error('Error: UID del usuario no está definido.');
       return; // Salir si no hay usuario autenticado
+    }
+
+    const isInAllowedArea = await this.checkLocation();
+    if (!isInAllowedArea) {
+      await this.showToast('No puedes registrar asistencia fuera del área permitida.', 'danger');
+      this.isLoading = false;
+      return;
     }
 
     console.log(`Buscando empleado con UID: ${this.uid} en la colección empleados...`);
@@ -133,16 +233,15 @@ async validatePinAndRegister() {
 
           // Crear el objeto de asistencia
           const asistencia = {
-            fecha_asistencia: new Date().toISOString(),
-            hora_entrada: new Date().toLocaleTimeString(),
-            hora_salida: '', // Se llenará más tarde cuando salga
-            horas_trabajadas: 0,
-            horas_extras: 0,
-            geolocacion: {
-              x: location.lat,
-              y: location.lng,
-            },
-            validacion_biometrica: false,
+            uid: this.uid, // Reemplaza con el UID del empleado
+            fechaCreacion: new Date(),
+            horaEntrada: new Date().toLocaleTimeString('en-GB', { hour12: false }),
+            validacionBiometrica: false,
+            horaSalida: '',
+            horasTrabajadas: 0,
+            horasExtras: 0,
+            latitud: this.userLatitude, // Reemplaza con la latitud actual
+            longitud: this.userLongitude, // Reemplaza con la longitud actual
           };
 
           // Guardar la asistencia en Firestore
@@ -153,6 +252,7 @@ async validatePinAndRegister() {
           return;
         }
       } else {
+        this.showToast('PIN incorrecto', 'danger');
         this.errorMessage = 'El PIN ingresado es incorrecto.';
         console.error('Error: El PIN ingresado no coincide con el almacenado.');
         return;
@@ -221,6 +321,42 @@ async validatePinAndRegister() {
       console.error('Error obteniendo posición:', error);
       throw new Error('No se pudo obtener la ubicación actual.');
     }
+  }
+
+  async checkLocation(): Promise<boolean>  {
+    try {
+      const userCoords = await this.getCurrentPosition();
+      console.log('User coordinates:', userCoords);
+      this.userLatitude = userCoords.lat;
+      this.userLongitude = userCoords.lng;
+      const distance = this.calculateDistance(
+        userCoords.lat,
+        userCoords.lng,
+        this.workplaceCoords.lat,
+        this.workplaceCoords.lng
+      );
+
+      if (distance <= this.toleranceRadius) {
+        console.log('Estás dentro del área permitida. Puedes registrar tu asistencia.');
+        return true;
+      } else {
+        console.log('Estás fuera del área permitida. No puedes registrar tu asistencia.');
+        return false;
+      }
+    } catch (error) {
+      console.error('Error:', error);
+      return false;
+    }
+  }
+
+  private async showToast(message: string, color: string): Promise<void> {
+    const toast = await this.toastCtrl.create({
+      message,
+      duration: 3000,
+      color,
+      position: 'top'
+    });
+    await toast.present();
   }
 
 
