@@ -4,6 +4,20 @@ google-map {
   border: 1px solid #ccc;
 }
 
+
+
+
+ion-content {
+  overflow: hidden;
+}
+
+
+
+
+
+
+
+
 /* Estilo base para los botones */
 .button-container {
   display: flex;
@@ -271,4 +285,11 @@ ion-content {
         }
       }
     }
+    ion-button {
+      margin-top: 25px;
+      --background: #0077ff;
+    }
+
+
+    
   }

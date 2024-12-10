@@ -65,7 +65,16 @@ toleranceRadius = 5000; // Radio de 1 km en metros
     '/assets/imginicio/navegacion-gps-establece-iconos_24877-51664.jpg',
     '/assets/imginicio/png-transparent-time-and-attendance-computer-icons-time-attendance-clocks-computer-software-access-control-time-and-attendance-text-trademark-computer.png',
     '/assets/imginicio/R.jpeg',
-    '/assets/imginicio/servicio-eficiente-logistica-entrega-exhibido-almacen-cajas-despertador_209190-272449.jpg'
+    '/assets/imginicio/servicio-eficiente-logistica-entrega-exhibido-almacen-cajas-despertador_209190-272449.jpg',
+    '/assets/imginicio/Reduccion-de-jornada-laboral_-hoy-presentan-conclusiones-1024x694.jpeg',
+    '/assets/imginicio/1674516126383.jpg',
+    '/assets/imginicio/interior-logistica-almacen.jpg',
+    '/assets/imginicio/Qué-es-la-logística-inteligente.jpg',
+
+
+
+
+
   ]
 
   empleado = "";
