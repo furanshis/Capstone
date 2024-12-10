@@ -1,0 +1,35 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>Cambiar PIN</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+  <form (ngSubmit)="cambiarPin()" #pinForm="ngForm">
+    <ion-item>
+      <ion-label position="floating">Nuevo PIN</ion-label>
+      <ion-input 
+        type="password" 
+        [(ngModel)]="nuevoPin" 
+        name="nuevoPin" 
+        required 
+        minlength="4" 
+        maxlength="6">
+      </ion-input>
+    </ion-item>
+
+    <ion-item>
+      <ion-label position="floating">Confirmar PIN</ion-label>
+      <ion-input 
+        type="password" 
+        [(ngModel)]="confirmarPin" 
+        name="confirmarPin" 
+        required 
+        minlength="4" 
+        maxlength="6">
+      </ion-input>
+    </ion-item>
+
+    <ion-button expand="full" type="submit" [disabled]="pinForm.invalid">Actualizar PIN</ion-button>
+  </form>
+</ion-content>

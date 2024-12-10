@@ -125,8 +125,8 @@
       <ion-card-subtitle>Salida tarjetero digital</ion-card-subtitle>
     </ion-card-header>
     <div class="button-container-d">
-    <ion-button routerLink="/lockscreen" fill="clear" style="border-radius: 20px; color: #000000;">PIN</ion-button>
-    <ion-button id="biometrico" [disabled]="isLoading" (click)="registrarAsistencia()" style="border-radius: 20px; background-color: #000000; color: white;">
+    <ion-button routerLink="/pin-salida" fill="clear" style="border-radius: 20px; color: #000000;">PIN</ion-button>
+    <ion-button id="biometrico" [disabled]="isLoading" (click)="registerSalida()" style="border-radius: 20px; background-color: #000000; color: white;">
       <ion-icon slot="start" name="finger-print-outline"></ion-icon>
       {{ isLoading ? 'Registrando...' : '' }}
     </ion-button>

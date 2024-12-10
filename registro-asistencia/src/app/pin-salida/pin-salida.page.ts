@@ -1,32 +1,25 @@
-import { Component,OnInit } from '@angular/core';
-import { Router } from '@angular/router';
-import { AlertController } from '@ionic/angular';
-import { AngularFirestore } from '@angular/fire/compat/firestore';
-import { ToastController } from '@ionic/angular';
+import { Component, OnDestroy, OnInit } from '@angular/core'
+import { AlertController, LoadingController, ToastController } from '@ionic/angular';;
 import { AngularFireAuth } from '@angular/fire/compat/auth';
-import { doc, getDoc } from 'firebase/firestore';
-import { first } from 'rxjs/operators';
-import { Asistencia2, Empleado } from '../interfaces/models';
-import { LoadingController } from '@ionic/angular';
-import { Geolocation } from '@capacitor/geolocation';
-import { firstValueFrom } from 'rxjs';
+import { AngularFirestore } from '@angular/fire/compat/firestore';
+import { FingerprintAIO } from '@ionic-native/fingerprint-aio/ngx';
+import { Router } from '@angular/router';
+import { IonicModule } from '@ionic/angular';
 import { AsistenciaserviceService } from '../services/asistenciaservice.service';
-
-
-
-
-
-
-
-
-
+import { Geolocation } from '@capacitor/geolocation';
+import { Asistencia2, Empleado } from '../interfaces/models';
+import { first, Observable } from 'rxjs';
+import { provideFirestore, getFirestore } from '@angular/fire/firestore';
+import { Firestore, collection, query, where, getDocs } from '@angular/fire/firestore';
+import { firstValueFrom } from 'rxjs';
 
 @Component({
-  selector: 'app-lockscreen',
-  templateUrl: './lockscreen.page.html',
-  styleUrls: ['./lockscreen.page.scss'],
+  selector: 'app-pin-salida',
+  templateUrl: './pin-salida.page.html',
+  styleUrls: ['./pin-salida.page.scss'],
 })
-export class LockscreenPage implements OnInit {
+export class PinSalidaPage implements OnInit {
+
   enteredPin: string = '';
   numbers: string[] = ['1', '2', '3', '4', '5', '6', '7', '8', '9'];
   pinDots: boolean[] = [false, false, false, false]; // Estado de los círculos
@@ -133,6 +126,7 @@ export class LockscreenPage implements OnInit {
             // Actualizar la asistencia con la hora de salida
             await this.asistenciaService.actualizarAsistencia(this.uid);
             await this.showToast('Salida registrada con éxito!', 'success');
+            this.router.navigate(['/inicio']);
           } catch (locationError) {
             this.showToast('error, vuelva a intentarlo', 'danger');
             console.error('Error al obtener ubicación:', locationError);
@@ -226,84 +220,7 @@ export class LockscreenPage implements OnInit {
   // Método para validar el PIN y registrar la asistencia
 
   // Método para validar el PIN y registrar la asistencia
-async validatePinAndRegister() {
-  try {
-    // Asegurarse de que el UID esté disponible usando AngularFireAuth
-    const empleado = await this.afAuth.authState.pipe(first()).toPromise();
 
-    if (empleado) {
-      this.uid = empleado.uid; // Asignamos UID solo si el usuario está autenticado
-    } else {
-      this.showToast('Error: Usuario no identificado.', 'danger');
-      this.errorMessage = 'No se encontró el UID del usuario.';
-      console.error('Error: UID del usuario no está definido.');
-      return; // Salir si no hay usuario autenticado
-    }
-
-    const isInAllowedArea = await this.checkLocation();
-    if (!isInAllowedArea) {
-      await this.showToast('No puedes registrar asistencia fuera del área permitida.', 'danger');
-      this.isLoading = false;
-      return;
-    }
-
-    console.log(`Buscando empleado con UID: ${this.uid} en la colección empleados...`);
-
-    // Consultamos la colección de empleados usando el UID
-    const empleadoRef = this.firestore.collection('empleado', ref => ref.where('uid_empelado', '==', this.uid));
-    const snapshot = await empleadoRef.get().toPromise();
-
-    if (snapshot && !snapshot.empty) {
-      const empleadoData = snapshot.docs[0].data() as Empleado; // Cast al tipo de empleado
-      console.log('Datos del empleado:', empleadoData);
-
-      // Verificar si el PIN ingresado coincide con el PIN almacenado en Firestore
-      if (this.enteredPin === empleadoData.pinpass) {
-        console.log('PIN correcto, registrando asistencia...');
-
-        // Obtener la ubicación del empleado
-        try {
-          const location = await this.getCurrentPosition();
-          console.log('Ubicación obtenida:', location);
-
-          // Crear el objeto de asistencia
-          const asistencia = {
-            uid: this.uid, // Reemplaza con el UID del empleado
-            fechaCreacion: new Date(),
-            horaEntrada: new Date().toLocaleTimeString('en-GB', { hour12: false }),
-            validacionBiometrica: false,
-            horaSalida: '',
-            horasTrabajadas: 0,
-            horasExtras: 0,
-            latitud: this.userLatitude, // Reemplaza con la latitud actual
-            longitud: this.userLongitude, // Reemplaza con la longitud actual
-          };
-
-          // Guardar la asistencia en Firestore
-          await this.registrarAsistencia(asistencia);
-        } catch (locationError) {
-          this.showToast('No se pudo obtener la geolocalización', 'danger');
-          console.error('Error al obtener ubicación:', locationError);
-          return;
-        }
-      } else {
-        this.showToast('PIN incorrecto', 'danger');
-        this.errorMessage = 'El PIN ingresado es incorrecto.';
-        console.error('Error: El PIN ingresado no coincide con el almacenado.');
-        return;
-      }
-    } else {
-      this.errorMessage = 'No se encontró el empleado en la base de datos.';
-      console.error('Error: Documento del empleado no encontrado en la base de datos.');
-    }
-  } catch (error) {
-    this.errorMessage = 'Hubo un error al validar el PIN.';
-    console.error('Error al validar el PIN:', error);
-  } finally {
-    console.log('Finalizando proceso de validación...');
-    await this.loadingCtrl.dismiss();
-  }
-}
 
   
   // Método para registrar la asistencia con ubicación
@@ -329,7 +246,7 @@ async validatePinAndRegister() {
 
       // Al completar el PIN de 4 dígitos, se valida el PIN y registra la asistencia
       if (this.enteredPin.length === 4) {
-        this.validatePinAndRegister();  // Verificar el PIN y registrar asistencia
+        this.registerSalida();  // Verificar el PIN y registrar asistencia
       }
     }
   }
@@ -396,5 +313,5 @@ async validatePinAndRegister() {
 
 
 
-}
 
+}

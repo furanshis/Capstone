@@ -68,6 +68,14 @@ const routes: Routes = [
     path: 'pin-screen',
     loadChildren: () => import('./pin-screen/pin-screen.module').then( m => m.PinScreenPageModule)
   },
+  {
+    path: 'pin-salida',
+    loadChildren: () => import('./pin-salida/pin-salida.module').then( m => m.PinSalidaPageModule)
+  },
+  {
+    path: 'cambiar-pin',
+    loadChildren: () => import('./cambiar-pin/cambiar-pin.module').then( m => m.CambiarPinPageModule)
+  },
 
 
 
