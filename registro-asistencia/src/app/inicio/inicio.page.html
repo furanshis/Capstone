@@ -12,6 +12,10 @@
         <ion-label style="font-weight: bold; font-size: 18px; color: #333;">Perfil</ion-label>
       </ion-item>
 
+      <ion-item routerLink="/cambiar-pin" style="border-radius: 10px; margin-bottom: 15px; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); background-color: #f9f9f9; transition: 0.3s;">
+        <ion-label style="font-weight: bold; font-size: 18px; color: #333;">Cambiar PIN</ion-label>
+      </ion-item>
+
       <!-- Espacio vacío para empujar el botón hacia abajo -->
       <div style="flex-grow: 1;"></div>
 
@@ -39,31 +43,32 @@
   </ion-header>
 
   <!-- Título centrado -->
-  <ion-item lines="none">
-    <ion-avatar slot="start">
+  <ion-item lines="none" color="transparent">
+    <ion-avatar>
       <img src="assets/time-location-control-icon-simple-work-clock-vector.jpg" alt="">
     </ion-avatar>
-    <ion-label></ion-label>
   </ion-item>
   <h2 class="text-primary text-[26px] font-bold leading-tight tracking-[-0.015em] px-4 pb-3 pt-5 text-center">
     Bienvenido, {{ userName }}
   </h2>
 
-  
+  <!-- CARRUSEL CON CARD-->
+<ion-content >
 
- 
+  <ion-card color="transparent">
+    <swiper-container
+    (slidechange)="swiperSlideChanged($event)"
+    [loop]="true"
+    [pagination]="true">
+    
+    <swiper-slide *ngFor="let image of images">
+      <img [src]="image" class="carousel-image">
+    </swiper-slide>
+  </swiper-container>
+  </ion-card>
+  <br>
 
-  <div class="button-container px-4">
-    <ion-button
-      size="large"
-      expand="block"
-      [disabled]="isLoading"
-      (click)="registrarAsistencia()"
-    >
-      <ion-icon slot="start" name="finger-print-outline"></ion-icon>
-      {{ isLoading ? 'Registrando...' : 'Registrar Asistencia' }}
-    </ion-button>
-  </div>
+
 
   <!-- Messages -->
   <ion-item *ngIf="successMessage" lines="none" color="success">
@@ -76,18 +81,6 @@
     <ion-label>{{ errorMessage }}</ion-label>
   </ion-item>
 
-  <!-- marcaar salida -->
-  <div class="button-container px-4">
-    <ion-button
-      size="large"
-      expand="block"
-      [disabled]="isLoading"
-      (click)="registerSalida()"
-    >
-      <ion-icon slot="start" name="finger-print-outline"></ion-icon>
-      {{ isLoading ? 'marcando Salida...' : 'Registrar Salida' }}
-    </ion-button>
-  </div>
 
   <!-- Messages -->
   <ion-item *ngIf="succesMessageSalida" lines="none" color="success">
@@ -106,7 +99,7 @@
   <ion-card id="entrada" style="background: #3bc40dc6; border-radius: 15px; box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);">
     <ion-card-header>
       <ion-card-title>ENTRADA</ion-card-title>
-      <ion-card-subtitle>Entrada tarjetero digital</ion-card-subtitle>
+      <ion-card-subtitle style="border-radius: 20px; color: #000000;">Entrada tarjetero digital</ion-card-subtitle>
     </ion-card-header>
     <div class="button-container-d">
       <ion-button id="pin" routerLink="/lockscreen" fill="clear" style="border-radius: 20px; color: #000000;">PIN</ion-button>
@@ -140,24 +133,32 @@
 
 
 
-  <!-- Tarjetas con información -->
-  <div class="flex justify-center mt-4">
-    <div class="grid grid-cols-2 gap-4 max-w-[480px] px-4 py-3">
-      <ion-card class="bg-card text-card-foreground p-4 rounded-xl shadow-md">
+<!-- Tarjetas con información -->
+<div class="flex justify-center mt-4">
+  <div class="grid grid-cols-2 gap-4 max-w-[480px] px-4 py-3">
+    <ion-card class="bg-card text-card-foreground p-4 rounded-xl shadow-md">
+      <div class="flex flex-col justify-center items-center h-full">
         <h3 class="text-primary text-lg font-bold mb-2">Horas Trabajadas</h3>
         <p class="text-primary text-base font-normal">{{ horasTrabajadas }} horas</p>
-      </ion-card>
-      <ion-card class="bg-card text-card-foreground p-4 rounded-xl shadow-md">
+      </div>
+    </ion-card>
+    <ion-card class="bg-card text-card-foreground p-4 rounded-xl shadow-md">
+      <div class="flex flex-col justify-center items-center h-full">
         <h3 class="text-primary text-lg font-bold mb-2">Días Asistidos</h3>
         <p class="text-primary text-base font-normal">20 días</p>
-      </ion-card>
-    </div>
+      </div>
+    </ion-card>
+  </div>
 
-    <div class="flex justify-center px-4 py-3">
-      <ion-card class="bg-card text-card-foreground p-4 rounded-xl w-full shadow-md">
+  <div class="flex justify-center px-4 py-3">
+    <ion-card class="bg-card text-card-foreground p-4 rounded-xl w-full shadow-md">
+      <div class="flex flex-col justify-center items-center h-full">
         <h3 class="text-primary text-lg font-bold mb-2">Ausencias</h3>
         <p class="text-primary text-base font-normal">2 días</p>
-      </ion-card>
-    </div>
+      </div>
+    </ion-card>
   </div>
+</div>
+
+
 </ion-content>

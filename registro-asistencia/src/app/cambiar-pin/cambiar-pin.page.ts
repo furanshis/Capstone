@@ -71,4 +71,9 @@ export class CambiarPinPage implements OnInit {
     await toast.present();
   }
 
+
+  goBack() {
+    window.history.back();
+  }
+
 }

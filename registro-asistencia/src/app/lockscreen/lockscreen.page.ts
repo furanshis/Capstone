@@ -169,7 +169,7 @@ export class LockscreenPage implements OnInit {
     this.afAuth.authState.subscribe((user) => {
       if (user) {
         this.uid = user.uid; // UID del usuario autenticado
-        this.userName = user.displayName || 'Empleado'; // Opcional: nombre del usuario
+        this.userName = user.displayName || ''; // Opcional: nombre del usuario
         console.log('UID:', this.uid);
 
         
@@ -220,11 +220,6 @@ export class LockscreenPage implements OnInit {
     }
   }
 
-
-
-
-  // Método para validar el PIN y registrar la asistencia
-
   // Método para validar el PIN y registrar la asistencia
 async validatePinAndRegister() {
   try {
@@ -249,17 +244,18 @@ async validatePinAndRegister() {
 
     console.log(`Buscando empleado con UID: ${this.uid} en la colección empleados...`);
 
-    // Consultamos la colección de empleados usando el UID
-    const empleadoRef = this.firestore.collection('empleado', ref => ref.where('uid_empelado', '==', this.uid));
-    const snapshot = await empleadoRef.get().toPromise();
+      // Consultamos la colección de empleados usando el UID
+      const empleadoRef = this.firestore.collection('empleado', ref => ref.where('uid_empelado', '==', this.uid));
+      const snapshot = await empleadoRef.get().toPromise();
+  
 
-    if (snapshot && !snapshot.empty) {
+    if (snapshot ) {
       const empleadoData = snapshot.docs[0].data() as Empleado; // Cast al tipo de empleado
       console.log('Datos del empleado:', empleadoData);
 
-      // Verificar si el PIN ingresado coincide con el PIN almacenado en Firestore
-      if (this.enteredPin === empleadoData.pinpass) {
-        console.log('PIN correcto, registrando asistencia...');
+        // Verificar si el PIN ingresado coincide con el PIN almacenado en Firestore
+        if (this.enteredPin === empleadoData.pinpass) {
+          console.log('PIN correcto, registrando asistencia...');
 
         // Obtener la ubicación del empleado
         try {
@@ -288,6 +284,7 @@ async validatePinAndRegister() {
         }
       } else {
         this.showToast('PIN incorrecto', 'danger');
+        this.clearPin()
         this.errorMessage = 'El PIN ingresado es incorrecto.';
         console.error('Error: El PIN ingresado no coincide con el almacenado.');
         return;
@@ -326,10 +323,11 @@ async validatePinAndRegister() {
     if (this.enteredPin.length < 4) {
       this.enteredPin += number;
       this.pinDots[this.enteredPin.length - 1] = true;
-
+  
       // Al completar el PIN de 4 dígitos, se valida el PIN y registra la asistencia
       if (this.enteredPin.length === 4) {
-        this.validatePinAndRegister();  // Verificar el PIN y registrar asistencia
+        // No vaciar el PIN de inmediato, validamos primero
+        this.validatePinAndRegister(); // Verificar el PIN y registrar asistencia
       }
     }
   }

@@ -134,6 +134,7 @@ export class PinSalidaPage implements OnInit {
           }
         } else {
           this.showToast('PIN incorrecto', 'danger');
+          this.clearPin()
           this.errorMessage = 'El PIN ingresado es incorrecto.';
           console.error('Error: El PIN ingresado no coincide con el almacenado.');
           return;
