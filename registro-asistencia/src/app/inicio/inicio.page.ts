@@ -69,11 +69,6 @@ toleranceRadius = 5000; // Radio de 1 km en metros
     '/assets/imginicio/1674516126383.jpg',
     '/assets/imginicio/interior-logistica-almacen.jpg',
     '/assets/imginicio/Qué-es-la-logística-inteligente.jpg',
-
-
-
-
-
   ]
 
   empleado = "";
