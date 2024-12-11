@@ -40,7 +40,7 @@ export class CambiarPinPage implements OnInit {
       const uid = user.uid;
       console.log('UID del usuario:', uid);
 
-      const empleadoRef = await this.firestore.collection('empleado', ref => ref.where('uid_empelado', '==', uid)).get().toPromise();
+      const empleadoRef = await this.firestore.collection('empleado', ref => ref.where('uid_empleado', '==', uid)).get().toPromise();
       
       if (!empleadoRef || empleadoRef.empty) {
         this.mostrarToast('Empleado no encontrado');

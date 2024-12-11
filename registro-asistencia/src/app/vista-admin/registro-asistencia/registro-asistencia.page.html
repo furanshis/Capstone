@@ -5,32 +5,43 @@
 </ion-header>
 
 <ion-content>
-  <div *ngIf="reportes.length === 0">
-    <p>No hay registros de asistencia.</p>
-  </div>
+  <div class="container">
+    <h1>Reportes de Asistencia</h1>
   
-  <table *ngIf="reportes.length > 0" class="table">
-    <thead>
-      <tr>
-        <th>Fecha de Reporte</th>
-        <th>Horas Totales</th>
-        <th>Ausencias</th>
-        <th>Tardanzas</th>
-        <th>Empleado</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr *ngFor="let reporte of reportes">
-        <td>{{ reporte.fecha_reporte }}</td>
-        <td>{{ reporte.horas_totales_trabajadas }}</td>
-        <td>{{ reporte.numero_ausencias }}</td>
-        <td>{{ reporte.numero_tardanzas }}</td>
-        <td>
-          {{ reporte.empleado?.primer_nombre }}
-          {{ reporte.empleado?.apellido_paterno }}
-        </td>
-      </tr>
-    </tbody>
-  </table>
+    <!-- Si hay reportes, los mostramos en una tabla -->
+    <table *ngIf="reportes.length > 0" class="table">
+      <thead>
+        <tr>
+          <th>Fecha de Reporte</th>
+          <th>Horas Totales Trabajadas</th>
+          <th>Número de Ausencias</th>
+          <th>Número de Tardanzas</th>
+          <th>Empleado</th>
+        </tr>
+      </thead>
+      <tbody>
+        <!-- Iterar sobre los reportes -->
+        <tr *ngFor="let reporte of reportes">
+          <td>{{ reporte.fecha_reporte }}</td>
+          <td>{{ reporte.horas_totales_trabajadas }}</td>
+          <td>{{ reporte.numero_ausencias }}</td>
+          <td>{{ reporte.numero_tardanzas }}</td>
+          <td>
+            <!-- Mostrar el nombre completo del empleado -->
+            <span *ngIf="reporte.empleado">
+              {{ reporte.empleado.primer_nombre }} {{ reporte.empleado.segundo_nombre }}
+              {{ reporte.empleado.apellido_paterno }} {{ reporte.empleado.apellido_materno }}
+            </span>
+            <span *ngIf="!reporte.empleado">Empleado no encontrado</span>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  
+    <!-- Si no hay reportes, mostrar un mensaje -->
+    <div *ngIf="reportes.length === 0">
+      <p>No hay reportes disponibles.</p>
+    </div>
+  </div>
   
 </ion-content>

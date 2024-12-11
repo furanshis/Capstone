@@ -12,6 +12,15 @@ export interface Asistencia {
     validacion_biometrica: boolean;
     empleado: Empleado;
   }
+
+  export interface ReporteAsistencia {
+    fecha_reporte: string;
+    horas_totales_trabajadas: number;
+    numero_ausencias: number;
+    numero_tardanzas: number;
+    uid: string;
+    empleado?: Empleado; // Este campo es opcional, ya que lo agregamos después
+  }
   
   export interface Empleado {
     id_empleado: number;

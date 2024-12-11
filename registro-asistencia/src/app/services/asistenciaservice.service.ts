@@ -6,6 +6,8 @@ import { Asistencia, Empleado, Asistencia2 } from '../interfaces/models';
 import { AngularFirestore } from '@angular/fire/compat/firestore';
 import { map } from 'rxjs/operators';
 import { firstValueFrom } from 'rxjs';
+import { from } from 'rxjs';
+import { AngularFireAuth } from '@angular/fire/compat/auth';
 @Injectable({
   providedIn: 'root'
 })
@@ -13,7 +15,8 @@ export class AsistenciaserviceService {
   private apiUrl = 'http://192.168.1.85:3000';
   private collectionName = 'asistencia';
 
-  constructor(private http: HttpClient, private firestore: AngularFirestore) { }
+  constructor(private http: HttpClient, private firestore: AngularFirestore,
+    private auth: AngularFireAuth) { }
 
   getEmpleadoByUid(uid: string): Observable<Empleado> {
     return this.http.get<Empleado>(`${this.apiUrl}/empleados/${uid}`).pipe(
@@ -218,6 +221,8 @@ export class AsistenciaserviceService {
         map(reporte => (reporte.length > 0 ? reporte[0] : null))
       );
   }
+
+  
 
   
 

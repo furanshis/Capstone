@@ -117,7 +117,7 @@ export class LockscreenPage implements OnInit {
       console.log(`Buscando empleado con UID: ${this.uid} en la colección empleados...`);
   
       // Consultamos la colección de empleados usando el UID
-      const empleadoRef = this.firestore.collection('empleado', ref => ref.where('uid_empelado', '==', this.uid));
+      const empleadoRef = this.firestore.collection('empleado', ref => ref.where('uid_empleado', '==', this.uid));
       const snapshot = await empleadoRef.get().toPromise();
   
       if (snapshot && !snapshot.empty) {
@@ -206,7 +206,7 @@ export class LockscreenPage implements OnInit {
     const uid = localStorage.getItem('uid'); // Obtiene el UID del usuario
     if (uid) {
       try {
-        const empleadoDoc = await this.firestore.collection('empleados').doc(uid).get().toPromise();
+        const empleadoDoc = await this.firestore.collection('empleado').doc(uid).get().toPromise();
         if (empleadoDoc && empleadoDoc.exists) {
           const empleadoData = empleadoDoc.data() as Empleado;
           this.pinpass = empleadoData.pinpass; // Accede a `pinpass`
@@ -245,7 +245,7 @@ async validatePinAndRegister() {
     console.log(`Buscando empleado con UID: ${this.uid} en la colección empleados...`);
 
       // Consultamos la colección de empleados usando el UID
-      const empleadoRef = this.firestore.collection('empleado', ref => ref.where('uid_empelado', '==', this.uid));
+      const empleadoRef = this.firestore.collection('empleado', ref => ref.where('uid_empleado', '==', this.uid));
       const snapshot = await empleadoRef.get().toPromise();
   
 

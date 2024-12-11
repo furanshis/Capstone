@@ -270,7 +270,7 @@ toleranceRadius = 5000; // Radio de 1 km en metros
   async registrarAsistencia() {
 
     
-    /*
+    
     const fingerprintValid = await this.checkFingerprint();
     if (!fingerprintValid) {
       return;
@@ -280,7 +280,7 @@ toleranceRadius = 5000; // Radio de 1 km en metros
       await this.showToast('Error: Usuario no identificado.', 'danger');
       return;
     }
-    */
+    
     // Verificar geolocalización
     const isInAllowedArea = await this.checkLocation();
     if (!isInAllowedArea) {
@@ -336,7 +336,7 @@ toleranceRadius = 5000; // Radio de 1 km en metros
 
   // Registrar la salida
   async registerSalida() {
-    /*
+    
     const fingerprintValid = await this.checkFingerprint();
     if (!fingerprintValid) {
       return;
@@ -346,7 +346,7 @@ toleranceRadius = 5000; // Radio de 1 km en metros
       await this.showToast('Error: Usuario no identificado.', 'danger');
       return;
     }
-    */
+    
     // Verificar geolocalización
     const isInAllowedArea = await this.checkLocation();
     if (!isInAllowedArea) {

@@ -110,7 +110,7 @@ export class PinSalidaPage implements OnInit {
       console.log(`Buscando empleado con UID: ${this.uid} en la colección empleados...`);
   
       // Consultamos la colección de empleados usando el UID
-      const empleadoRef = this.firestore.collection('empleado', ref => ref.where('uid_empelado', '==', this.uid));
+      const empleadoRef = this.firestore.collection('empleado', ref => ref.where('uid_empleado', '==', this.uid));
       const snapshot = await empleadoRef.get().toPromise();
   
       if (snapshot && !snapshot.empty) {
