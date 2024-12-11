@@ -41,6 +41,7 @@ export class InicioPage implements OnInit {
   registroAsistencia = false
   enteredPin: string = ''; // PIN ingresado por el usuario
   type: string = '';
+  //isExitRegistered = false;
 
   //cASA JUAN
  // Coordenadas del recinto de trabajo
@@ -315,8 +316,7 @@ toleranceRadius = 5000; // Radio de 1 km en metros
         this.asistenciaService.crearAsistencia(nueva_asistencia)
         .then(() => {
           this.registroAsistencia = true;
-          this.showToast('Asistencia registrada con éxito!', 'success');
-        })
+          this.showToast('Asistencia registrada con éxito!', 'success');        })
       .catch((error) => {
         this.registroAsistencia = false;
         this.showToast('Hubo un error al registrar la entrada.', 'danger')} )//this.errorMessage = 'Hubo un error al registrar la entrada.');

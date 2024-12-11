@@ -241,7 +241,6 @@ async validatePinAndRegister() {
       this.isLoading = false;
       return;
     }
-
     console.log(`Buscando empleado con UID: ${this.uid} en la colección empleados...`);
 
       // Consultamos la colección de empleados usando el UID

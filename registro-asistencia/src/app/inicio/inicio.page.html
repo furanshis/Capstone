@@ -8,10 +8,6 @@
   <ion-content>
     <ion-list style="display: flex; flex-direction: column; height: 100%; padding: 10px;">
       <!-- Menú de opciones -->
-      <ion-item routerLink="/perfilusuario" style="border-radius: 10px; margin-bottom: 15px; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); background-color: #f9f9f9; transition: 0.3s;">
-        <ion-label style="font-weight: bold; font-size: 18px; color: #333;">Perfil</ion-label>
-      </ion-item>
-
       <ion-item routerLink="/cambiar-pin" style="border-radius: 10px; margin-bottom: 15px; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); background-color: #f9f9f9; transition: 0.3s;">
         <ion-label style="font-weight: bold; font-size: 18px; color: #333;">Cambiar PIN</ion-label>
       </ion-item>
@@ -102,7 +98,7 @@
       <ion-card-subtitle style="border-radius: 20px; color: #000000;">Entrada tarjetero digital</ion-card-subtitle>
     </ion-card-header>
     <div class="button-container-d">
-      <ion-button id="pin" routerLink="/lockscreen" fill="clear" style="border-radius: 20px; color: #000000;">PIN</ion-button>
+      <ion-button id="pin" routerLink="/lockscreen" fill="clear"  style="border-radius: 20px; color: #000000;">PIN</ion-button>
       <ion-button id="biometrico" [disabled]="isLoading" (click)="registrarAsistencia()" style="border-radius: 20px; background-color: #000000; color: white;">
         <ion-icon slot="start" name="finger-print-outline"></ion-icon>
         {{ isLoading ? 'Registrando...' : '' }}
@@ -115,7 +111,7 @@
   <ion-card id="salida" style="background:#d21010; border-radius: 15px; box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);">
     <ion-card-header>
       <ion-card-title>SALIDA</ion-card-title>
-      <ion-card-subtitle>Salida tarjetero digital</ion-card-subtitle>
+      <ion-card-subtitle style="border-radius: 20px; color: #000000;">Salida tarjetero digital</ion-card-subtitle>
     </ion-card-header>
     <div class="button-container-d">
     <ion-button routerLink="/pin-salida" fill="clear" style="border-radius: 20px; color: #000000;">PIN</ion-button>
