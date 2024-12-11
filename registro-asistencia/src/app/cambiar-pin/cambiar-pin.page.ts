@@ -24,6 +24,14 @@ export class CambiarPinPage implements OnInit {
   }
 
   async cambiarPin() {
+
+    // Validación de longitud del PIN
+    if (this.nuevoPin.length !== 4 || this.confirmarPin.length !== 4) {
+      this.mostrarToast('El PIN debe tener exactamente 4 dígitos');
+      return;
+    }
+
+
     if (this.nuevoPin !== this.confirmarPin) {
       this.mostrarToast('Los PIN no coinciden');
       return;
