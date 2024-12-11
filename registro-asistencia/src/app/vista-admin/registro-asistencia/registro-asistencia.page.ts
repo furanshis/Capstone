@@ -25,7 +25,16 @@ export class RegistroAsistenciaPage implements OnInit {
   ) {}
 
   ngOnInit() {
-    this.obtenerReportesConEmpleados();
+    this.cargarReportes();
+  }
+
+  async cargarReportes() {
+    try {
+      this.reportes = await this.obtenerReportesConEmpleados();
+      console.log('Datos cargados:', this.reportes);
+    } catch (error) {
+      console.error('Error al cargar reportes:', error);
+    }
   }
   
 

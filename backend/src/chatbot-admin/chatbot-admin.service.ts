@@ -1,5 +1,6 @@
 import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
 import OpenAI from 'openai';
+import { OpenaiService } from '../openai/openai.service';
 import { ConfigService } from '@nestjs/config';
 const { getJson } = require("serpapi");
 
@@ -25,7 +26,7 @@ export class ChatbotAdminService {
     ];
 
 
-    constructor(private readonly configService: ConfigService) {
+    constructor(private readonly configService: ConfigService, private readonly openaiService: OpenaiService) {
       this.client = new OpenAI({
         apiKey: process.env.OPENAI_API_KEY,
       });
@@ -229,32 +230,57 @@ export class ChatbotAdminService {
     }
   
     private async waitForRunCompletion(threadId: string, runId: string): Promise<string> {
-      const maxAttempts = 40;
-      const delay = 1000;
+      let nombreFuncion = "";
+      const maxAttempts = 70;
+      const delay = 2000;
   
       for (let attempt = 0; attempt < maxAttempts; attempt++) {
+        
         const run = await this.client.beta.threads.runs.retrieve(threadId, runId);
 
         
   
         if (run.status === 'completed') {
+          
           console.log(run)
           return await this.getAssistantResponse(threadId, runId);
         }
 
         if (run.status === 'requires_action') {
+          
           if (run.required_action?.type === 'submit_tool_outputs') {
             const toolCalls = run.required_action.submit_tool_outputs.tool_calls;
             const outputs = await Promise.all(
               toolCalls.map(async (toolCall) => {
-                const args = JSON.parse(toolCall.function.arguments);
-                const searchResults = await this.getSearchResult(args.query);
-                return {
-                  tool_call_id: toolCall.id,
-                  output: JSON.stringify(searchResults),
-                };
+                nombreFuncion = toolCall.function.name;
+                if (toolCall.function.name === "getSearchResult") {
+                  console.log('----------- BUSCANDO EN INTERNET -----------')
+                  console.log("--------------------------------------------------------")
+                  const args = JSON.parse(toolCall.function.arguments);
+                  const searchResults = await this.getSearchResult(args.query);
+                  return {
+                    tool_call_id: toolCall.id,
+                    output: JSON.stringify(searchResults),
+                  };
+                }
+                else if (toolCall.function.name === "generarSQL") {
+                  console.log('----------- CONSULTANDO EN LA BASE DE DATOS -----------')
+                  console.log("--------------------------------------------------------")
+                  const args = JSON.parse(toolCall.function.arguments);
+                  console.log("------------- CONSULTA --------------")
+                  console.log("-------------------------------------")
+                  console.log(args.pregunta)
+                  const resultados = await this.openaiService.generarSQL(args.pregunta);
+                  return {
+                    tool_call_id: toolCall.id,
+                    output: JSON.stringify(resultados),
+                  };
+                }
+                
               })
             );
+
+            
 
           await this.client.beta.threads.runs.submitToolOutputs(threadId, runId, {
             tool_outputs: outputs,

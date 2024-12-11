@@ -1,0 +1,43 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-title>empleados</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+  <div class="container">
+    <h1>Lista de Empleados</h1>
+  
+    <table *ngIf="empleados.length > 0" class="table table-bordered">
+      <thead>
+        <tr>
+          <th>Primer Nombre</th>
+          <th>Segundo Nombre</th>
+          <th>Apellido Paterno</th>
+          <th>Apellido Materno</th>
+          <th>Correo Electrónico</th>
+          <th>Acciones</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let empleado of empleados">
+          <td>{{ empleado.primer_nombre }}</td>
+          <td>{{ empleado.segundo_nombre }}</td>
+          <td>{{ empleado.apellido_paterno }}</td>
+          <td>{{ empleado.apellido_materno }}</td>
+          <td>{{ empleado.correo_electronico }}</td>
+          <td>
+            <!-- Aquí puedes agregar botones para editar o eliminar empleados -->
+            <button class="btn btn-warning" (click)="editarEmpleado(empleado.id)">Editar</button>
+            <button class="btn btn-danger" (click)="eliminarEmpleado(empleado.id)">Eliminar</button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  
+    <div *ngIf="empleados.length === 0">
+      <p>No hay empleados registrados.</p>
+    </div>
+  </div>
+  
+</ion-content>

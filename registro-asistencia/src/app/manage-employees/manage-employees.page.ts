@@ -118,7 +118,7 @@ async presentAlertConfirm() {
   // Agregar un nuevo empleado (puedes implementar esta funcionalidad)
   addNewEmployee() {
     console.log('Add new employee');
-    this.router.navigate(['/admin']); // Redirigir al login
+    this.router.navigate(['/vista-admin/crear-usuario']); // Redirigir al login
     // Aquí agregas la lógica para agregar un nuevo empleado
   }
 }

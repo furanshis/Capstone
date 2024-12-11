@@ -14,16 +14,17 @@ import { Departamento } from './departamento/departamento.entity';
 import { ReporteAsistenciaModule } from './reporte_asistencia/reporte_asistencia.module';
 import { ReporteAsistencia } from './reporte_asistencia/reporte_asistencia.entity';
 import { ChatbotAdminModule } from './chatbot-admin/chatbot-admin.module';
+import { OpenaiModule } from './openai/openai.module';
 
 
 @Module({
   imports: [ ConfigModule.forRoot({cache:true}), 
     TypeOrmModule.forRoot({
       type: 'postgres',
-      host: 'peppy-gist-443202-b9:us-central1:my-project',
+      host: 'localhost',
       port: 5432,
       username: 'postgres',
-      password: 'admin',
+      password: 'admin123',
       database: 'capstone',
       entities: [Empleados, Asistencia, Supervisor, Departamento, ReporteAsistencia],
       
@@ -37,7 +38,8 @@ import { ChatbotAdminModule } from './chatbot-admin/chatbot-admin.module';
     DepartamentoModule,
     AsistenciaModule,
     ReporteAsistenciaModule,
-    ChatbotAdminModule
+    ChatbotAdminModule,
+    OpenaiModule
   ],
   controllers: [AppController],
   providers: [AppService],

@@ -19,6 +19,10 @@ const routes: Routes = [
   {
     path: 'registro-asistencia',
     loadChildren: () => import('./registro-asistencia/registro-asistencia.module').then( m => m.RegistroAsistenciaPageModule)
+  },
+  {
+    path: 'empleados',
+    loadChildren: () => import('./empleados/empleados.module').then( m => m.EmpleadosPageModule)
   }
 ];
 
